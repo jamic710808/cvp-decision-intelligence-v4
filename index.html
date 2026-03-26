@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CVP 量利投一體化決策系統 V4.0</title>
+<meta name="description" content="Cost-Volume-Profit Decision Intelligence System v4.0 — 19 個決策模組、雙主題、離線可用">
+
+<!-- CDN 套件 -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<!-- V4 全局樣式 -->
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<!-- ═════════════════════════════════════════════
+     頁首 Header（sticky）
+═════════════════════════════════════════════ -->
+<header id="app-header">
+  <div style="max-width:1800px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <!-- Logo + 標題 -->
+    <div style="display:flex;align-items:center;gap:14px">
+      <svg width="40" height="40" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+        <circle cx="22" cy="22" r="22" fill="url(#logo-grad)"/>
+        <path d="M10 32 L22 12 L34 32" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M14 26 L30 26" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="logo-grad" x1="0" y1="0" x2="44" y2="44">
+            <stop offset="0%" stop-color="#0ea5e9"/>
+            <stop offset="100%" stop-color="#8b5cf6"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div>
+        <div style="font-size:18px;font-weight:900;background:linear-gradient(90deg,#38bdf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent">CVP 量利投一體化決策系統</div>
+        <div style="font-size:10px;color:var(--text-muted);letter-spacing:2px">COST · VOLUME · PROFIT · DECISION INTELLIGENCE v4.0</div>
+      </div>
+    </div>
+    <!-- 右側資訊與操作 -->
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <div id="hdr-company" style="font-size:13px;color:var(--text-secondary)">公司：<span style="color:var(--sky-lt);font-weight:700">範例科技股份有限公司</span></div>
+      <div id="hdr-period"  style="font-size:12px;color:var(--text-muted)">期間：<span style="color:var(--violet-lt)">2026 年度</span></div>
+      <div id="hdr-updated" style="font-size:11px;color:var(--text-dim)">更新：<span id="last-update">—</span></div>
+
+      <!-- 匯入 Excel -->
+      <label class="btn-primary" style="padding:7px 14px;cursor:pointer">
+        ⬆ 匯入 Excel
+        <input type="file" id="excel-upload" accept=".xlsx,.xls" style="display:none" onchange="handleExcelUpload(event)">
+      </label>
+
+      <!-- 匯出 JSON -->
+      <button class="btn-secondary" onclick="exportStateJSON()">⬇ 匯出 JSON</button>
+
+      <!-- 主題切換 -->
+      <button id="theme-btn" class="btn-secondary" onclick="toggleTheme()">☀ 亮色</button>
+
+      <!-- 行動版選單按鈕 -->
+      <button class="btn-secondary" id="menu-btn" onclick="toggleSidebar()" style="display:none" aria-label="開啟選單">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═════════════════════════════════════════════
+     左側分類面板導覽
+═════════════════════════════════════════════ -->
+<nav id="nav-sidebar" aria-label="功能導覽">
+
+  <!-- 📊 基礎分析 -->
+  <div class="nav-group open">
+    <button class="nav-group-btn">📊 基礎分析 <span class="arrow">▶</span></button>
+    <div class="nav-group-items">
+      <button class="nav-item active" data-tab="t1" onclick="switchTab('t1')">🏠 執行長總覽</button>
+      <button class="nav-item" data-tab="t2" onclick="switchTab('t2')">💰 管理損益表</button>
+      <button class="nav-item" data-tab="t3" onclick="switchTab('t3')">📈 CVP 靜態分析</button>
+    </div>
+  </div>
+
+  <!-- 🎛 模擬決策 -->
+  <div class="nav-group">
+    <button class="nav-group-btn">🎛 模擬決策 <span class="arrow">▶</span></button>
+    <div class="nav-group-items">
+      <button class="nav-item" data-tab="t4" onclick="switchTab('t4')">🎛 動態情境模擬器</button>
+      <button class="nav-item" data-tab="t5" onclick="switchTab('t5')">🔀 多情境平行比較</button>
+      <button class="nav-item" data-tab="t7" onclick="switchTab('t7')">🎯 AI 目標搜尋</button>
+      <button class="nav-item" data-tab="t16" onclick="switchTab('t16')">🌀 龍捲風敏感性圖 <span class="badge-new">V4</span></button>
+    </div>
+  </div>
+
+  <!-- 💼 投資與資金 -->
+  <div class="nav-group">
+    <button class="nav-group-btn">💼 投資與資金 <span class="arrow">▶</span></button>
+    <div class="nav-group-items">
+      <button class="nav-item" data-tab="t6" onclick="switchTab('t6')">💼 投資 ROI 分析</button>
+      <button class="nav-item" data-tab="t10" onclick="switchTab('t10')">🏦 資金效率（杜邦）</button>
+      <button class="nav-item" data-tab="t15" onclick="switchTab('t15')">💧 現金流預測 <span class="badge-new">V4</span></button>
+    </div>
+  </div>
+
+  <!-- 🧩 產品策略 -->
+  <div class="nav-group">
+    <button class="nav-group-btn">🧩 產品策略 <span class="arrow">▶</span></button>
+    <div class="nav-group-items">
+      <button class="nav-item" data-tab="t8" onclick="switchTab('t8')">⚡ 經營槓桿度</button>
+      <button class="nav-item" data-tab="t9" onclick="switchTab('t9')">🧩 產品組合優化器</button>
+      <button class="nav-item" data-tab="t17" onclick="switchTab('t17')">🗺 CM 矩陣（BCG） <span class="badge-new">V4</span></button>
+    </div>
+  </div>
+
+  <!-- 📅 趨勢比較 -->
+  <div class="nav-group">
+    <button class="nav-group-btn">📅 趨勢比較 <span class="arrow">▶</span></button>
+    <div class="nav-group-items">
+      <button class="nav-item" data-tab="t11" onclick="switchTab('t11')">📅 月度趨勢追蹤</button>
+      <button class="nav-item" data-tab="t14" onclick="switchTab('t14')">📐 預算差異分析 <span class="badge-new">V4</span></button>
+      <button class="nav-item" data-tab="t18" onclick="switchTab('t18')">📆 多年度比較（YoY） <span class="badge-new">V4</span></button>
+    </div>
+  </div>
+
+  <!-- ⚠ 風險與報告 -->
+  <div class="nav-group">
+    <button class="nav-group-btn">⚠ 風險與報告 <span class="arrow">▶</span></button>
+    <div class="nav-group-items">
+      <button class="nav-item" data-tab="t12" onclick="switchTab('t12')">⚠ 風險儀表板</button>
+      <button class="nav-item" data-tab="t19" onclick="switchTab('t19')">📄 AI 決策摘要 <span class="badge-new">V4</span></button>
+    </div>
+  </div>
+
+  <!-- 📁 資料管理 -->
+  <div class="nav-group">
+    <button class="nav-group-btn">📁 資料管理 <span class="arrow">▶</span></button>
+    <div class="nav-group-items">
+      <button class="nav-item" data-tab="t13" onclick="switchTab('t13')">📁 資料管理中心</button>
+    </div>
+  </div>
+
+</nav>
+
+<!-- ═════════════════════════════════════════════
+     主內容區
+═════════════════════════════════════════════ -->
+<main id="main-content">
+
+<!-- ════ T1 — 執行長總覽 ════ -->
+<div id="t1" class="tab-content active">
+  <div class="kpi-grid-4 mb-4" id="kpi-grid"></div>
+  <div class="col-2 mb-4">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📊 收入結構 vs 邊際貢獻</div>
+      <div class="chart-wrap h220"><canvas id="ch-overview"></canvas></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">🎯 產品組合貢獻</div>
+      <div class="chart-wrap h220"><canvas id="ch-donut"></canvas></div>
+    </div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">🔔 即時警示中心</div>
+    <div id="alert-center"></div>
+  </div>
+</div>
+
+<!-- ════ T2 — 管理損益表 ════ -->
+<div id="t2" class="tab-content">
+  <div class="glass mb-4" style="padding:22px">
+    <div class="sec-hd">💰 管理損益表（邊際貢獻法）</div>
+    <div style="overflow-x:auto"><table class="data-table" id="pl-table"></table></div>
+  </div>
+  <div class="col-2">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📊 損益結構瀑布圖</div>
+      <div class="chart-wrap h240"><canvas id="ch-waterfall"></canvas></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">🍩 成本結構分析</div>
+      <div class="chart-wrap h240"><canvas id="ch-cost-struct"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T3 — CVP 靜態分析 ════ -->
+<div id="t3" class="tab-content">
+  <div class="kpi-grid-3 mb-4">
+    <div class="kpi-card"><div class="kpi-label">損益平衡點（金額）</div><div class="kpi-val" id="bep-rev">—</div><div class="kpi-sub">萬元</div></div>
+    <div class="kpi-card"><div class="kpi-label">安全邊際率</div><div class="kpi-val" id="safety-m">—</div><div class="kpi-sub">%</div></div>
+    <div class="kpi-card"><div class="kpi-label">邊際貢獻總額</div><div class="kpi-val" id="total-cm">—</div><div class="kpi-sub">萬元</div></div>
+  </div>
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">📈 CVP 損益平衡圖（0% ~ 180% 銷量）</div>
+    <div class="chart-wrap h280"><canvas id="ch-cvp"></canvas></div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">🏷 產品貢獻明細</div>
+    <div style="overflow-x:auto"><table class="data-table" id="product-table"></table></div>
+  </div>
+</div>
+
+<!-- ════ T4 — 動態情境模擬器 ════ -->
+<div id="t4" class="tab-content">
+  <div class="col-1-3">
+    <div class="stack">
+      <div class="glass" style="padding:20px">
+        <div class="sec-hd">🎛 參數操控塔</div>
+        <div style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:4px"><span>售價調整 (Price)</span><span id="price-lbl" style="color:var(--sky-lt);font-family:monospace">0%</span></div>
+          <input type="range" id="price-slider" min="-30" max="50" value="0" oninput="simUpdate()">
+        </div>
+        <div style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:4px"><span>銷量調整 (Volume)</span><span id="vol-lbl" style="color:var(--emerald);font-family:monospace">0%</span></div>
+          <input type="range" id="vol-slider" min="-50" max="100" value="0" oninput="simUpdate()">
+        </div>
+        <div style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:4px"><span>單變成本調整 (VC)</span><span id="vc-lbl" style="color:var(--amber);font-family:monospace">0%</span></div>
+          <input type="range" id="vc-slider" min="-20" max="30" value="0" oninput="simUpdate()">
+        </div>
+        <div style="margin-bottom:16px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:4px"><span>固定成本調整 (FC)</span><span id="fc-lbl" style="color:var(--red);font-family:monospace">0%</span></div>
+          <input type="range" id="fc-slider" min="-20" max="30" value="0" oninput="simUpdate()">
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-secondary" onclick="simReset()" style="flex:1">🔄 重置</button>
+          <button class="btn-success" onclick="addScenario()" style="flex:1">💾 儲存情境</button>
+        </div>
+      </div>
+      <div class="glass" style="padding:20px">
+        <div class="sec-hd">⚡ 敏感係數分析</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-bottom:10px">數值越大，對利潤的槓桿效應越強</div>
+        <div id="sensitivity-factors"></div>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="kpi-grid-4" id="sim-kpis"></div>
+      <div class="glass" style="padding:20px;flex:1">
+        <div class="sec-hd">📈 模擬 vs 基準比較</div>
+        <div class="chart-wrap h360"><canvas id="ch-sim"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T5 — 多情境平行比較 ════ -->
+<div id="t5" class="tab-content">
+  <div class="kpi-card mb-4" id="expected-profit" style="max-width:320px"></div>
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">🔀 多情境平行比較（含機率加權）</div>
+    <div style="overflow-x:auto">
+      <table class="data-table" id="scenario-table">
+        <thead><tr>
+          <th>情境</th><th>機率</th><th>銷量%</th><th>單價%</th>
+          <th>總收入(萬)</th><th>邊際貢獻(萬)</th><th>CM率</th>
+          <th>利潤(萬)</th><th>利潤變動</th><th>操作</th>
+        </tr></thead>
+        <tbody id="scenario-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-2">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📊 情境利潤對比</div>
+      <div class="chart-wrap h260"><canvas id="ch-scenario"></canvas></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">🕸 核心指標雷達圖</div>
+      <div class="chart-wrap h260"><canvas id="ch-scenario-radar"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T6 — 投資 ROI ════ -->
+<div id="t6" class="tab-content">
+  <div class="kpi-grid-4 mb-4" id="inv-kpis"></div>
+  <div class="col-2 mb-4">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📊 現金流量瀑布圖</div>
+      <div class="chart-wrap h260"><canvas id="ch-cf"></canvas></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📈 累計現金流（回收期）</div>
+      <div class="chart-wrap h260"><canvas id="ch-payback"></canvas></div>
+    </div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">📉 NPV 對 WACC 敏感度分析</div>
+    <div class="chart-wrap h240"><canvas id="ch-npv-sens"></canvas></div>
+  </div>
+</div>
+
+<!-- ════ T7 — AI 目標搜尋 ════ -->
+<div id="t7" class="tab-content">
+  <div class="glass mb-4" style="padding:24px">
+    <div class="sec-hd">🎯 AI 目標搜尋引擎（二分法 120 次迭代）</div>
+    <div class="col-3" style="margin-bottom:14px">
+      <div>
+        <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">目標類型</label>
+        <select id="gs-target-type" class="form-select">
+          <option value="profit">目標利潤（萬元）</option>
+          <option value="margin">目標邊際貢獻率（%）</option>
+          <option value="safety">目標安全邊際率（%）</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">目標值</label>
+        <input type="number" id="gs-target-val" placeholder="例：2000" class="form-input">
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">調整變數</label>
+        <select id="gs-var" class="form-select">
+          <option value="vol">銷量變動 %</option>
+          <option value="price">單價變動 %</option>
+          <option value="vc">變動成本變動 %</option>
+          <option value="fc">固定成本變動 %</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="runGoalSeekUI()">🤖 執行 AI 搜尋</button>
+  </div>
+  <div class="glass" style="padding:20px" id="gs-result">
+    <div style="color:var(--text-muted);font-size:13px">🤖 點擊「執行 AI 搜尋」查看建議方案</div>
+  </div>
+</div>
+
+<!-- ════ T8 — 經營槓桿度 ════ -->
+<div id="t8" class="tab-content">
+  <div class="kpi-grid-3 mb-4">
+    <div class="kpi-card"><div class="kpi-label">經營槓桿度（DOL）</div><div class="kpi-val" id="dol-val">—</div><div class="kpi-sub">銷量↑1% → 利潤↑ <span id="dol-impact">—</span>%</div></div>
+    <div class="kpi-card"><div class="kpi-label">邊際貢獻總額</div><div class="kpi-val success" id="dol-cm">—</div><div class="kpi-sub">萬元</div></div>
+    <div class="kpi-card"><div class="kpi-label">營業利潤</div><div class="kpi-val" id="dol-profit">—</div><div class="kpi-sub">萬元</div></div>
+  </div>
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">⚡ DOL 動態分析 — 銷量 vs 利潤放大效果</div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:12px;color:var(--text-secondary)">銷量情境範圍：
+        <input type="range" id="dol-range" min="10" max="80" value="30" style="width:140px;vertical-align:middle" oninput="document.getElementById('dol-range-lbl').textContent=this.value+'%';renderDOL()">
+        <span id="dol-range-lbl" style="color:var(--sky-lt)">30%</span></label>
+    </div>
+    <div class="chart-wrap h260"><canvas id="ch-dol"></canvas></div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">📋 各產品槓桿貢獻分析</div>
+    <div style="overflow-x:auto">
+      <table class="data-table"><thead><tr>
+        <th>產品</th><th>邊際貢獻(萬)</th><th>CM率</th><th>對總CM貢獻%</th><th>槓桿敏感度</th>
+      </tr></thead><tbody id="dol-table-body"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T9 — 產品組合優化器 ════ -->
+<div id="t9" class="tab-content">
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">🧩 產品組合優化（啟發式 + 產能約束）</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">以邊際貢獻最大化為目標，在產能與最低銷量限制下求最佳銷售組合。</div>
+    <button class="btn-success" onclick="runOptimizerUI()">⚙ 執行優化計算</button>
+    <div class="kpi-grid-4 mb-4" id="opt-kpis" style="margin-top:16px"></div>
+  </div>
+  <div class="col-2">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📊 最佳 vs 現行組合比較</div>
+      <div class="chart-wrap h280"><canvas id="ch-opt"></canvas></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📋 優化方案明細</div>
+      <div style="overflow-x:auto">
+        <table class="data-table"><thead><tr>
+          <th>產品</th><th>現行銷量</th><th>最佳銷量</th><th>差異</th><th>CM/件(萬)</th><th>貢獻增益(萬)</th>
+        </tr></thead><tbody id="opt-table-body"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T10 — 資金效率（杜邦分析）════ -->
+<div id="t10" class="tab-content">
+  <div class="kpi-grid-4 mb-4" id="cap-kpis"></div>
+  <div class="glass mb-4" style="padding:24px">
+    <div class="sec-hd">🏦 杜邦分析樹（ROE = 利潤率 × 資產周轉 × 財務槓桿）</div>
+    <div id="dupont-tree" style="overflow-x:auto"></div>
+  </div>
+  <div class="col-2">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📊 資金效率 vs 行業基準（雷達圖）</div>
+      <div class="chart-wrap h280"><canvas id="ch-cap-radar"></canvas></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📈 月度年化 ROE 趨勢</div>
+      <div class="chart-wrap h280"><canvas id="ch-roe-decomp"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T11 — 月度趨勢 ════ -->
+<div id="t11" class="tab-content">
+  <div class="kpi-grid-4 mb-4" id="trend-kpis"></div>
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">📅 月度收入 / 邊際貢獻 / 利潤趨勢</div>
+    <div class="chart-wrap h260"><canvas id="ch-trend-main"></canvas></div>
+  </div>
+  <div class="col-2">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📊 月度 CM 率（含評等色彩）</div>
+      <div class="chart-wrap h240"><canvas id="ch-trend-cm"></canvas></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📋 月度績效摘要</div>
+      <div style="overflow-x:auto">
+        <table class="data-table"><thead><tr>
+          <th>月份</th><th>收入(萬)</th><th>邊際貢獻(萬)</th><th>CM率</th><th>利潤(萬)</th><th>月增率</th>
+        </tr></thead><tbody id="trend-table-body"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T12 — 風險儀表板 ════ -->
+<div id="t12" class="tab-content">
+  <div class="col-2 mb-4">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">🎯 風險矩陣（衝擊 × 機率）</div>
+      <div id="risk-matrix-container"></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📋 風險事件清單（含應對措施）</div>
+      <div style="overflow-x:auto">
+        <table class="data-table"><thead><tr>
+          <th>風險事件</th><th>機率</th><th>衝擊</th><th>等級</th><th>分類</th><th>應對措施</th>
+        </tr></thead><tbody id="risk-table-body"></tbody></table>
+      </div>
+    </div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">🎲 蒙地卡羅利潤模擬（常態分佈 n=10,000）</div>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;flex-wrap:wrap">
+      <label style="font-size:12px;color:var(--text-secondary)">收入不確定性：±<input type="range" id="mc-rev-std" min="5" max="35" value="15" style="width:120px;vertical-align:middle" oninput="document.getElementById('mc-rev-lbl').textContent=this.value+'%'">
+        <span id="mc-rev-lbl" style="color:var(--sky-lt)">15%</span></label>
+      <label style="font-size:12px;color:var(--text-secondary)">成本不確定性：±<input type="range" id="mc-cost-std" min="5" max="25" value="10" style="width:120px;vertical-align:middle" oninput="document.getElementById('mc-cost-lbl').textContent=this.value+'%'">
+        <span id="mc-cost-lbl" style="color:var(--amber)">10%</span></label>
+      <button class="btn-primary" onclick="runMonteCarloUI()">▶ 執行模擬</button>
+    </div>
+    <div class="kpi-grid-3 mb-4" id="mc-kpis"></div>
+    <div class="sec-hd" style="font-size:13px">利潤分布直方圖（紅色=虧損，紫色=盈利）</div>
+    <div class="chart-wrap h240"><canvas id="ch-mc-hist"></canvas></div>
+  </div>
+</div>
+
+<!-- ════ T13 — 資料管理 ════ -->
+<div id="t13" class="tab-content">
+  <div class="col-2 mb-4">
+    <div class="glass" style="padding:24px">
+      <div class="sec-hd">📁 Excel 資料匯入</div>
+      <div class="upload-zone" id="drop-zone"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleDrop(event)">
+        <div style="font-size:36px;margin-bottom:8px">📥</div>
+        <div style="font-size:14px;font-weight:700;color:var(--sky-lt);margin-bottom:6px">拖曳 Excel 至此，或用右側按鈕匯入</div>
+        <div style="font-size:11px;color:var(--text-muted)">支援格式：.xlsx / .xls</div>
+      </div>
+      <div style="margin-top:14px;padding:14px;background:rgba(0,0,0,0.25);border-radius:10px;font-size:11px;color:var(--text-muted);line-height:2">
+        <b style="color:var(--sky-lt)">Product_Mix</b> · <b style="color:var(--sky-lt)">Parameters</b> · <b style="color:var(--sky-lt)">Investment</b> · <b style="color:var(--sky-lt)">Capital_Efficiency</b> ·
+        <b style="color:var(--sky-lt)">Monthly_Trend</b> · <b style="color:var(--sky-lt)">Risk_Parameters</b> ·
+        <b style="color:var(--emerald)">Budget_Data</b> · <b style="color:var(--emerald)">CashFlow_Params</b> · <b style="color:var(--emerald)">YoY_Comparison</b> · <b style="color:var(--emerald)">Scenario_Weights</b>
+        <span style="color:var(--emerald)">（綠色為 V4 新增，其餘為 V3 相容）</span>
+      </div>
+    </div>
+    <div class="glass" style="padding:24px">
+      <div class="sec-hd">💾 匯出與系統操作</div>
+      <div class="stack">
+        <button class="btn-secondary" onclick="exportStateJSON()" style="padding:12px;font-size:13px">📤 匯出完整狀態（JSON）</button>
+        <button class="btn-secondary" onclick="exportExcelSnapshot()" style="padding:12px;font-size:13px">📊 匯出分析快照（Excel）</button>
+        <button class="btn-secondary" onclick="resetState();fullRender();showToast('✅ 已還原預設資料','ok')" style="padding:12px;font-size:13px">🔄 還原內建範例資料</button>
+        <button class="btn-secondary" onclick="window.print()" style="padding:12px;font-size:13px">🖨 列印為 PDF</button>
+      </div>
+      <div style="margin-top:20px">
+        <div style="font-size:12px;font-weight:700;color:var(--violet-lt);margin-bottom:8px">📊 當前資料狀態</div>
+        <div id="data-status" style="font-size:12px;color:var(--text-muted);line-height:2"></div>
+      </div>
+    </div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">📜 操作日誌</div>
+    <div id="change-log" style="max-height:200px;overflow-y:auto;font-size:11px;color:var(--text-muted);line-height:2"></div>
+  </div>
+</div>
+
+<!-- ════ T14 — 預算差異分析（V4 新增）════ -->
+<div id="t14" class="tab-content">
+  <div class="kpi-grid-4 mb-4" id="bv-kpis"></div>
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">📊 差異瀑布圖（預算 vs 實際）</div>
+    <div class="chart-wrap h260"><canvas id="ch-bv-waterfall"></canvas></div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">📋 產品別差異明細</div>
+    <div style="overflow-x:auto"><table class="data-table" id="bv-table"></table></div>
+  </div>
+</div>
+
+<!-- ════ T15 — 現金流預測（V4 新增）════ -->
+<div id="t15" class="tab-content">
+  <div class="kpi-grid-4 mb-4" id="cf-kpis"></div>
+  <div class="glass mb-4" style="padding:20px" id="cf-alerts"></div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">💧 12 個月滾動現金流預測</div>
+    <div class="chart-wrap h300"><canvas id="ch-cf-forecast"></canvas></div>
+  </div>
+</div>
+
+<!-- ════ T16 — 龍捲風敏感性圖（V4 新增）════ -->
+<div id="t16" class="tab-content">
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">🌀 龍捲風圖 — 各變數對利潤敏感性</div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:12px;color:var(--text-secondary)">測試幅度：±<input type="number" id="tornado-delta" value="10" min="5" max="30" style="width:60px;padding:4px;background:rgba(0,0,0,0.3);border:1px solid var(--glass-border);border-radius:4px;color:var(--text-primary)">%
+        <button class="btn-secondary" style="margin-left:8px" onclick="renderT16()">更新</button>
+      </label>
+    </div>
+    <div id="tornado-chart"></div>
+    <div id="tornado-insight" style="margin-top:16px"></div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">📊 敏感性排行（長條圖）</div>
+    <div class="chart-wrap h280"><canvas id="ch-tornado"></canvas></div>
+  </div>
+</div>
+
+<!-- ════ T17 — CM 矩陣（BCG）（V4 新增）════ -->
+<div id="t17" class="tab-content">
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">🗺 邊際貢獻矩陣（BCG 四象限）</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">X 軸 = 邊際貢獻率（%）｜Y 軸 = 收入佔比（%）｜氣泡大小 = 銷量</div>
+    <div class="chart-wrap h360"><canvas id="ch-bcg"></canvas></div>
+    <div id="bcg-legend"></div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">📋 產品分類說明與建議</div>
+    <div style="overflow-x:auto"><table class="data-table" id="bcg-table"></table></div>
+  </div>
+</div>
+
+<!-- ════ T18 — 多年度比較 YoY（V4 新增）════ -->
+<div id="t18" class="tab-content">
+  <div id="yoy-nodata" class="glass" style="padding:40px;text-align:center">
+    <div style="font-size:40px;margin-bottom:12px">📆</div>
+    <div style="font-size:16px;font-weight:700;color:var(--sky-lt);margin-bottom:8px">尚未匯入多年度資料</div>
+    <div style="font-size:13px;color:var(--text-muted)">請在 Excel 中新增 <b>YoY_Comparison</b> 工作表，欄位：年度、月份、總收入（元）、邊際貢獻（元）、營業利潤（元）</div>
+  </div>
+  <div id="yoy-charts" style="display:none">
+    <div class="kpi-grid-4 mb-4" id="yoy-kpis"></div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📆 多年度收入 / 邊際貢獻 / 利潤比較</div>
+      <div class="chart-wrap h300"><canvas id="ch-yoy"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T19 — AI 決策摘要報告（V4 新增）════ -->
+<div id="t19" class="tab-content">
+  <div id="ai-report"></div>
+</div>
+
+</main><!-- end main-content -->
+
+<!-- Toast 通知 -->
+<div id="toast" role="alert" aria-live="polite"></div>
+
+<!-- ═════════════════════════════════════════════
+     全局 JavaScript 協調器（renderTab 分發器）
+═════════════════════════════════════════════ -->
+<script>
+/* ═══ 頁籤渲染分發器 ═══ */
+function renderTab(id) {
+  switch(id) {
+    case 't1':  renderT1();   break;
+    case 't2':  renderT2();   break;
+    case 't3':  renderT3();   document.getElementById('total-cm') && (document.getElementById('total-cm').textContent = fmt2(runEngine().totalCM)); break;
+    case 't4':  renderT4();   break;
+    case 't5':  renderT5();   break;
+    case 't6':  renderT6();   break;
+    case 't7':  /* 等待使用者操作 */ break;
+    case 't8':  renderT8();   break;
+    case 't9':  renderT9();   break;
+    case 't10': renderT10();  break;
+    case 't11': renderT11();  break;
+    case 't12': renderT12();  break;
+    case 't13': renderT13();  break;
+    case 't14': renderT14();  break;
+    case 't15': renderT15();  break;
+    case 't16': renderT16();  break;
+    case 't17': renderT17();  break;
+    case 't18': renderT18();  break;
+    case 't19': renderT19();  break;
+  }
+}
+
+/* ═══ 行動裝置選單按鈕顯隱 ═══ */
+function _checkMobile() {
+  const menuBtn = document.getElementById('menu-btn');
+  if (menuBtn) menuBtn.style.display = window.innerWidth <= 900 ? '' : 'none';
+}
+window.addEventListener('resize', _checkMobile);
+</script>
+
+<!-- ─── Assets JS（順序不可顛倒）─── -->
+<script src="assets/state.js"></script>
+<script src="assets/engine.js"></script>
+<script src="assets/utils.js"></script>
+<script src="assets/charts.js"></script>
+<script src="assets/import-export.js"></script>
+
+<!-- ─── Tab JS ─── -->
+<script src="tabs/t1-overview.js"></script>
+<script src="tabs/t2-t4.js"></script>
+<script src="tabs/t5-t8.js"></script>
+<script src="tabs/t9-t13.js"></script>
+<script src="tabs/t14-t19-new.js"></script>
+
+<!-- ─── 啟動 ─── -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  /* 從 localStorage 恢復狀態（若有）*/
+  loadState();
+
+  /* 套用已儲存主題 */
+  document.documentElement.setAttribute('data-theme', AppState.theme);
+  const themeBtn = document.getElementById('theme-btn');
+  if (themeBtn) themeBtn.textContent = AppState.theme === 'dark' ? '☀ 亮色' : '🌙 暗色';
+
+  /* 初始化導覽面板 */
+  initNav();
+  _checkMobile();
+
+  /* 更新頁首 */
+  updateHeader();
+
+  /* 初始渲染第一個頁籤 */
+  logChange('CVP V4.0 系統初始化完成');
+  renderT1();
+});
+</script>
+
+</body>
+</html>
