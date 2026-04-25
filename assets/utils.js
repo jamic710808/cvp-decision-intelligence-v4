@@ -8,7 +8,7 @@ const fmt0 = v => Math.round(v).toLocaleString('zh-TW');
 /** 一位小數 */
 const fmt1 = v => (+v).toLocaleString('zh-TW', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 /** 兩位小數（萬元用）*/
-const fmt2 = v => (Math.round(v * 10) / 10).toFixed(1);
+const fmt2 = v => (v != null && !isNaN(v)) ? Number(v).toFixed(2) : '—';
 /** 百分比一位小數 */
 const pct1 = v => (v * 100).toFixed(1) + '%';
 /** 百分比零位小數 */

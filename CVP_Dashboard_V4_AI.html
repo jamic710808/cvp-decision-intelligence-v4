@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CVP 量利投一體化決策系統 V4.0 + AI</title>
+<meta name="description" content="Cost-Volume-Profit Decision Intelligence System v4.0 — 19 個決策模組、雙主題、AI 分析模組">
+
+<!-- CDN 套件 -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<!-- V4 全局樣式 -->
+<link rel="stylesheet" href="assets/style.css">
+
+<!-- ═══ AI 模組樣式 ═══ -->
+<style>
+/* ── AI 側邊面板 ── */
+.ai-panel {
+  position: fixed; top: 0; right: -460px; width: 440px; height: 100vh;
+  background: rgba(15,23,42,0.97);
+  border-left: 1px solid rgba(99,102,241,0.25);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  display: flex; flex-direction: column; z-index: 9999;
+  transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
+  font-family: 'Segoe UI','PingFang TC','Microsoft JhengHei',sans-serif;
+}
+.ai-panel.open { right: 0; }
+[data-theme="light"] .ai-panel {
+  background: rgba(250,248,245,0.97);
+  border-left: 1px solid rgba(99,102,241,0.18);
+}
+#main-content.ai-open { margin-right: 440px; transition: margin-right 0.3s; }
+
+/* ── 展開按鈕 ── */
+#ai-panel-toggle {
+  position: fixed; right: 0; top: 50%; transform: translateY(-50%);
+  width: 28px; height: 72px; z-index: 10000;
+  background: linear-gradient(180deg,#7c3aed,#4f46e5);
+  border: none; border-radius: 8px 0 0 8px;
+  color: #fff; cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: -2px 0 12px rgba(99,102,241,0.3);
+  transition: width 0.2s, background 0.2s;
+}
+#ai-panel-toggle:hover { width: 34px; background: linear-gradient(180deg,#6d28d9,#4338ca); }
+
+/* ── 面板頭部 ── */
+.ai-panel-header {
+  padding: 16px 18px 12px; border-bottom: 1px solid rgba(99,102,241,0.2);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.ai-panel-title {
+  font-size: 15px; font-weight: 700;
+  background: linear-gradient(90deg,#a78bfa,#60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.ai-close-btn {
+  background: none; border: none; color: #94a3b8; cursor: pointer;
+  font-size: 20px; line-height: 1; padding: 2px 6px; border-radius: 4px;
+}
+.ai-close-btn:hover { color: #e2e8f0; background: rgba(255,255,255,0.08); }
+
+/* ── 狀態徽章 ── */
+.ai-status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; padding: 3px 10px; border-radius: 20px;
+  font-weight: 600; letter-spacing: 0.5px;
+}
+.ai-status-badge.idle   { background: rgba(100,116,139,0.2); color: #94a3b8; }
+.ai-status-badge.ready  { background: rgba(16,185,129,0.15); color: #34d399; }
+.ai-status-badge.stream { background: rgba(99,102,241,0.2);  color: #a78bfa;
+  animation: ai-pulse 1.4s ease-in-out infinite; }
+.ai-status-badge.error  { background: rgba(239,68,68,0.15);  color: #f87171; }
+@keyframes ai-pulse { 0%,100%{opacity:1} 50%{opacity:0.55} }
+
+/* ── 設定區塊 ── */
+.ai-config-section { padding: 12px 18px; border-bottom: 1px solid rgba(99,102,241,0.15); flex-shrink: 0; }
+.ai-config-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.ai-config-row label { font-size: 11px; color: #94a3b8; white-space: nowrap; min-width: 52px; }
+.ai-config-row select, .ai-config-row input[type=text], .ai-config-row input[type=number] {
+  flex: 1; background: rgba(0,0,0,0.35); border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 6px; color: #e2e8f0; font-size: 12px; padding: 5px 8px; outline: none;
+}
+.ai-config-row select:focus, .ai-config-row input:focus { border-color: #7c3aed; }
+[data-theme="light"] .ai-config-row select,
+[data-theme="light"] .ai-config-row input { background: rgba(255,255,255,0.8); color: #1e293b; }
+.ai-key-wrap { position: relative; flex: 1; }
+.ai-key-wrap input { width: 100%; padding-right: 32px; }
+.ai-key-eye { position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: #64748b; cursor: pointer; font-size: 13px; }
+.ai-advanced { font-size: 11px; color: #7c3aed; cursor: pointer; text-decoration: underline; }
+.ai-advanced-body { display: none; margin-top: 6px; }
+.ai-advanced-body.open { display: block; }
+
+/* ── 訊息區 ── */
+.ai-messages {
+  flex: 1; overflow-y: auto; padding: 14px 18px; display: flex; flex-direction: column; gap: 12px;
+}
+.ai-messages::-webkit-scrollbar { width: 4px; }
+.ai-messages::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 2px; }
+.ai-msg { padding: 10px 13px; border-radius: 10px; font-size: 13px; line-height: 1.65; max-width: 100%; }
+.ai-msg.user {
+  background: linear-gradient(135deg,rgba(99,102,241,0.25),rgba(124,58,237,0.2));
+  border: 1px solid rgba(99,102,241,0.3); align-self: flex-end; max-width: 88%;
+  color: #e2e8f0;
+}
+.ai-msg.assistant {
+  background: rgba(30,41,59,0.7); border: 1px solid rgba(255,255,255,0.07);
+  color: #cbd5e1; align-self: flex-start;
+}
+[data-theme="light"] .ai-msg.user { color: #1e293b; }
+[data-theme="light"] .ai-msg.assistant { background: rgba(241,245,249,0.9); border-color: rgba(0,0,0,0.08); color: #334155; }
+.ai-msg.assistant table { border-collapse: collapse; width: 100%; font-size: 12px; margin: 8px 0; }
+.ai-msg.assistant th { background: rgba(99,102,241,0.2); padding: 5px 8px; text-align: left; }
+.ai-msg.assistant td { border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px; }
+.ai-msg.assistant code { background: rgba(0,0,0,0.35); padding: 1px 5px; border-radius: 3px; font-size: 11px; font-family: monospace; }
+.ai-msg.assistant pre { background: rgba(0,0,0,0.4); border-radius: 6px; padding: 10px; overflow-x: auto; margin: 6px 0; }
+.ai-msg.assistant pre code { background: none; padding: 0; }
+.ai-msg.assistant h3 { color: #a78bfa; font-size: 13px; margin: 8px 0 4px; }
+.ai-msg.assistant ul, .ai-msg.assistant ol { padding-left: 18px; margin: 4px 0; }
+.ai-msg.assistant li { margin: 2px 0; }
+.ai-msg.assistant strong { color: #93c5fd; }
+.ai-msg.assistant hr { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 8px 0; }
+[data-theme="light"] .ai-msg.assistant td { border-color: rgba(0,0,0,0.1); }
+[data-theme="light"] .ai-msg.assistant code { background: rgba(0,0,0,0.08); color: #4338ca; }
+[data-theme="light"] .ai-msg.assistant strong { color: #2563eb; }
+
+/* ── 標籤分析按鈕 ── */
+.ai-tab-bar { padding: 8px 18px; border-top: 1px solid rgba(99,102,241,0.15); flex-shrink: 0; }
+.ai-tab-btns { display: flex; flex-wrap: wrap; gap: 4px; }
+.btn-ai-tab {
+  font-size: 11px; padding: 4px 9px; border-radius: 6px; cursor: pointer;
+  background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.25);
+  color: #a78bfa; transition: background 0.15s;
+}
+.btn-ai-tab:hover { background: rgba(99,102,241,0.28); color: #c4b5fd; }
+
+/* ── 輸入區 ── */
+.ai-input-section { padding: 12px 18px; border-top: 1px solid rgba(99,102,241,0.15); flex-shrink: 0; }
+.ai-input-row { display: flex; gap: 6px; }
+.ai-input-row textarea {
+  flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 8px; color: #e2e8f0; font-size: 13px; padding: 8px 10px;
+  resize: none; outline: none; font-family: inherit; min-height: 58px; max-height: 140px;
+}
+.ai-input-row textarea:focus { border-color: #7c3aed; }
+[data-theme="light"] .ai-input-row textarea { background: rgba(255,255,255,0.8); color: #1e293b; border-color: rgba(99,102,241,0.3); }
+.ai-send-btn {
+  width: 42px; height: 42px; border-radius: 8px; border: none; cursor: pointer;
+  background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff;
+  font-size: 18px; align-self: flex-end; flex-shrink: 0;
+  transition: transform 0.15s, opacity 0.15s;
+}
+.ai-send-btn:hover { transform: scale(1.06); }
+.ai-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.ai-actions { display: flex; gap: 6px; margin-top: 7px; }
+.ai-act-btn {
+  font-size: 10px; padding: 3px 8px; border-radius: 4px; cursor: pointer;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #64748b;
+}
+.ai-act-btn:hover { color: #94a3b8; background: rgba(255,255,255,0.1); }
+
+/* ── 嵌入 tab 的 AI 按鈕 ── */
+.sec-hd-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.sec-hd-row .sec-hd { margin-bottom: 0; }
+.btn-inline-ai {
+  font-size: 11px; padding: 4px 10px; border-radius: 6px; cursor: pointer;
+  background: linear-gradient(135deg,rgba(124,58,237,0.2),rgba(79,70,229,0.2));
+  border: 1px solid rgba(99,102,241,0.35); color: #a78bfa;
+  white-space: nowrap; flex-shrink: 0;
+}
+.btn-inline-ai:hover { background: linear-gradient(135deg,rgba(124,58,237,0.35),rgba(79,70,229,0.35)); }
+
+/* ── T19 AI Hub ── */
+.ai-hub-banner {
+  background: linear-gradient(135deg,rgba(99,102,241,0.15),rgba(124,58,237,0.1));
+  border: 1px solid rgba(99,102,241,0.25); border-radius: 14px;
+  padding: 28px 32px; text-align: center; margin-bottom: 20px;
+}
+.ai-hub-cards { display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 14px; margin-bottom: 20px; }
+.ai-hub-card {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px; padding: 16px; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+}
+.ai-hub-card:hover { border-color: rgba(99,102,241,0.4); background: rgba(99,102,241,0.08); }
+[data-theme="light"] .ai-hub-card { background: rgba(99,102,241,0.04); border-color: rgba(99,102,241,0.15); }
+[data-theme="light"] .ai-hub-card:hover { background: rgba(99,102,241,0.1); }
+</style>
+</head>
+<body>
+
+<!-- ═════════════════════════════════════════════
+     頁首 Header（sticky）
+═════════════════════════════════════════════ -->
+<header id="app-header">
+  <div style="max-width:1800px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <div style="display:flex;align-items:center;gap:14px">
+      <svg width="40" height="40" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+        <circle cx="22" cy="22" r="22" fill="url(#logo-grad)"/>
+        <path d="M10 32 L22 12 L34 32" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M14 26 L30 26" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="logo-grad" x1="0" y1="0" x2="44" y2="44">
+            <stop offset="0%" stop-color="#0ea5e9"/>
+            <stop offset="100%" stop-color="#8b5cf6"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div>
+        <div style="font-size:18px;font-weight:900;background:linear-gradient(90deg,#38bdf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent">CVP 量利投一體化決策系統</div>
+        <div style="font-size:10px;color:var(--text-muted);letter-spacing:2px">COST · VOLUME · PROFIT · DECISION INTELLIGENCE v4.0 + AI</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <div id="hdr-company" style="font-size:13px;color:var(--text-secondary)">公司：<span style="color:var(--sky-lt);font-weight:700">範例科技股份有限公司</span></div>
+      <div id="hdr-period"  style="font-size:12px;color:var(--text-muted)">期間：<span style="color:var(--violet-lt)">2026 年度</span></div>
+      <div id="hdr-updated" style="font-size:11px;color:var(--text-dim)">更新：<span id="last-update">—</span></div>
+      <label class="btn-primary" style="padding:7px 14px;cursor:pointer">
+        ⬆ 匯入 Excel
+        <input type="file" id="excel-upload" accept=".xlsx,.xls" style="display:none" onchange="handleExcelUpload(event)">
+      </label>
+      <button class="btn-secondary" onclick="exportStateJSON()">⬇ 匯出 JSON</button>
+      <button id="theme-btn" class="btn-secondary" onclick="toggleTheme()">☀ 亮色</button>
+      <button class="btn-secondary" id="menu-btn" onclick="toggleSidebar()" style="display:none" aria-label="開啟選單">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═════════════════════════════════════════════
+     左側分類面板導覽
+═════════════════════════════════════════════ -->
+<nav id="nav-sidebar" aria-label="功能導覽">
+  <div class="nav-group open">
+    <button class="nav-group-btn">📊 基礎分析 <span class="arrow">▶</span></button>
+    <div class="nav-group-items">
+      <button class="nav-item active" data-tab="t1" onclick="switchTab('t1')">🏠 執行長總覽</button>
+      <button class="nav-item" data-tab="t2" onclick="switchTab('t2')">💰 管理損益表</button>
+      <button class="nav-item" data-tab="t3" onclick="switchTab('t3')">📈 CVP 靜態分析</button>
+    </div>
+  </div>
+  <div class="nav-group">
+    <button class="nav-group-btn">🎛 模擬決策 <span class="arrow">▶</span></button>
+    <div class="nav-group-items">
+      <button class="nav-item" data-tab="t4" onclick="switchTab('t4')">🎛 動態情境模擬器</button>
+      <button class="nav-item" data-tab="t5" onclick="switchTab('t5')">🔀 多情境平行比較</button>
+      <button class="nav-item" data-tab="t7" onclick="switchTab('t7')">🎯 AI 目標搜尋</button>
+      <button class="nav-item" data-tab="t16" onclick="switchTab('t16')">🌀 龍捲風敏感性圖 <span class="badge-new">V4</span></button>
+    </div>
+  </div>
+  <div class="nav-group">
+    <button class="nav-group-btn">💼 投資與資金 <span class="arrow">▶</span></button>
+    <div class="nav-group-items">
+      <button class="nav-item" data-tab="t6" onclick="switchTab('t6')">💼 投資 ROI 分析</button>
+      <button class="nav-item" data-tab="t10" onclick="switchTab('t10')">🏦 資金效率（杜邦）</button>
+      <button class="nav-item" data-tab="t15" onclick="switchTab('t15')">💧 現金流預測 <span class="badge-new">V4</span></button>
+    </div>
+  </div>
+  <div class="nav-group">
+    <button class="nav-group-btn">🧩 產品策略 <span class="arrow">▶</span></button>
+    <div class="nav-group-items">
+      <button class="nav-item" data-tab="t8" onclick="switchTab('t8')">⚡ 經營槓桿度</button>
+      <button class="nav-item" data-tab="t9" onclick="switchTab('t9')">🧩 產品組合優化器</button>
+      <button class="nav-item" data-tab="t17" onclick="switchTab('t17')">🗺 CM 矩陣（BCG） <span class="badge-new">V4</span></button>
+    </div>
+  </div>
+  <div class="nav-group">
+    <button class="nav-group-btn">📅 趨勢比較 <span class="arrow">▶</span></button>
+    <div class="nav-group-items">
+      <button class="nav-item" data-tab="t11" onclick="switchTab('t11')">📅 月度趨勢追蹤</button>
+      <button class="nav-item" data-tab="t14" onclick="switchTab('t14')">📐 預算差異分析 <span class="badge-new">V4</span></button>
+      <button class="nav-item" data-tab="t18" onclick="switchTab('t18')">📆 多年度比較（YoY） <span class="badge-new">V4</span></button>
+    </div>
+  </div>
+  <div class="nav-group">
+    <button class="nav-group-btn">⚠ 風險與報告 <span class="arrow">▶</span></button>
+    <div class="nav-group-items">
+      <button class="nav-item" data-tab="t12" onclick="switchTab('t12')">⚠ 風險儀表板</button>
+      <button class="nav-item" data-tab="t19" onclick="switchTab('t19')">📄 AI 決策摘要 <span class="badge-new">V4</span></button>
+    </div>
+  </div>
+  <div class="nav-group">
+    <button class="nav-group-btn">📁 資料管理 <span class="arrow">▶</span></button>
+    <div class="nav-group-items">
+      <button class="nav-item" data-tab="t13" onclick="switchTab('t13')">📁 資料管理中心</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═════════════════════════════════════════════
+     主內容區
+═════════════════════════════════════════════ -->
+<main id="main-content">
+
+<!-- ════ T1 — 執行長總覽 ════ -->
+<div id="t1" class="tab-content active">
+  <div class="kpi-grid-4 mb-4" id="kpi-grid"></div>
+  <div class="col-2 mb-4">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📊 收入結構 vs 邊際貢獻</div>
+      <div class="chart-wrap h220"><canvas id="ch-overview"></canvas></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">🎯 產品組合貢獻</div>
+      <div class="chart-wrap h220"><canvas id="ch-donut"></canvas></div>
+    </div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">🔔 即時警示中心</div>
+    <div id="alert-center"></div>
+  </div>
+</div>
+
+<!-- ════ T2 — 管理損益表 ════ -->
+<div id="t2" class="tab-content">
+  <div class="glass mb-4" style="padding:22px">
+    <div class="sec-hd">💰 管理損益表（邊際貢獻法）</div>
+    <div style="overflow-x:auto"><table class="data-table" id="pl-table"></table></div>
+  </div>
+  <div class="col-2">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📊 損益結構瀑布圖</div>
+      <div class="chart-wrap h240"><canvas id="ch-waterfall"></canvas></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">🍩 成本結構分析</div>
+      <div class="chart-wrap h240"><canvas id="ch-cost-struct"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T3 — CVP 靜態分析 ════ -->
+<div id="t3" class="tab-content">
+  <div class="kpi-grid-3 mb-4">
+    <div class="kpi-card"><div class="kpi-label">損益平衡點（金額）</div><div class="kpi-val" id="bep-rev">—</div><div class="kpi-sub">萬元</div></div>
+    <div class="kpi-card"><div class="kpi-label">安全邊際率</div><div class="kpi-val" id="safety-m">—</div><div class="kpi-sub">%</div></div>
+    <div class="kpi-card"><div class="kpi-label">邊際貢獻總額</div><div class="kpi-val" id="total-cm">—</div><div class="kpi-sub">萬元</div></div>
+  </div>
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">📈 CVP 損益平衡圖（0% ~ 180% 銷量）</div>
+    <div class="chart-wrap h280"><canvas id="ch-cvp"></canvas></div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">🏷 產品貢獻明細</div>
+    <div style="overflow-x:auto"><table class="data-table" id="product-table"></table></div>
+  </div>
+</div>
+
+<!-- ════ T4 — 動態情境模擬器 ════ -->
+<div id="t4" class="tab-content">
+  <div class="col-1-3">
+    <div class="stack">
+      <div class="glass" style="padding:20px">
+        <div class="sec-hd">🎛 參數操控塔</div>
+        <div style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:4px"><span>售價調整 (Price)</span><span id="price-lbl" style="color:var(--sky-lt);font-family:monospace">0%</span></div>
+          <input type="range" id="price-slider" min="-30" max="50" value="0" oninput="simUpdate()">
+        </div>
+        <div style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:4px"><span>銷量調整 (Volume)</span><span id="vol-lbl" style="color:var(--emerald);font-family:monospace">0%</span></div>
+          <input type="range" id="vol-slider" min="-50" max="100" value="0" oninput="simUpdate()">
+        </div>
+        <div style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:4px"><span>單變成本調整 (VC)</span><span id="vc-lbl" style="color:var(--amber);font-family:monospace">0%</span></div>
+          <input type="range" id="vc-slider" min="-20" max="30" value="0" oninput="simUpdate()">
+        </div>
+        <div style="margin-bottom:16px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:4px"><span>固定成本調整 (FC)</span><span id="fc-lbl" style="color:var(--red);font-family:monospace">0%</span></div>
+          <input type="range" id="fc-slider" min="-20" max="30" value="0" oninput="simUpdate()">
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-secondary" onclick="simReset()" style="flex:1">🔄 重置</button>
+          <button class="btn-success" onclick="addScenario()" style="flex:1">💾 儲存情境</button>
+        </div>
+      </div>
+      <div class="glass" style="padding:20px">
+        <div class="sec-hd">⚡ 敏感係數分析</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-bottom:10px">數值越大，對利潤的槓桿效應越強</div>
+        <div id="sensitivity-factors"></div>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="kpi-grid-4" id="sim-kpis"></div>
+      <div class="glass" style="padding:20px;flex:1">
+        <div class="sec-hd">📈 模擬 vs 基準比較</div>
+        <div class="chart-wrap h360"><canvas id="ch-sim"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T5 — 多情境平行比較 ════ -->
+<div id="t5" class="tab-content">
+  <div class="kpi-card mb-4" id="expected-profit" style="max-width:320px"></div>
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">🔀 多情境平行比較（含機率加權）</div>
+    <div style="overflow-x:auto">
+      <table class="data-table" id="scenario-table">
+        <thead><tr>
+          <th>情境</th><th>機率</th><th>銷量%</th><th>單價%</th>
+          <th>總收入(萬)</th><th>邊際貢獻(萬)</th><th>CM率</th>
+          <th>利潤(萬)</th><th>利潤變動</th><th>操作</th>
+        </tr></thead>
+        <tbody id="scenario-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-2">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📊 情境利潤對比</div>
+      <div class="chart-wrap h260"><canvas id="ch-scenario"></canvas></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">🕸 核心指標雷達圖</div>
+      <div class="chart-wrap h260"><canvas id="ch-scenario-radar"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T6 — 投資 ROI ════ -->
+<div id="t6" class="tab-content">
+  <div class="kpi-grid-4 mb-4" id="inv-kpis"></div>
+  <div class="col-2 mb-4">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📊 現金流量瀑布圖</div>
+      <div class="chart-wrap h260"><canvas id="ch-cf"></canvas></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📈 累計現金流（回收期）</div>
+      <div class="chart-wrap h260"><canvas id="ch-payback"></canvas></div>
+    </div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">📉 NPV 對 WACC 敏感度分析</div>
+    <div class="chart-wrap h240"><canvas id="ch-npv-sens"></canvas></div>
+  </div>
+</div>
+
+<!-- ════ T7 — AI 目標搜尋 ════ -->
+<div id="t7" class="tab-content">
+  <div class="glass mb-4" style="padding:24px">
+    <div class="sec-hd">🎯 AI 目標搜尋引擎（二分法 120 次迭代）</div>
+    <div class="col-3" style="margin-bottom:14px">
+      <div>
+        <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">目標類型</label>
+        <select id="gs-target-type" class="form-select">
+          <option value="profit">目標利潤（萬元）</option>
+          <option value="margin">目標邊際貢獻率（%）</option>
+          <option value="safety">目標安全邊際率（%）</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">目標值</label>
+        <input type="number" id="gs-target-val" placeholder="例：2000" class="form-input">
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">調整變數</label>
+        <select id="gs-var" class="form-select">
+          <option value="vol">銷量變動 %</option>
+          <option value="price">單價變動 %</option>
+          <option value="vc">變動成本變動 %</option>
+          <option value="fc">固定成本變動 %</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="runGoalSeekUI()">🤖 執行 AI 搜尋</button>
+  </div>
+  <div class="glass" style="padding:20px" id="gs-result">
+    <div style="color:var(--text-muted);font-size:13px">🤖 點擊「執行 AI 搜尋」查看建議方案</div>
+  </div>
+</div>
+
+<!-- ════ T8 — 經營槓桿度 ════ -->
+<div id="t8" class="tab-content">
+  <div class="kpi-grid-3 mb-4">
+    <div class="kpi-card"><div class="kpi-label">經營槓桿度（DOL）</div><div class="kpi-val" id="dol-val">—</div><div class="kpi-sub">銷量↑1% → 利潤↑ <span id="dol-impact">—</span>%</div></div>
+    <div class="kpi-card"><div class="kpi-label">邊際貢獻總額</div><div class="kpi-val success" id="dol-cm">—</div><div class="kpi-sub">萬元</div></div>
+    <div class="kpi-card"><div class="kpi-label">營業利潤</div><div class="kpi-val" id="dol-profit">—</div><div class="kpi-sub">萬元</div></div>
+  </div>
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">⚡ DOL 動態分析 — 銷量 vs 利潤放大效果</div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:12px;color:var(--text-secondary)">銷量情境範圍：
+        <input type="range" id="dol-range" min="10" max="80" value="30" style="width:140px;vertical-align:middle" oninput="document.getElementById('dol-range-lbl').textContent=this.value+'%';renderDOL()">
+        <span id="dol-range-lbl" style="color:var(--sky-lt)">30%</span></label>
+    </div>
+    <div class="chart-wrap h260"><canvas id="ch-dol"></canvas></div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">📋 各產品槓桿貢獻分析</div>
+    <div style="overflow-x:auto">
+      <table class="data-table"><thead><tr>
+        <th>產品</th><th>邊際貢獻(萬)</th><th>CM率</th><th>對總CM貢獻%</th><th>槓桿敏感度</th>
+      </tr></thead><tbody id="dol-table-body"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T9 — 產品組合優化器 ════ -->
+<div id="t9" class="tab-content">
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">🧩 產品組合優化（啟發式 + 產能約束）</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">以邊際貢獻最大化為目標，在產能與最低銷量限制下求最佳銷售組合。</div>
+    <button class="btn-success" onclick="runOptimizerUI()">⚙ 執行優化計算</button>
+    <div class="kpi-grid-4 mb-4" id="opt-kpis" style="margin-top:16px"></div>
+  </div>
+  <div class="col-2">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📊 最佳 vs 現行組合比較</div>
+      <div class="chart-wrap h280"><canvas id="ch-opt"></canvas></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📋 優化方案明細</div>
+      <div style="overflow-x:auto">
+        <table class="data-table"><thead><tr>
+          <th>產品</th><th>現行銷量</th><th>最佳銷量</th><th>差異</th><th>CM/件(萬)</th><th>貢獻增益(萬)</th>
+        </tr></thead><tbody id="opt-table-body"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T10 — 資金效率（杜邦分析）════ -->
+<div id="t10" class="tab-content">
+  <div class="kpi-grid-4 mb-4" id="cap-kpis"></div>
+  <div class="glass mb-4" style="padding:24px">
+    <div class="sec-hd">🏦 杜邦分析樹（ROE = 利潤率 × 資產周轉 × 財務槓桿）</div>
+    <div id="dupont-tree" style="overflow-x:auto"></div>
+  </div>
+  <div class="col-2">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📊 資金效率 vs 行業基準（雷達圖）</div>
+      <div class="chart-wrap h280"><canvas id="ch-cap-radar"></canvas></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📈 月度年化 ROE 趨勢</div>
+      <div class="chart-wrap h280"><canvas id="ch-roe-decomp"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T11 — 月度趨勢 ════ -->
+<div id="t11" class="tab-content">
+  <div class="kpi-grid-4 mb-4" id="trend-kpis"></div>
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">📅 月度收入 / 邊際貢獻 / 利潤趨勢</div>
+    <div class="chart-wrap h260"><canvas id="ch-trend-main"></canvas></div>
+  </div>
+  <div class="col-2">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📊 月度 CM 率（含評等色彩）</div>
+      <div class="chart-wrap h240"><canvas id="ch-trend-cm"></canvas></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📋 月度績效摘要</div>
+      <div style="overflow-x:auto">
+        <table class="data-table"><thead><tr>
+          <th>月份</th><th>收入(萬)</th><th>邊際貢獻(萬)</th><th>CM率</th><th>利潤(萬)</th><th>月增率</th>
+        </tr></thead><tbody id="trend-table-body"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T12 — 風險儀表板 ════ -->
+<div id="t12" class="tab-content">
+  <div class="col-2 mb-4">
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">🎯 風險矩陣（衝擊 × 機率）</div>
+      <div id="risk-matrix-container"></div>
+    </div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📋 風險事件清單（含應對措施）</div>
+      <div style="overflow-x:auto">
+        <table class="data-table"><thead><tr>
+          <th>風險事件</th><th>機率</th><th>衝擊</th><th>等級</th><th>分類</th><th>應對措施</th>
+        </tr></thead><tbody id="risk-table-body"></tbody></table>
+      </div>
+    </div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">🎲 蒙地卡羅利潤模擬（常態分佈 n=10,000）</div>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;flex-wrap:wrap">
+      <label style="font-size:12px;color:var(--text-secondary)">收入不確定性：±<input type="range" id="mc-rev-std" min="5" max="35" value="15" style="width:120px;vertical-align:middle" oninput="document.getElementById('mc-rev-lbl').textContent=this.value+'%'">
+        <span id="mc-rev-lbl" style="color:var(--sky-lt)">15%</span></label>
+      <label style="font-size:12px;color:var(--text-secondary)">成本不確定性：±<input type="range" id="mc-cost-std" min="5" max="25" value="10" style="width:120px;vertical-align:middle" oninput="document.getElementById('mc-cost-lbl').textContent=this.value+'%'">
+        <span id="mc-cost-lbl" style="color:var(--amber)">10%</span></label>
+      <button class="btn-primary" onclick="runMonteCarloUI()">▶ 執行模擬</button>
+    </div>
+    <div class="kpi-grid-3 mb-4" id="mc-kpis"></div>
+    <div class="sec-hd" style="font-size:13px">利潤分布直方圖（紅色=虧損，紫色=盈利）</div>
+    <div class="chart-wrap h240"><canvas id="ch-mc-hist"></canvas></div>
+  </div>
+</div>
+
+<!-- ════ T13 — 資料管理 ════ -->
+<div id="t13" class="tab-content">
+  <div class="col-2 mb-4">
+    <div class="glass" style="padding:24px">
+      <div class="sec-hd">📁 Excel 資料匯入</div>
+      <div class="upload-zone" id="drop-zone"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleDrop(event)">
+        <div style="font-size:36px;margin-bottom:8px">📥</div>
+        <div style="font-size:14px;font-weight:700;color:var(--sky-lt);margin-bottom:6px">拖曳 Excel 至此，或用右側按鈕匯入</div>
+        <div style="font-size:11px;color:var(--text-muted)">支援格式：.xlsx / .xls</div>
+      </div>
+      <div style="margin-top:14px;padding:14px;background:rgba(0,0,0,0.25);border-radius:10px;font-size:11px;color:var(--text-muted);line-height:2">
+        <b style="color:var(--sky-lt)">Product_Mix</b> · <b style="color:var(--sky-lt)">Parameters</b> · <b style="color:var(--sky-lt)">Investment</b> · <b style="color:var(--sky-lt)">Capital_Efficiency</b> ·
+        <b style="color:var(--sky-lt)">Monthly_Trend</b> · <b style="color:var(--sky-lt)">Risk_Parameters</b> ·
+        <b style="color:var(--emerald)">Budget_Data</b> · <b style="color:var(--emerald)">CashFlow_Params</b> · <b style="color:var(--emerald)">YoY_Comparison</b> · <b style="color:var(--emerald)">Scenario_Weights</b>
+        <span style="color:var(--emerald)">（綠色為 V4 新增，其餘為 V3 相容）</span>
+      </div>
+    </div>
+    <div class="glass" style="padding:24px">
+      <div class="sec-hd">💾 匯出與系統操作</div>
+      <div class="stack">
+        <button class="btn-secondary" onclick="exportStateJSON()" style="padding:12px;font-size:13px">📤 匯出完整狀態（JSON）</button>
+        <button class="btn-secondary" onclick="exportExcelSnapshot()" style="padding:12px;font-size:13px">📊 匯出分析快照（Excel）</button>
+        <button class="btn-secondary" onclick="resetState();fullRender();showToast('✅ 已還原預設資料','ok')" style="padding:12px;font-size:13px">🔄 還原內建範例資料</button>
+        <button class="btn-secondary" onclick="window.print()" style="padding:12px;font-size:13px">🖨 列印為 PDF</button>
+      </div>
+      <div style="margin-top:20px">
+        <div style="font-size:12px;font-weight:700;color:var(--violet-lt);margin-bottom:8px">📊 當前資料狀態</div>
+        <div id="data-status" style="font-size:12px;color:var(--text-muted);line-height:2"></div>
+      </div>
+    </div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">📜 操作日誌</div>
+    <div id="change-log" style="max-height:200px;overflow-y:auto;font-size:11px;color:var(--text-muted);line-height:2"></div>
+  </div>
+</div>
+
+<!-- ════ T14 — 預算差異分析（V4 新增）════ -->
+<div id="t14" class="tab-content">
+  <div class="kpi-grid-4 mb-4" id="bv-kpis"></div>
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">📊 差異瀑布圖（預算 vs 實際）</div>
+    <div class="chart-wrap h260"><canvas id="ch-bv-waterfall"></canvas></div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">📋 產品別差異明細</div>
+    <div style="overflow-x:auto"><table class="data-table" id="bv-table"></table></div>
+  </div>
+</div>
+
+<!-- ════ T15 — 現金流預測（V4 新增）════ -->
+<div id="t15" class="tab-content">
+  <div class="kpi-grid-4 mb-4" id="cf-kpis"></div>
+  <div class="glass mb-4" style="padding:20px" id="cf-alerts"></div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">💧 12 個月滾動現金流預測</div>
+    <div class="chart-wrap h300"><canvas id="ch-cf-forecast"></canvas></div>
+  </div>
+</div>
+
+<!-- ════ T16 — 龍捲風敏感性圖（V4 新增）════ -->
+<div id="t16" class="tab-content">
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">🌀 龍捲風圖 — 各變數對利潤敏感性</div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:12px;color:var(--text-secondary)">測試幅度：±<input type="number" id="tornado-delta" value="10" min="5" max="30" style="width:60px;padding:4px;background:rgba(0,0,0,0.3);border:1px solid var(--glass-border);border-radius:4px;color:var(--text-primary)">%
+        <button class="btn-secondary" style="margin-left:8px" onclick="renderT16()">更新</button>
+      </label>
+    </div>
+    <div id="tornado-chart"></div>
+    <div id="tornado-insight" style="margin-top:16px"></div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">📊 敏感性排行（長條圖）</div>
+    <div class="chart-wrap h280"><canvas id="ch-tornado"></canvas></div>
+  </div>
+</div>
+
+<!-- ════ T17 — CM 矩陣（BCG）（V4 新增）════ -->
+<div id="t17" class="tab-content">
+  <div class="glass mb-4" style="padding:20px">
+    <div class="sec-hd">🗺 邊際貢獻矩陣（BCG 四象限）</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">X 軸 = 邊際貢獻率（%）｜Y 軸 = 收入佔比（%）｜氣泡大小 = 銷量</div>
+    <div class="chart-wrap h360"><canvas id="ch-bcg"></canvas></div>
+    <div id="bcg-legend"></div>
+  </div>
+  <div class="glass" style="padding:20px">
+    <div class="sec-hd">📋 產品分類說明與建議</div>
+    <div style="overflow-x:auto"><table class="data-table" id="bcg-table"></table></div>
+  </div>
+</div>
+
+<!-- ════ T18 — 多年度比較 YoY（V4 新增）════ -->
+<div id="t18" class="tab-content">
+  <div id="yoy-nodata" class="glass" style="padding:40px;text-align:center">
+    <div style="font-size:40px;margin-bottom:12px">📆</div>
+    <div style="font-size:16px;font-weight:700;color:var(--sky-lt);margin-bottom:8px">尚未匯入多年度資料</div>
+    <div style="font-size:13px;color:var(--text-muted)">請在 Excel 中新增 <b>YoY_Comparison</b> 工作表，欄位：年度、月份、總收入（元）、邊際貢獻（元）、營業利潤（元）</div>
+  </div>
+  <div id="yoy-charts" style="display:none">
+    <div class="kpi-grid-4 mb-4" id="yoy-kpis"></div>
+    <div class="glass" style="padding:20px">
+      <div class="sec-hd">📆 多年度收入 / 邊際貢獻 / 利潤比較</div>
+      <div class="chart-wrap h300"><canvas id="ch-yoy"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ T19 — AI 決策摘要（V4 新增）════ -->
+<div id="t19" class="tab-content">
+  <div id="ai-report"></div>
+</div>
+
+</main><!-- end main-content -->
+
+<!-- ═══ AI 展開按鈕 ═══ -->
+<button id="ai-panel-toggle" onclick="toggleAIPanel()" title="開啟 AI 分析面板">🤖</button>
+
+<!-- ═══ AI 側邊面板 ═══ -->
+<div id="ai-panel" class="ai-panel" role="complementary" aria-label="AI 分析助理">
+
+  <!-- 頭部 -->
+  <div class="ai-panel-header">
+    <div>
+      <div class="ai-panel-title">🤖 CVP AI 分析助理</div>
+      <div style="margin-top:4px">
+        <span id="ai-status-badge" class="ai-status-badge idle">⚪ 待機中</span>
+      </div>
+    </div>
+    <button class="ai-close-btn" onclick="toggleAIPanel()" title="關閉">✕</button>
+  </div>
+
+  <!-- 設定區 -->
+  <div class="ai-config-section">
+    <div class="ai-config-row">
+      <label>供應商</label>
+      <select id="ai-provider" onchange="onProviderChange()">
+        <option value="openai">OpenAI</option>
+        <option value="anthropic">Anthropic</option>
+        <option value="deepseek">DeepSeek</option>
+        <option value="siliconflow">硅基流動</option>
+        <option value="custom">自訂端點</option>
+      </select>
+    </div>
+    <div class="ai-config-row">
+      <label>模型</label>
+      <select id="ai-model"></select>
+    </div>
+    <div class="ai-config-row">
+      <label>API Key</label>
+      <div class="ai-key-wrap">
+        <input type="password" id="ai-api-key" placeholder="貼上 API Key…" oninput="saveAISettings()">
+        <button class="ai-key-eye" onclick="toggleKeyVisibility()" title="顯示/隱藏">👁</button>
+      </div>
+    </div>
+    <div id="ai-custom-url-row" class="ai-config-row" style="display:none">
+      <label>端點</label>
+      <input type="text" id="ai-custom-url" placeholder="https://…/v1" oninput="saveAISettings()">
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px">
+      <span class="ai-advanced" onclick="toggleAdvanced()">▸ 進階設定</span>
+      <div style="display:flex;gap:8px">
+        <button class="ai-act-btn" onclick="clearAIChat()">🗑 清空</button>
+        <button class="ai-act-btn" onclick="copyAllChat()">📋 複製</button>
+        <button class="ai-act-btn" onclick="exportAIChat()">💾 匯出</button>
+      </div>
+    </div>
+    <div class="ai-advanced-body" id="ai-advanced-body">
+      <div class="ai-config-row" style="margin-top:8px">
+        <label>溫度</label>
+        <input type="number" id="ai-temperature" value="0.3" min="0" max="2" step="0.1" style="width:70px;flex:none" oninput="saveAISettings()">
+        <label style="margin-left:8px">最大 Token</label>
+        <input type="number" id="ai-max-tokens" value="4096" min="256" max="32000" step="256" oninput="saveAISettings()">
+      </div>
+      <div class="ai-config-row">
+        <label>串流</label>
+        <select id="ai-stream" onchange="saveAISettings()">
+          <option value="1">開啟（推薦）</option>
+          <option value="0">關閉</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- 快速分析按鈕列 -->
+  <div class="ai-tab-bar">
+    <div style="font-size:10px;color:#64748b;margin-bottom:5px">快速分析當前頁籤：</div>
+    <div class="ai-tab-btns" id="ai-tab-btns"></div>
+  </div>
+
+  <!-- 訊息區 -->
+  <div class="ai-messages" id="ai-messages">
+    <div class="ai-msg assistant">
+      👋 您好！我是 CVP 本量利 AI 分析助理。<br><br>
+      請設定 API Key 後，點擊上方快速分析按鈕，或在下方輸入您的分析問題。<br><br>
+      我擅長：<strong>損益平衡分析、敏感性評估、情境模擬解讀、投資決策建議</strong>。
+    </div>
+  </div>
+
+  <!-- 輸入區 -->
+  <div class="ai-input-section">
+    <div class="ai-input-row">
+      <textarea id="ai-user-input" placeholder="輸入問題，Ctrl+Enter 送出…" onkeydown="handleAIInputKey(event)"></textarea>
+      <button class="ai-send-btn" id="ai-send-btn" onclick="sendAIMessage()" title="送出">➤</button>
+    </div>
+    <div class="ai-actions">
+      <button class="ai-act-btn" onclick="stopAIStream()">⏹ 停止</button>
+      <span style="font-size:10px;color:#475569;margin-left:auto">Ctrl+Enter 送出</span>
+    </div>
+  </div>
+</div>
+
+<!-- Toast 通知 -->
+<div id="toast" role="alert" aria-live="polite"></div>
+
+<!-- ─── Assets JS（順序不可顛倒）─── -->
+<script src="assets/state.js"></script>
+<script src="assets/engine.js"></script>
+<script src="assets/utils.js"></script>
+<script src="assets/charts.js"></script>
+<script src="assets/import-export.js"></script>
+
+<!-- ─── Tab JS ─── -->
+<script src="tabs/t1-overview.js"></script>
+<script src="tabs/t2-t4.js"></script>
+<script src="tabs/t5-t8.js"></script>
+<script src="tabs/t9-t13.js"></script>
+<script src="tabs/t14-t19-new.js"></script>
+
+<!-- ─── 啟動 ─── -->
+<script>
+function renderTab(id) {
+  switch(id) {
+    case 't1':  renderT1();   break;
+    case 't2':  renderT2();   break;
+    case 't3':  renderT3();   document.getElementById('total-cm') && (document.getElementById('total-cm').textContent = fmt2(runEngine().totalCM)); break;
+    case 't4':  renderT4();   break;
+    case 't5':  renderT5();   break;
+    case 't6':  renderT6();   break;
+    case 't7':  break;
+    case 't8':  renderT8();   break;
+    case 't9':  renderT9();   break;
+    case 't10': renderT10();  break;
+    case 't11': renderT11();  break;
+    case 't12': renderT12();  break;
+    case 't13': renderT13();  break;
+    case 't14': renderT14();  break;
+    case 't15': renderT15();  break;
+    case 't16': renderT16();  break;
+    case 't17': renderT17();  break;
+    case 't18': renderT18();  break;
+    case 't19': renderT19();  break;
+  }
+}
+function _checkMobile() {
+  const menuBtn = document.getElementById('menu-btn');
+  if (menuBtn) menuBtn.style.display = window.innerWidth <= 900 ? '' : 'none';
+}
+window.addEventListener('resize', _checkMobile);
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadState();
+  document.documentElement.setAttribute('data-theme', AppState.theme);
+  const themeBtn = document.getElementById('theme-btn');
+  if (themeBtn) themeBtn.textContent = AppState.theme === 'dark' ? '☀ 亮色' : '🌙 暗色';
+  initNav();
+  _checkMobile();
+  updateHeader();
+  logChange('CVP V4.0 + AI 系統初始化完成');
+  renderT1();
+  // AI 模組初始化（在所有 JS 載入後執行）
+  setTimeout(_initAIModule, 300);
+});
+</script>
+
+<!-- ═══════════════════════════════════════════════════════
+     CVP AI 分析模組 — 完整實作
+     框架參考：庫存分析 V4 Inventory_Strategic_OS_V4.html
+════════════════════════════════════════════════════════ -->
+<script>
+/* ═══ 供應商設定 ═══ */
+const AI_PROVIDERS = {
+  openai: {
+    name: 'OpenAI',
+    baseUrl: 'https://api.openai.com/v1',
+    models: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'o3-mini'],
+    defaultModel: 'gpt-4o'
+  },
+  anthropic: {
+    name: 'Anthropic',
+    baseUrl: 'https://api.anthropic.com',
+    models: ['claude-opus-4-5-20251101', 'claude-sonnet-4-5-20250929', 'claude-haiku-4-5-20251001'],
+    defaultModel: 'claude-sonnet-4-5-20250929'
+  },
+  deepseek: {
+    name: 'DeepSeek',
+    baseUrl: 'https://api.deepseek.com/v1',
+    models: ['deepseek-chat', 'deepseek-reasoner'],
+    defaultModel: 'deepseek-chat'
+  },
+  siliconflow: {
+    name: '硅基流動',
+    baseUrl: 'https://api.siliconflow.cn/v1',
+    models: ['Qwen/Qwen2.5-72B-Instruct', 'deepseek-ai/DeepSeek-V3', 'THUDM/glm-4-9b-chat'],
+    defaultModel: 'Qwen/Qwen2.5-72B-Instruct'
+  },
+  custom: {
+    name: '自訂端點',
+    baseUrl: '',
+    models: [],
+    defaultModel: ''
+  }
+};
+
+/* ═══ 狀態 ═══ */
+let aiState = {
+  provider: 'openai', model: 'gpt-4o', apiKey: '',
+  customBaseUrl: '', temperature: 0.3, maxTokens: 4096,
+  useStream: true, chatHistory: [], isStreaming: false,
+  currentTabId: 't1', abortController: null
+};
+
+/* ═══ 標籤對照 ═══ */
+const CVP_TAB_LABELS = {
+  t1:'🏠 執行長總覽', t2:'💰 管理損益表', t3:'📈 CVP 靜態分析',
+  t4:'🎛 動態情境模擬器', t5:'🔀 多情境平行比較', t6:'💼 投資ROI分析',
+  t7:'🎯 AI目標搜尋', t8:'⚡ 經營槓桿度', t9:'🧩 產品組合優化器',
+  t10:'🏦 資金效率(杜邦)', t11:'📅 月度趨勢追蹤', t12:'⚠ 風險儀表板',
+  t14:'📐 預算差異分析', t16:'🌀 龍捲風敏感性圖', t17:'🗺 CM矩陣(BCG)',
+  t18:'📆 多年度比較(YoY)'
+};
+
+/* ═══ 各頁籤觸發語 ═══ */
+const CVP_TAB_TRIGGER_MSG = {
+  t1: '請分析【執行長總覽】頁籤的整體財務健康狀況，給出 3 項關鍵洞察與行動建議。',
+  t2: '請解讀【管理損益表】的邊際貢獻結構，分析成本控制與利潤品質，並指出改善重點。',
+  t3: '請解析【CVP 靜態分析】的損益平衡點、安全邊際率與產品貢獻，判斷經營風險與優化空間。',
+  t4: '請根據【動態情境模擬器】的四因子敏感係數，說明哪個變數對利潤影響最大，並給出具體建議。',
+  t5: '請比較【多情境平行比較】各情境的機率加權期望利潤，分析風險與報酬的最佳平衡點。',
+  t6: '請評估【投資ROI分析】的NPV、IRR 與回收期，判斷投資可行性並給出決策建議。',
+  t7: '請解讀【AI目標搜尋】的結果，說明達成目標所需的條件是否現實可行。',
+  t8: '請分析【經營槓桿度(DOL)】，說明當前槓桿水平的風險含義，以及哪些產品是槓桿驅動主力。',
+  t9: '請評估【產品組合優化器】的優化建議，分析最佳組合的可行性與預期效益。',
+  t10: '請解析【杜邦分析】的 ROE 分解結果，找出資金效率的瓶頸並提出改善建議。',
+  t11: '請分析【月度趨勢追蹤】的收入、CM 與利潤走勢，識別季節性模式與異常月份。',
+  t12: '請評估【風險儀表板】的風險矩陣與蒙地卡羅模擬結果，制定優先風險應對策略。',
+  t14: '請解讀【預算差異分析】的量差與價差，找出超支或欠收的根本原因。',
+  t16: '請根據【龍捲風敏感性圖】，找出影響利潤最關鍵的變數，制定風險管控優先順序。',
+  t17: '請分析【CM矩陣(BCG四象限)】各產品定位，給出產品策略調整建議（加碼/維持/退場）。',
+  t18: '請比較【多年度YoY】的成長趨勢，分析收入、CM 與利潤的年複合增長率，預測下年度表現。'
+};
+
+/* ═══ CVP 系統提示詞 ═══ */
+const AI_SYSTEM_PROMPT = `你是一位頂尖的台灣企業財務顧問與本量利（CVP）分析專家。
+
+【核心能力】
+- CVP 基礎：邊際貢獻（CM）、CM率、損益平衡點（BEP：銷量法/金額法）、安全邊際、多產品加權CM率
+- 動態模擬：四因子敏感性分析（價/量/變動成本/固定成本）、龍捲風圖解讀、多情境機率加權
+- 槓桿資本：經營槓桿度（DOL）、杜邦ROE三段分解、NPV/IRR/回收期評估
+- 風險管控：蒙地卡羅模擬解讀、量差/價差/效率差分析、現金流滾動預測
+
+【業界基準（供比較）】
+- CM率 > 30%：良好；> 50%：優異
+- 安全邊際率 > 20%：健康；< 10%：警戒
+- DOL < 3：穩定；> 5：高風險
+- NPV > 0 且 IRR > WACC：可投資
+
+【回覆原則】
+1. 使用繁體中文，專有名詞附英文對照（如：邊際貢獻 Contribution Margin）
+2. 結構：事實摘要 → 深度分析 → 推論判斷 → 具體建議
+3. 優先序標示：🔴 緊急（1週內）/ 🟡 近期（1個月）/ 🟢 長期（季度）
+4. 善用表格呈現多維度比較
+5. 數字具體，避免空泛陳述`;
+
+/* ═══ DOM 輔助函式 ═══ */
+function _txt(id) {
+  const el = document.getElementById(id);
+  return el ? el.textContent.trim() : '—';
+}
+function _getState() {
+  try { if (typeof AppState !== 'undefined') return AppState; } catch(e) {}
+  return null;
+}
+function _getEngine() {
+  try { if (typeof runEngine === 'function') return runEngine(); } catch(e) {}
+  return null;
+}
+function _fmtW(v) {
+  return (v != null && !isNaN(v)) ? (v / 10000).toFixed(2) + '萬' : '—';
+}
+function _fmtP(v) {
+  return (v != null && !isNaN(v)) ? (v * 100).toFixed(1) + '%' : '—';
+}
+function _fmtN(v, d) {
+  return (v != null && !isNaN(v)) ? Number(v).toFixed(d || 2) : '—';
+}
+function _tableText(id, maxRows) {
+  maxRows = maxRows || 8;
+  const el = document.getElementById(id);
+  if (!el) return '—';
+  const rows = el.querySelectorAll('tr');
+  let out = [];
+  rows.forEach((r, i) => {
+    if (i >= maxRows + 1) return;
+    const cells = r.querySelectorAll('th,td');
+    out.push(Array.from(cells).map(c => c.textContent.trim()).join(' | '));
+  });
+  return out.join('\n');
+}
+
+/* ═══ 各頁籤資料萃取器 ═══ */
+function extractT1Data() {
+  const e = _getEngine(), s = _getState();
+  return {
+    tabName: '執行長總覽',
+    kpi: {
+      revenue: e ? _fmtW(e.revenue) : '讀取中',
+      cm: e ? _fmtW(e.cm) : '讀取中',
+      cmRatio: e ? _fmtP(e.cmRatio) : '讀取中',
+      profit: e ? _fmtW(e.profit) : '讀取中',
+      bep: e ? _fmtW(e.bep) : (_txt('bep-rev') + '萬'),
+      safetyMarginRate: e ? _fmtP(e.safetyMarginRate) : (_txt('safety-m') + '%')
+    },
+    productCount: (s?.products || []).length || '—',
+    alerts: (()=>{
+      const el = document.getElementById('alert-center');
+      return el ? el.textContent.slice(0, 400) : '—';
+    })()
+  };
+}
+
+function extractT2Data() {
+  const e = _getEngine();
+  return {
+    tabName: '管理損益表',
+    plTable: _tableText('pl-table', 12),
+    summary: e ? {
+      revenue: _fmtW(e.revenue),
+      vc: _fmtW(e.vc),
+      cm: _fmtW(e.cm),
+      cmRatio: _fmtP(e.cmRatio),
+      fc: _fmtW(e.fc),
+      profit: _fmtW(e.profit),
+      profitRatio: e.revenue ? _fmtP(e.profit / e.revenue) : '—'
+    } : { note: '引擎資料讀取中' }
+  };
+}
+
+function extractT3Data() {
+  const e = _getEngine(), s = _getState();
+  const prods = (s?.products || []).map(p => ({
+    name: p.name,
+    price: p.price, vc: p.vc,
+    cm: (p.price - p.vc),
+    cmRatio: p.price ? _fmtP((p.price - p.vc) / p.price) : '—',
+    volume: p.volume
+  }));
+  return {
+    tabName: 'CVP靜態分析',
+    bepRev: _txt('bep-rev'),
+    safetyMargin: _txt('safety-m'),
+    totalCM: _txt('total-cm'),
+    products: prods,
+    productTable: _tableText('product-table', 10)
+  };
+}
+
+function extractT4Data() {
+  return {
+    tabName: '動態情境模擬器',
+    sliders: {
+      price: _txt('price-lbl'),
+      volume: _txt('vol-lbl'),
+      vc: _txt('vc-lbl'),
+      fc: _txt('fc-lbl')
+    },
+    sensitivityFactors: (()=>{
+      const el = document.getElementById('sensitivity-factors');
+      return el ? el.textContent.slice(0, 300) : '—';
+    })(),
+    simKpis: (()=>{
+      const el = document.getElementById('sim-kpis');
+      return el ? el.textContent.slice(0, 300) : '—';
+    })()
+  };
+}
+
+function extractT5Data() {
+  return {
+    tabName: '多情境平行比較',
+    expectedProfit: (()=>{
+      const el = document.getElementById('expected-profit');
+      return el ? el.textContent.slice(0, 200) : '—';
+    })(),
+    scenarioTable: _tableText('scenario-tbody', 8)
+  };
+}
+
+function extractT6Data() {
+  const e = _getEngine(), s = _getState();
+  const inv = s?.investment || {};
+  return {
+    tabName: '投資ROI分析',
+    investment: {
+      initialCost: _fmtW(inv.initialCost),
+      annualCashflow: _fmtW(inv.annualCashflow),
+      wacc: inv.wacc ? _fmtP(inv.wacc / 100) : '—',
+      years: inv.years || '—'
+    },
+    kpis: (()=>{
+      const el = document.getElementById('inv-kpis');
+      return el ? el.textContent.slice(0, 300) : '—';
+    })()
+  };
+}
+
+function extractT8Data() {
+  return {
+    tabName: '經營槓桿度(DOL)',
+    dol: _txt('dol-val'),
+    dolImpact: _txt('dol-impact'),
+    cm: _txt('dol-cm'),
+    profit: _txt('dol-profit'),
+    productTable: _tableText('dol-table-body', 8)
+  };
+}
+
+function extractT9Data() {
+  return {
+    tabName: '產品組合優化器',
+    optKpis: (()=>{
+      const el = document.getElementById('opt-kpis');
+      return el ? el.textContent.slice(0, 300) : '—';
+    })(),
+    optTable: _tableText('opt-table-body', 8)
+  };
+}
+
+function extractT10Data() {
+  const e = _getEngine(), s = _getState();
+  const cap = s?.capitalEfficiency || {};
+  return {
+    tabName: '資金效率(杜邦)',
+    dupont: {
+      totalAssets: _fmtW(cap.totalAssets),
+      equity: _fmtW(cap.equity),
+      financialLeverage: cap.financialLeverage || '—'
+    },
+    kpis: (()=>{
+      const el = document.getElementById('cap-kpis');
+      return el ? el.textContent.slice(0, 300) : '—';
+    })(),
+    dupointTree: (()=>{
+      const el = document.getElementById('dupont-tree');
+      return el ? el.textContent.slice(0, 400) : '—';
+    })()
+  };
+}
+
+function extractT11Data() {
+  const s = _getState();
+  const months = (s?.monthlyTrend || []).slice(0, 12).map(m => ({
+    month: m.month, revenue: _fmtW(m.revenue),
+    cm: _fmtW(m.cm), profit: _fmtW(m.profit)
+  }));
+  return {
+    tabName: '月度趨勢追蹤',
+    months,
+    trendTable: _tableText('trend-table-body', 12)
+  };
+}
+
+function extractT12Data() {
+  const s = _getState();
+  const risks = (s?.riskParameters || []).map(r => ({
+    event: r.event, prob: r.probability,
+    impact: r.impact, level: (r.probability * r.impact).toFixed(2)
+  }));
+  return {
+    tabName: '風險儀表板',
+    risks,
+    mcKpis: (()=>{
+      const el = document.getElementById('mc-kpis');
+      return el ? el.textContent.slice(0, 300) : '尚未執行模擬';
+    })()
+  };
+}
+
+function extractT14Data() {
+  return {
+    tabName: '預算差異分析',
+    kpis: (()=>{
+      const el = document.getElementById('bv-kpis');
+      return el ? el.textContent.slice(0, 300) : '—';
+    })(),
+    bvTable: _tableText('bv-table', 10)
+  };
+}
+
+function extractT16Data() {
+  return {
+    tabName: '龍捲風敏感性圖',
+    delta: _txt('tornado-delta') || '10',
+    insight: (()=>{
+      const el = document.getElementById('tornado-insight');
+      return el ? el.textContent.slice(0, 400) : '—';
+    })()
+  };
+}
+
+function extractT17Data() {
+  return {
+    tabName: 'CM矩陣(BCG)',
+    legend: (()=>{
+      const el = document.getElementById('bcg-legend');
+      return el ? el.textContent.slice(0, 300) : '—';
+    })(),
+    bcgTable: _tableText('bcg-table', 10)
+  };
+}
+
+function extractT18Data() {
+  return {
+    tabName: '多年度比較(YoY)',
+    kpis: (()=>{
+      const el = document.getElementById('yoy-kpis');
+      return el ? el.textContent.slice(0, 300) : '尚未匯入多年度資料';
+    })()
+  };
+}
+
+/* ═══ 彙整當前頁籤資料 ═══ */
+function extractTabData(tabId) {
+  const map = {
+    t1: extractT1Data, t2: extractT2Data, t3: extractT3Data,
+    t4: extractT4Data, t5: extractT5Data, t6: extractT6Data,
+    t8: extractT8Data, t9: extractT9Data, t10: extractT10Data,
+    t11: extractT11Data, t12: extractT12Data, t14: extractT14Data,
+    t16: extractT16Data, t17: extractT17Data, t18: extractT18Data
+  };
+  const fn = map[tabId];
+  return fn ? fn() : { tabName: tabId, note: '此頁籤無自動資料萃取' };
+}
+
+function formatContextForPrompt(data) {
+  return '【當前頁籤資料】\n' + JSON.stringify(data, null, 2);
+}
+
+/* ═══ Markdown 渲染 ═══ */
+function renderMarkdownAI(text) {
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/```([\s\S]*?)```/g, (_, c) => `<pre><code>${c}</code></pre>`)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^# (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^---$/gm, '<hr>')
+    .replace(/^\| (.+) \|$/gm, (match, row) => {
+      const cells = row.split(' | ');
+      const isHeader = /^[-:]+$/.test(cells[0].trim());
+      if (isHeader) return '';
+      const tag = 'td';
+      return '<tr>' + cells.map(c => `<${tag}>${c}</${tag}>`).join('') + '</tr>';
+    })
+    .replace(/(<tr>[\s\S]*?<\/tr>)/g, m => {
+      if (m.includes('<td>')) return `<table>${m}</table>`;
+      return m;
+    })
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>')
+    .replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$&</ul>')
+    .replace(/<\/ul>\s*<ul>/g, '');
+}
+
+/* ═══ UI 狀態控制 ═══ */
+function setAIStatus(status, text) {
+  const badge = document.getElementById('ai-status-badge');
+  if (!badge) return;
+  badge.className = 'ai-status-badge ' + status;
+  const icons = { idle:'⚪', ready:'🟢', stream:'🔵', error:'🔴' };
+  badge.textContent = (icons[status] || '⚪') + ' ' + text;
+}
+
+function toggleAIPanel() {
+  const panel = document.getElementById('ai-panel');
+  const main  = document.getElementById('main-content');
+  const btn   = document.getElementById('ai-panel-toggle');
+  if (!panel) return;
+  const isOpen = panel.classList.toggle('open');
+  main && main.classList.toggle('ai-open', isOpen);
+  btn.textContent = isOpen ? '✕' : '🤖';
+  if (isOpen) restoreAIChat();
+}
+
+function toggleAdvanced() {
+  const body = document.getElementById('ai-advanced-body');
+  const link = document.querySelector('.ai-advanced');
+  if (!body) return;
+  body.classList.toggle('open');
+  link.textContent = body.classList.contains('open') ? '▾ 進階設定' : '▸ 進階設定';
+}
+
+function toggleKeyVisibility() {
+  const inp = document.getElementById('ai-api-key');
+  if (!inp) return;
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+/* ═══ 供應商切換 ═══ */
+function onProviderChange() {
+  const sel   = document.getElementById('ai-provider').value;
+  const prov  = AI_PROVIDERS[sel];
+  const mdSel = document.getElementById('ai-model');
+  const urlRow = document.getElementById('ai-custom-url-row');
+  aiState.provider = sel;
+  mdSel.innerHTML = '';
+  prov.models.forEach(m => {
+    const o = document.createElement('option');
+    o.value = m; o.textContent = m;
+    mdSel.appendChild(o);
+  });
+  if (prov.defaultModel) mdSel.value = prov.defaultModel;
+  aiState.model = mdSel.value;
+  urlRow.style.display = sel === 'custom' ? 'flex' : 'none';
+  saveAISettings();
+}
+
+/* ═══ 設定持久化 ═══ */
+const AI_SETTINGS_KEY = 'cvpV4AiSettings';
+const AI_CACHE_KEY    = 'cvpV4AiChatCache';
+
+function saveAISettings() {
+  aiState.provider    = document.getElementById('ai-provider')?.value || aiState.provider;
+  aiState.model       = document.getElementById('ai-model')?.value    || aiState.model;
+  aiState.apiKey      = document.getElementById('ai-api-key')?.value  || aiState.apiKey;
+  aiState.customBaseUrl = document.getElementById('ai-custom-url')?.value || '';
+  aiState.temperature = parseFloat(document.getElementById('ai-temperature')?.value) || 0.3;
+  aiState.maxTokens   = parseInt(document.getElementById('ai-max-tokens')?.value)   || 4096;
+  aiState.useStream   = document.getElementById('ai-stream')?.value === '1';
+  try { localStorage.setItem(AI_SETTINGS_KEY, JSON.stringify({
+    provider: aiState.provider, model: aiState.model,
+    apiKey: aiState.apiKey, customBaseUrl: aiState.customBaseUrl,
+    temperature: aiState.temperature, maxTokens: aiState.maxTokens, useStream: aiState.useStream
+  })); } catch(e) {}
+  setAIStatus(aiState.apiKey ? 'ready' : 'idle', aiState.apiKey ? '已設定 Key' : '待機中');
+}
+
+function loadAISettings() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(AI_SETTINGS_KEY) || '{}');
+    if (saved.provider) aiState.provider    = saved.provider;
+    if (saved.model)    aiState.model       = saved.model;
+    if (saved.apiKey)   aiState.apiKey      = saved.apiKey;
+    if (saved.customBaseUrl) aiState.customBaseUrl = saved.customBaseUrl;
+    if (saved.temperature !== undefined) aiState.temperature = saved.temperature;
+    if (saved.maxTokens)  aiState.maxTokens  = saved.maxTokens;
+    if (saved.useStream !== undefined) aiState.useStream = saved.useStream;
+  } catch(e) {}
+  // 套用到 UI
+  const pSel = document.getElementById('ai-provider');
+  if (pSel) { pSel.value = aiState.provider; onProviderChange(); }
+  const mdSel = document.getElementById('ai-model');
+  if (mdSel && aiState.model) mdSel.value = aiState.model;
+  const keyEl = document.getElementById('ai-api-key');
+  if (keyEl) keyEl.value = aiState.apiKey;
+  const urlEl = document.getElementById('ai-custom-url');
+  if (urlEl) urlEl.value = aiState.customBaseUrl;
+  const tempEl = document.getElementById('ai-temperature');
+  if (tempEl) tempEl.value = aiState.temperature;
+  const tokEl = document.getElementById('ai-max-tokens');
+  if (tokEl) tokEl.value = aiState.maxTokens;
+  const streamEl = document.getElementById('ai-stream');
+  if (streamEl) streamEl.value = aiState.useStream ? '1' : '0';
+  setAIStatus(aiState.apiKey ? 'ready' : 'idle', aiState.apiKey ? '已設定 Key' : '待機中');
+}
+
+/* ═══ 聊天快取 ═══ */
+function saveAIChatCache() {
+  try {
+    localStorage.setItem(AI_CACHE_KEY, JSON.stringify(aiState.chatHistory.slice(-40)));
+  } catch(e) {}
+}
+
+function restoreAIChat() {
+  try {
+    const cache = JSON.parse(localStorage.getItem(AI_CACHE_KEY) || '[]');
+    if (!Array.isArray(cache) || cache.length === 0) return;
+    const msgs = document.getElementById('ai-messages');
+    if (!msgs) return;
+    // 清除歡迎訊息以外的內容
+    const welcome = msgs.firstElementChild;
+    msgs.innerHTML = '';
+    if (welcome) msgs.appendChild(welcome);
+    cache.forEach(m => {
+      if (m.role === 'system') return;
+      appendAIMessage(m.role === 'user' ? 'user' : 'assistant', m.content);
+    });
+    aiState.chatHistory = cache;
+  } catch(e) {}
+}
+
+function clearAIChat() {
+  aiState.chatHistory = [];
+  try { localStorage.removeItem(AI_CACHE_KEY); } catch(e) {}
+  const msgs = document.getElementById('ai-messages');
+  if (msgs) {
+    msgs.innerHTML = '<div class="ai-msg assistant">💬 對話已清空，請重新開始。</div>';
+  }
+}
+
+function exportAIChat() {
+  const lines = aiState.chatHistory
+    .filter(m => m.role !== 'system')
+    .map(m => `[${m.role === 'user' ? '我' : 'AI'}]\n${m.content}`)
+    .join('\n\n---\n\n');
+  const blob = new Blob([lines], { type: 'text/plain;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'CVP_AI對話_' + new Date().toISOString().slice(0,10) + '.txt';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function copyAllChat() {
+  const text = aiState.chatHistory
+    .filter(m => m.role !== 'system')
+    .map(m => `[${m.role === 'user' ? '我' : 'AI'}] ${m.content}`)
+    .join('\n\n');
+  navigator.clipboard.writeText(text).then(() => {
+    showToast && showToast('✅ 已複製對話', 'ok');
+  });
+}
+
+/* ═══ 訊息渲染 ═══ */
+function appendAIMessage(role, content) {
+  const msgs = document.getElementById('ai-messages');
+  if (!msgs) return null;
+  const div = document.createElement('div');
+  div.className = 'ai-msg ' + role;
+  if (role === 'assistant') {
+    div.innerHTML = renderMarkdownAI(content);
+  } else {
+    div.textContent = content;
+  }
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+/* ═══ 輸入區快捷鍵 ═══ */
+function handleAIInputKey(e) {
+  if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); sendAIMessage(); }
+}
+
+/* ═══ 發送訊息（使用者輸入） ═══ */
+function sendAIMessage() {
+  const inp = document.getElementById('ai-user-input');
+  if (!inp) return;
+  const text = inp.value.trim();
+  if (!text || aiState.isStreaming) return;
+  inp.value = '';
+  _dispatchAI(text);
+}
+
+/* ═══ 頁籤 AI 觸發 ═══ */
+function triggerTabAI(tabId) {
+  const msg = CVP_TAB_TRIGGER_MSG[tabId];
+  if (!msg) return;
+  aiState.currentTabId = tabId;
+  const data = extractTabData(tabId);
+  const ctx  = formatContextForPrompt(data);
+  // 把資料脈絡加到 system message 或作為附加訊息
+  _dispatchAI(msg, ctx);
+}
+
+function _dispatchAI(userMsg, ctxOverride) {
+  if (!aiState.apiKey && aiState.provider !== 'custom') {
+    appendAIMessage('assistant', '⚠️ 請先設定 API Key 才能使用 AI 分析功能。');
+    return;
+  }
+  appendAIMessage('user', userMsg);
+  const sysMsg = AI_SYSTEM_PROMPT + (ctxOverride ? '\n\n' + ctxOverride : '');
+  aiState.chatHistory.push({ role: 'user', content: userMsg });
+  const messages = [
+    { role: 'system', content: sysMsg },
+    ...aiState.chatHistory.slice(-20)
+  ];
+  callAI(messages);
+}
+
+/* ═══ 停止串流 ═══ */
+function stopAIStream() {
+  if (aiState.abortController) {
+    aiState.abortController.abort();
+    aiState.isStreaming = false;
+    setAIStatus('ready', '已停止');
+    const btn = document.getElementById('ai-send-btn');
+    if (btn) btn.disabled = false;
+  }
+}
+
+/* ═══ 主呼叫函式 ═══ */
+async function callAI(messages) {
+  aiState.isStreaming = true;
+  aiState.abortController = new AbortController();
+  const btn = document.getElementById('ai-send-btn');
+  if (btn) btn.disabled = true;
+  setAIStatus('stream', '分析中…');
+
+  const msgEl = appendAIMessage('assistant', '');
+  const cfg = {
+    key: aiState.apiKey,
+    model: document.getElementById('ai-model')?.value || aiState.model,
+    maxTok: aiState.maxTokens,
+    temp: aiState.temperature,
+    stream: aiState.useStream
+  };
+
+  try {
+    if (aiState.provider === 'anthropic') {
+      await _callAnthropic(messages, cfg, msgEl);
+    } else {
+      await _callOpenAI(messages, cfg, msgEl);
+    }
+    // 儲存 AI 回覆至歷史
+    if (msgEl) {
+      const text = msgEl.textContent;
+      aiState.chatHistory.push({ role: 'assistant', content: text });
+      saveAIChatCache();
+    }
+  } catch(e) {
+    if (e.name !== 'AbortError') {
+      const errMsg = '❌ 呼叫失敗：' + (e.message || String(e));
+      if (msgEl) msgEl.innerHTML = renderMarkdownAI(errMsg);
+      setAIStatus('error', '錯誤');
+    }
+  } finally {
+    aiState.isStreaming = false;
+    if (btn) btn.disabled = false;
+    if (!aiState.isStreaming) setAIStatus('ready', '已完成');
+  }
+}
+
+/* ═══ OpenAI / DeepSeek / SiliconFlow / Custom 呼叫 ═══ */
+async function _callOpenAI(messages, cfg, msgEl) {
+  const prov = AI_PROVIDERS[aiState.provider];
+  const baseUrl = aiState.provider === 'custom' ? aiState.customBaseUrl : prov.baseUrl;
+  const resp = await fetch(`${baseUrl}/chat/completions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cfg.key}` },
+    body: JSON.stringify({
+      model: cfg.model,
+      messages: messages.filter(m => m.role !== 'system').length > 0
+        ? messages : messages.filter(m => m.role === 'system').concat([{ role: 'user', content: '你好' }]),
+      max_tokens: cfg.maxTok,
+      temperature: cfg.temp,
+      stream: cfg.stream
+    }),
+    signal: aiState.abortController.signal
+  });
+
+  if (!resp.ok) {
+    const err = await resp.text();
+    throw new Error(`HTTP ${resp.status}: ${err.slice(0, 200)}`);
+  }
+
+  if (cfg.stream) {
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '', full = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        if (data === '[DONE]') break;
+        try {
+          const json = JSON.parse(data);
+          const delta = json.choices?.[0]?.delta?.content || '';
+          if (delta) {
+            full += delta;
+            if (msgEl) msgEl.innerHTML = renderMarkdownAI(full);
+            const msgs = document.getElementById('ai-messages');
+            if (msgs) msgs.scrollTop = msgs.scrollHeight;
+          }
+        } catch(e) {}
+      }
+    }
+    if (msgEl) msgEl.innerHTML = renderMarkdownAI(full);
+  } else {
+    const json = await resp.json();
+    const content = json.choices?.[0]?.message?.content || '';
+    if (msgEl) msgEl.innerHTML = renderMarkdownAI(content);
+  }
+}
+
+/* ═══ Anthropic 呼叫 ═══ */
+async function _callAnthropic(messages, cfg, msgEl) {
+  const systemContent = messages.filter(m => m.role === 'system').map(m => m.content).join('\n\n');
+  const convMsgs = messages.filter(m => m.role !== 'system');
+
+  const resp = await fetch(`${AI_PROVIDERS.anthropic.baseUrl}/v1/messages`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': cfg.key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: cfg.model,
+      messages: convMsgs,
+      system: systemContent,
+      max_tokens: cfg.maxTok,
+      stream: cfg.stream
+    }),
+    signal: aiState.abortController.signal
+  });
+
+  if (!resp.ok) {
+    const err = await resp.text();
+    throw new Error(`HTTP ${resp.status}: ${err.slice(0, 200)}`);
+  }
+
+  if (cfg.stream) {
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '', full = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        try {
+          const json = JSON.parse(data);
+          if (json.type === 'content_block_delta' && json.delta?.type === 'text_delta') {
+            full += json.delta.text;
+            if (msgEl) msgEl.innerHTML = renderMarkdownAI(full);
+            const msgs = document.getElementById('ai-messages');
+            if (msgs) msgs.scrollTop = msgs.scrollHeight;
+          }
+        } catch(e) {}
+      }
+    }
+    if (msgEl) msgEl.innerHTML = renderMarkdownAI(full);
+  } else {
+    const json = await resp.json();
+    const content = json.content?.[0]?.text || '';
+    if (msgEl) msgEl.innerHTML = renderMarkdownAI(content);
+  }
+}
+
+/* ═══ T19 AI 決策摘要 Hub（覆寫原版 renderT19）═══ */
+function renderT19() {
+  const container = document.getElementById('ai-report');
+  if (!container) return;
+  const e = _getEngine(), s = _getState();
+
+  container.innerHTML = `
+    <div class="ai-hub-banner glass">
+      <div style="font-size:28px;margin-bottom:12px">🤖</div>
+      <div style="font-size:20px;font-weight:900;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px">
+        CVP AI 決策摘要中心
+      </div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;max-width:480px;margin-left:auto;margin-right:auto">
+        整合 19 個分析模組的智能洞察，由 AI 生成跨模組決策建議報告
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-primary" onclick="generateFullAIReport()" style="padding:10px 22px;font-size:14px">
+          📊 生成完整 AI 決策報告
+        </button>
+        <button class="btn-secondary" onclick="toggleAIPanel()" style="padding:10px 22px;font-size:14px">
+          💬 開啟 AI 對話面板
+        </button>
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div style="font-size:13px;font-weight:700;color:var(--text-secondary);margin-bottom:12px">🚀 快速分析各模組：</div>
+      <div class="ai-hub-cards">
+        ${[
+          {id:'t3', icon:'📈', name:'CVP靜態分析', desc:'損益平衡點 / 安全邊際'},
+          {id:'t4', icon:'🎛', name:'情境模擬', desc:'四因子敏感性分析'},
+          {id:'t12', icon:'⚠', name:'風險儀表板', desc:'蒙地卡羅 / 風險矩陣'},
+          {id:'t16', icon:'🌀', name:'龍捲風圖', desc:'利潤敏感性排序'},
+          {id:'t5', icon:'🔀', name:'多情境比較', desc:'機率加權期望利潤'},
+          {id:'t17', icon:'🗺', name:'CM矩陣BCG', desc:'產品策略四象限'},
+          {id:'t6', icon:'💼', name:'投資ROI', desc:'NPV / IRR / 回收期'},
+          {id:'t10', icon:'🏦', name:'杜邦分析', desc:'ROE分解 / 資金效率'},
+          {id:'t8', icon:'⚡', name:'經營槓桿', desc:'DOL 風險評估'},
+          {id:'t11', icon:'📅', name:'月度趨勢', desc:'收入 CM 利潤走勢'},
+          {id:'t14', icon:'📐', name:'預算差異', desc:'量差 / 價差分析'},
+          {id:'t18', icon:'📆', name:'YoY比較', desc:'多年度成長分析'}
+        ].map(c => `
+          <div class="ai-hub-card" onclick="switchTab('${c.id}');setTimeout(()=>{toggleAIPanel();triggerTabAI('${c.id}')},400)">
+            <div style="font-size:22px;margin-bottom:8px">${c.icon}</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-primary)">${c.name}</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px">${c.desc}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div id="ai-full-report-output" class="glass" style="padding:20px;display:none">
+      <div style="font-size:14px;font-weight:700;color:var(--violet-lt);margin-bottom:12px">📄 AI 全局決策摘要</div>
+      <div id="ai-full-report-content" style="font-size:13px;line-height:1.8;color:var(--text-primary)"></div>
+    </div>
+
+    <div class="glass" style="padding:20px;margin-top:0">
+      <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:10px">💡 使用說明</div>
+      <div style="font-size:12px;color:var(--text-muted);line-height:2">
+        1. 點擊右側 🤖 按鈕，開啟 AI 對話面板並設定 API Key<br>
+        2. 點擊各分析模組中的「🤖 AI 分析」按鈕，自動提取當前數據送 AI 分析<br>
+        3. 在對話面板中直接輸入問題，AI 會參考當前系統數據回答<br>
+        4. 支援 OpenAI / Anthropic Claude / DeepSeek / 硅基流動 等多個 AI 供應商<br>
+        5. 對話記錄自動保存，可匯出為文字檔供後續使用
+      </div>
+    </div>
+  `;
+}
+
+/* ═══ 生成全局 AI 報告 ═══ */
+async function generateFullAIReport() {
+  const outWrap = document.getElementById('ai-full-report-output');
+  const outEl   = document.getElementById('ai-full-report-content');
+  if (!outWrap || !outEl) return;
+
+  if (!aiState.apiKey && aiState.provider !== 'custom') {
+    outEl.innerHTML = '⚠️ 請先在 AI 面板中設定 API Key。';
+    outWrap.style.display = 'block';
+    return;
+  }
+
+  outWrap.style.display = 'block';
+  outEl.innerHTML = '⏳ AI 正在分析全系統資料，請稍候（約 15-30 秒）…';
+
+  // 收集全局資料
+  const e = _getEngine(), s = _getState();
+  const globalData = {
+    overview: extractT1Data(),
+    cvp: extractT3Data(),
+    risk: extractT12Data(),
+    dol: extractT8Data(),
+    investment: extractT6Data()
+  };
+
+  const prompt = `請對以下 CVP 量利投分析系統的全局資料進行綜合評估，生成一份完整的執行決策報告：
+
+${JSON.stringify(globalData, null, 2)}
+
+報告結構：
+1. 執行摘要（3 行以內的關鍵結論）
+2. 財務健康診斷（CM率、安全邊際、DOL 評估）
+3. 三大風險預警（🔴 排序）
+4. 五項優先行動建議（🔴🟡🟢 分類）
+5. 決策建議總結
+
+請用繁體中文，數字具體，表格輔助說明。`;
+
+  const messages = [
+    { role: 'system', content: AI_SYSTEM_PROMPT },
+    { role: 'user', content: prompt }
+  ];
+
+  aiState.abortController = new AbortController();
+  aiState.isStreaming = true;
+
+  // 包裝 msgEl 讓 callAI 可用
+  const fakeEl = { innerHTML: '', textContent: '' };
+  Object.defineProperty(fakeEl, 'innerHTML', {
+    get() { return this._html || ''; },
+    set(v) { this._html = v; outEl.innerHTML = v; }
+  });
+
+  try {
+    if (aiState.provider === 'anthropic') {
+      await _callAnthropic(messages, {
+        key: aiState.apiKey,
+        model: document.getElementById('ai-model')?.value || aiState.model,
+        maxTok: aiState.maxTokens, temp: aiState.temperature, stream: aiState.useStream
+      }, fakeEl);
+    } else {
+      await _callOpenAI(messages, {
+        key: aiState.apiKey,
+        model: document.getElementById('ai-model')?.value || aiState.model,
+        maxTok: aiState.maxTokens, temp: aiState.temperature, stream: aiState.useStream
+      }, fakeEl);
+    }
+  } catch(e) {
+    outEl.innerHTML = '❌ 生成失敗：' + (e.message || String(e));
+  } finally {
+    aiState.isStreaming = false;
+  }
+}
+
+/* ═══ 初始化 AI 模組 ═══ */
+function _initAIModule() {
+  // 載入設定
+  onProviderChange();
+  loadAISettings();
+
+  // 建立快速分析按鈕列
+  const btnContainer = document.getElementById('ai-tab-btns');
+  if (btnContainer) {
+    Object.entries(CVP_TAB_LABELS).forEach(([tabId, label]) => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-ai-tab';
+      btn.textContent = label;
+      btn.onclick = () => {
+        // 切換到對應頁籤並觸發分析
+        if (typeof switchTab === 'function') switchTab(tabId);
+        setTimeout(() => triggerTabAI(tabId), 500);
+      };
+      btnContainer.appendChild(btn);
+    });
+  }
+
+  // 為各頁籤的 sec-hd 加入 AI 按鈕
+  _addAIButtonsToTabs();
+
+  // 鍵盤快捷鍵 Alt+A
+  document.addEventListener('keydown', e => {
+    if (e.altKey && e.key === 'a') { e.preventDefault(); toggleAIPanel(); }
+  });
+
+  // Hook switchTab：切換頁籤時更新當前 tabId
+  const _origSwitchTab = window.switchTab;
+  if (typeof _origSwitchTab === 'function') {
+    window.switchTab = function(id) {
+      aiState.currentTabId = id;
+      return _origSwitchTab(id);
+    };
+  }
+}
+
+function _addAIButtonsToTabs() {
+  const targetTabs = ['t1','t3','t4','t5','t6','t8','t9','t10','t11','t12','t14','t16','t17','t18'];
+  targetTabs.forEach(tabId => {
+    const tabEl = document.getElementById(tabId);
+    if (!tabEl) return;
+    const secHds = tabEl.querySelectorAll('.sec-hd');
+    const firstHd = secHds[0];
+    if (!firstHd) return;
+    // 避免重複加入
+    if (firstHd.parentElement.classList.contains('sec-hd-row')) return;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'sec-hd-row';
+    firstHd.parentNode.insertBefore(wrapper, firstHd);
+    wrapper.appendChild(firstHd);
+    const aiBtn = document.createElement('button');
+    aiBtn.className = 'btn-inline-ai';
+    aiBtn.textContent = '🤖 AI 分析';
+    aiBtn.onclick = () => {
+      const panel = document.getElementById('ai-panel');
+      if (!panel.classList.contains('open')) toggleAIPanel();
+      setTimeout(() => triggerTabAI(tabId), 200);
+    };
+    wrapper.appendChild(aiBtn);
+  });
+}
+</script>
+
+</body>
+</html>
