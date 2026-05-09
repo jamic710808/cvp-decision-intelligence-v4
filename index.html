@@ -1,23 +1,23 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>CVP 量利投一體化決策系統 v4.0 + AI</title>
+  <title>CVP ???擃?瘙箇?蝟餌絞 v4.0 + AI</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
   <style>
-/* ═══════════════════════════════════════════════════════════
-   OBSIDIAN INTELLIGENCE — CVP Dashboard v4 Design System
+/* ????????????????????????????????????????????????????????????   OBSIDIAN INTELLIGENCE ??CVP Dashboard v4 Design System
    Typography: Inter + JetBrains Mono + Noto Sans TC
    Palette: Deep Navy Obsidian
-═══════════════════════════════════════════════════════════ */
+????????????????????????????????????????????????????????????*/
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
 
-/* ── CSS Variables ── */
+/* ?? CSS Variables ?? */
 :root, [data-theme="dark"] {
   /* Backgrounds */
   --bg-base:       #050914;
@@ -102,7 +102,7 @@
   --violet-glow:rgba(124,58,237,0.08);
 }
 
-/* ── Reset / Base ── */
+/* ?? Reset / Base ?? */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { font-size: 14px; -webkit-font-smoothing: antialiased; }
@@ -121,15 +121,15 @@ body {
   overflow-x: hidden;
 }
 
-/* ── Scrollbar ── */
+/* ?? Scrollbar ?? */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.2); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(148,163,184,0.35); }
 
-/* ══════════════════════════════════════
+/* ??????????????????????????????????????
    HEADER
-══════════════════════════════════════ */
+?????????????????????????????????????? */
 #app-header {
   grid-area: header;
   position: sticky;
@@ -145,9 +145,9 @@ body {
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* ══════════════════════════════════════
+/* ??????????????????????????????????????
    NAV SIDEBAR
-══════════════════════════════════════ */
+?????????????????????????????????????? */
 #nav-sidebar {
   grid-area: nav;
   width: var(--sidebar-w);
@@ -228,9 +228,9 @@ body {
   font-weight: 600;
 }
 
-/* ══════════════════════════════════════
+/* ??????????????????????????????????????
    MAIN CONTENT
-══════════════════════════════════════ */
+?????????????????????????????????????? */
 #main-content {
   grid-area: main;
   padding: 20px;
@@ -249,16 +249,16 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Layout Helpers ── */
+/* ?? Layout Helpers ?? */
 .col-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .col-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
 .col-1-3 { display: grid; grid-template-columns: 280px 1fr; gap: 16px; }
 .stack { display: flex; flex-direction: column; gap: 16px; }
 .mb-4 { margin-bottom: 16px; }
 
-/* ══════════════════════════════════════
+/* ??????????????????????????????????????
    GLASS CARD
-══════════════════════════════════════ */
+?????????????????????????????????????? */
 .glass {
   background: var(--bg-card);
   border: 1px solid var(--border-default);
@@ -276,9 +276,9 @@ body {
   pointer-events: none;
 }
 
-/* ══════════════════════════════════════
+/* ??????????????????????????????????????
    KPI GRID & CARD
-══════════════════════════════════════ */
+?????????????????????????????????????? */
 .kpi-grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
 .kpi-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
 .kpi-grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
@@ -332,9 +332,9 @@ body {
   font-family: var(--font-ui);
 }
 
-/* ══════════════════════════════════════
+/* ??????????????????????????????????????
    SECTION HEADER
-══════════════════════════════════════ */
+?????????????????????????????????????? */
 .sec-hd {
   font-size: 13px;
   font-weight: 700;
@@ -368,9 +368,9 @@ body {
   vertical-align: middle;
 }
 
-/* ══════════════════════════════════════
+/* ??????????????????????????????????????
    DATA TABLE
-══════════════════════════════════════ */
+?????????????????????????????????????? */
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -411,9 +411,9 @@ body {
   background: var(--bg-elevated);
 }
 
-/* ══════════════════════════════════════
+/* ??????????????????????????????????????
    CHART WRAP
-══════════════════════════════════════ */
+?????????????????????????????????????? */
 .chart-wrap {
   position: relative;
   width: 100%;
@@ -428,9 +428,9 @@ body {
 .h320 { height: 320px; }
 .h360 { height: 360px; }
 
-/* ══════════════════════════════════════
+/* ??????????????????????????????????????
    BUTTONS
-══════════════════════════════════════ */
+?????????????????????????????????????? */
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -488,9 +488,9 @@ body {
 }
 .btn-success:hover { opacity: 0.88; }
 
-/* ══════════════════════════════════════
+/* ??????????????????????????????????????
    FORM CONTROLS
-══════════════════════════════════════ */
+?????????????????????????????????????? */
 .form-select, .form-input {
   width: 100%;
   padding: 8px 12px;
@@ -536,9 +536,9 @@ input[type="range"]:hover::-webkit-slider-thumb {
   box-shadow: 0 0 0 3px rgba(56,189,248,0.4);
 }
 
-/* ══════════════════════════════════════
+/* ??????????????????????????????????????
    UPLOAD ZONE
-══════════════════════════════════════ */
+?????????????????????????????????????? */
 .upload-zone {
   border: 2px dashed var(--border-medium);
   border-radius: var(--radius-lg);
@@ -552,9 +552,9 @@ input[type="range"]:hover::-webkit-slider-thumb {
   background: rgba(14,165,233,0.05);
 }
 
-/* ══════════════════════════════════════
+/* ??????????????????????????????????????
    TOAST
-══════════════════════════════════════ */
+?????????????????????????????????????? */
 #toast {
   position: fixed;
   bottom: 24px;
@@ -579,9 +579,9 @@ input[type="range"]:hover::-webkit-slider-thumb {
 #toast.warn { border-left: 3px solid var(--amber); }
 #toast.err { border-left: 3px solid var(--red); }
 
-/* ══════════════════════════════════════
+/* ??????????????????????????????????????
    SPECIAL COMPONENTS
-══════════════════════════════════════ */
+?????????????????????????????????????? */
 /* Sensitivity Factors */
 #sensitivity-factors .sf-row {
   display: flex;
@@ -667,9 +667,9 @@ input[type="range"]:hover::-webkit-slider-thumb {
 /* Data Status */
 #data-status { font-family: var(--font-data); }
 
-/* ══════════════════════════════════════
+/* ??????????????????????????????????????
    RESPONSIVE
-══════════════════════════════════════ */
+?????????????????????????????????????? */
 @media (max-width: 900px) {
   body {
     grid-template-columns: 1fr;
@@ -701,11 +701,11 @@ input[type="range"]:hover::-webkit-slider-thumb {
   .glass { box-shadow: none; }
 }
 
-/* ══════════════════════════════════════════════════════════
-   AI PANEL CSS — Preserved & Enhanced
-══════════════════════════════════════════════════════════ */
+/* ??????????????????????????????????????????????????????????
+   AI PANEL CSS ??Preserved & Enhanced
+?????????????????????????????????????????????????????????? */
 
-/* ─ AI Panel Toggle Button ─ */
+/* ? AI Panel Toggle Button ? */
 #ai-panel-toggle {
   position: fixed;
   right: 20px;
@@ -730,7 +730,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   transform: scale(1.06);
 }
 
-/* ─ AI Panel Container ─ */
+/* ? AI Panel Container ? */
 .ai-panel {
   position: fixed;
   top: var(--header-h);
@@ -747,7 +747,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
 }
 .ai-panel.open { right: 0; }
 
-/* ─ AI Panel Header ─ */
+/* ? AI Panel Header ? */
 .ai-panel-header {
   display: flex;
   align-items: center;
@@ -780,7 +780,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
 }
 .ai-close-btn:hover { color: var(--text-primary); background: var(--bg-hover); }
 
-/* ─ AI Status Badge ─ */
+/* ? AI Status Badge ? */
 .ai-status-badge {
   display: inline-block;
   font-size: 10px;
@@ -796,7 +796,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
 .ai-status-badge.stream { color: var(--sky-lt);     border-color: rgba(56,189,248,0.3); background: rgba(14,165,233,0.08); }
 .ai-status-badge.error  { color: var(--red-lt);     border-color: rgba(248,113,113,0.3); background: rgba(239,68,68,0.08); }
 
-/* ─ AI Config Toggle Bar ─ */
+/* ? AI Config Toggle Bar ? */
 .ai-config-toggle-bar {
   display: flex;
   align-items: center;
@@ -829,7 +829,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   font-family: var(--font-data);
 }
 
-/* ─ AI Config Body ─ */
+/* ? AI Config Body ? */
 .ai-config-body {
   overflow: hidden;
   transition: max-height 0.3s ease;
@@ -917,7 +917,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
 }
 .ai-act-btn:hover { color: var(--text-primary); background: var(--bg-hover); }
 
-/* ─ AI Tab Bar ─ */
+/* ? AI Tab Bar ? */
 .ai-tab-bar {
   padding: 8px 12px;
   border-bottom: 1px solid var(--border-default);
@@ -947,7 +947,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   color: var(--violet-lt);
 }
 
-/* ─ AI Inline Button (in sec-hd-row) ─ */
+/* ? AI Inline Button (in sec-hd-row) ? */
 .btn-inline-ai {
   padding: 4px 10px;
   background: rgba(124,58,237,0.12);
@@ -966,7 +966,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   border-color: rgba(167,139,250,0.5);
 }
 
-/* ─ AI Messages ─ */
+/* ? AI Messages ? */
 .ai-messages {
   flex: 1;
   overflow-y: auto;
@@ -1037,7 +1037,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
 .ai-msg strong { color: var(--sky-lt); }
 .ai-msg p { margin: 4px 0; }
 
-/* ─ AI Thought Process ─ */
+/* ? AI Thought Process ? */
 .ai-thought {
   background: rgba(124,58,237,0.08);
   border: 1px solid rgba(167,139,250,0.2);
@@ -1063,7 +1063,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   overflow-y: auto;
 }
 
-/* ─ Message Copy Button ─ */
+/* ? Message Copy Button ? */
 .msg-copy-btn {
   display: block;
   margin-top: 8px;
@@ -1079,7 +1079,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
 }
 .msg-copy-btn:hover { color: var(--text-secondary); }
 
-/* ─ AI Input Section ─ */
+/* ? AI Input Section ? */
 .ai-input-section {
   padding: 12px;
   border-top: 1px solid var(--border-default);
@@ -1139,7 +1139,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   font-family: var(--font-data);
 }
 
-/* ─ AI Hub (T19) ─ */
+/* ? AI Hub (T19) ? */
 .ai-hub-banner {
   padding: 32px 24px;
   text-align: center;
@@ -1178,9 +1178,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
 
 <body>
 
-  <!-- ═════════════════════════════════════════════
-     頁首 Header（sticky）
-═════════════════════════════════════════════ -->
+  <!-- ??????????????????????????????????????????????     ?? Header嚗ticky嚗???????????????????????????????????????????????-->
   <header id="app-header">
     <div
       style="max-width:1800px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
@@ -1200,181 +1198,179 @@ input[type="range"]:hover::-webkit-slider-thumb {
         <div>
           <div
             style="font-size:18px;font-weight:900;background:linear-gradient(90deg,#38bdf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent">
-            CVP 量利投一體化決策系統</div>
-          <div style="font-size:10px;color:var(--text-muted);letter-spacing:2px">COST · VOLUME · PROFIT · DECISION
+            CVP ???擃?瘙箇?蝟餌絞</div>
+          <div style="font-size:10px;color:var(--text-muted);letter-spacing:2px">COST 繚 VOLUME 繚 PROFIT 繚 DECISION
             INTELLIGENCE v4.0 + AI</div>
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <div id="hdr-company" style="font-size:13px;color:var(--text-secondary)">公司：<span
-            style="color:var(--sky-lt);font-weight:700">範例科技股份有限公司</span></div>
-        <div id="hdr-period" style="font-size:12px;color:var(--text-muted)">期間：<span style="color:var(--violet-lt)">2026
-            年度</span></div>
-        <div id="hdr-updated" style="font-size:11px;color:var(--text-dim)">更新：<span id="last-update">—</span></div>
+        <div id="hdr-company" style="font-size:13px;color:var(--text-secondary)">?砍嚗?span
+            style="color:var(--sky-lt);font-weight:700">蝭?蝘??∩遢???砍</span></div>
+        <div id="hdr-period" style="font-size:12px;color:var(--text-muted)">??嚗?span style="color:var(--violet-lt)">2026
+            撟游漲</span></div>
+        <div id="hdr-updated" style="font-size:11px;color:var(--text-dim)">?湔嚗?span id="last-update">??/span></div>
         <label class="btn-primary" style="padding:7px 14px;cursor:pointer">
-          ⬆ 匯入 Excel
+          漎??臬 Excel
           <input type="file" id="excel-upload" accept=".xlsx,.xls" style="display:none"
             onchange="handleExcelUpload(event)">
         </label>
-        <button class="btn-secondary" onclick="exportStateJSON()">⬇ 匯出 JSON</button>
-        <button id="theme-btn" class="btn-secondary" onclick="toggleTheme()">☀ 亮色</button>
+        <button class="btn-secondary" onclick="exportStateJSON()">漎??臬 JSON</button>
+        <button id="theme-btn" class="btn-secondary" onclick="toggleTheme()">? 鈭株</button>
         <button class="btn-secondary" id="menu-btn" onclick="toggleSidebar()" style="display:none"
-          aria-label="開啟選單">☰</button>
+          aria-label="???詨">??/button>
       </div>
     </div>
   </header>
 
-  <!-- ═════════════════════════════════════════════
-     左側分類面板導覽
-═════════════════════════════════════════════ -->
-  <nav id="nav-sidebar" aria-label="功能導覽">
+  <!-- ??????????????????????????????????????????????     撌血???Ｘ撠汗
+??????????????????????????????????????????????-->
+  <nav id="nav-sidebar" aria-label="?撠汗">
     <div class="nav-group open">
-      <button class="nav-group-btn">📊 基礎分析 <span class="arrow">▶</span></button>
+      <button class="nav-group-btn">?? ?箇??? <span class="arrow">??/span></button>
       <div class="nav-group-items">
-        <button class="nav-item active" data-tab="t1" onclick="switchTab('t1')">🏠 執行長總覽</button>
-        <button class="nav-item" data-tab="t2" onclick="switchTab('t2')">💰 管理損益表</button>
-        <button class="nav-item" data-tab="t3" onclick="switchTab('t3')">📈 CVP 靜態分析</button>
+        <button class="nav-item active" data-tab="t1" onclick="switchTab('t1')">?? ?瑁??瑞蜇閬?/button>
+        <button class="nav-item" data-tab="t2" onclick="switchTab('t2')">? 蝞∠???銵?/button>
+        <button class="nav-item" data-tab="t3" onclick="switchTab('t3')">?? CVP ????</button>
       </div>
     </div>
     <div class="nav-group">
-      <button class="nav-group-btn">🎛 模擬決策 <span class="arrow">▶</span></button>
+      <button class="nav-group-btn">?? 璅⊥瘙箇? <span class="arrow">??/span></button>
       <div class="nav-group-items">
-        <button class="nav-item" data-tab="t4" onclick="switchTab('t4')">🎛 動態情境模擬器</button>
-        <button class="nav-item" data-tab="t5" onclick="switchTab('t5')">🔀 多情境平行比較</button>
-        <button class="nav-item" data-tab="t7" onclick="switchTab('t7')">🎯 AI 目標搜尋</button>
-        <button class="nav-item" data-tab="t16" onclick="switchTab('t16')">🌀 龍捲風敏感性圖 <span
+        <button class="nav-item" data-tab="t4" onclick="switchTab('t4')">?? ????璅⊥??/button>
+        <button class="nav-item" data-tab="t5" onclick="switchTab('t5')">?? 憭?憓像銵?頛?/button>
+        <button class="nav-item" data-tab="t7" onclick="switchTab('t7')">? AI ?格???</button>
+        <button class="nav-item" data-tab="t16" onclick="switchTab('t16')">?? 樴憸冽??批? <span
             class="badge-new">V4</span></button>
       </div>
     </div>
     <div class="nav-group">
-      <button class="nav-group-btn">💼 投資與資金 <span class="arrow">▶</span></button>
+      <button class="nav-group-btn">? ??????<span class="arrow">??/span></button>
       <div class="nav-group-items">
-        <button class="nav-item" data-tab="t6" onclick="switchTab('t6')">💼 投資 ROI 分析</button>
-        <button class="nav-item" data-tab="t10" onclick="switchTab('t10')">🏦 資金效率（杜邦）</button>
-        <button class="nav-item" data-tab="t15" onclick="switchTab('t15')">💧 現金流預測 <span
+        <button class="nav-item" data-tab="t6" onclick="switchTab('t6')">? ?? ROI ??</button>
+        <button class="nav-item" data-tab="t10" onclick="switchTab('t10')">? 鞈???嚗??佗?</button>
+        <button class="nav-item" data-tab="t15" onclick="switchTab('t15')">? ?暸?瘚?皜?<span
             class="badge-new">V4</span></button>
       </div>
     </div>
     <div class="nav-group">
-      <button class="nav-group-btn">🧩 產品策略 <span class="arrow">▶</span></button>
+      <button class="nav-group-btn">?妝 ?Ｗ?蝑 <span class="arrow">??/span></button>
       <div class="nav-group-items">
-        <button class="nav-item" data-tab="t8" onclick="switchTab('t8')">⚡ 經營槓桿度</button>
-        <button class="nav-item" data-tab="t9" onclick="switchTab('t9')">🧩 產品組合優化器</button>
-        <button class="nav-item" data-tab="t17" onclick="switchTab('t17')">🗺 CM 矩陣（BCG） <span
+        <button class="nav-item" data-tab="t8" onclick="switchTab('t8')">??蝬?瑽▼摨?/button>
+        <button class="nav-item" data-tab="t9" onclick="switchTab('t9')">?妝 ?Ｗ?蝯??芸???/button>
+        <button class="nav-item" data-tab="t17" onclick="switchTab('t17')">? CM ?拚嚗CG嚗?<span
             class="badge-new">V4</span></button>
       </div>
     </div>
     <div class="nav-group">
-      <button class="nav-group-btn">📅 趨勢比較 <span class="arrow">▶</span></button>
+      <button class="nav-group-btn">?? 頞典瘥? <span class="arrow">??/span></button>
       <div class="nav-group-items">
-        <button class="nav-item" data-tab="t11" onclick="switchTab('t11')">📅 月度趨勢追蹤</button>
-        <button class="nav-item" data-tab="t14" onclick="switchTab('t14')">📐 預算差異分析 <span
+        <button class="nav-item" data-tab="t11" onclick="switchTab('t11')">?? ?漲頞典餈質馱</button>
+        <button class="nav-item" data-tab="t14" onclick="switchTab('t14')">?? ??撌桃?? <span
             class="badge-new">V4</span></button>
-        <button class="nav-item" data-tab="t18" onclick="switchTab('t18')">📆 多年度比較（YoY） <span
-            class="badge-new">V4</span></button>
-      </div>
-    </div>
-    <div class="nav-group">
-      <button class="nav-group-btn">⚠ 風險與報告 <span class="arrow">▶</span></button>
-      <div class="nav-group-items">
-        <button class="nav-item" data-tab="t12" onclick="switchTab('t12')">⚠ 風險儀表板</button>
-        <button class="nav-item" data-tab="t19" onclick="switchTab('t19')">📄 AI 決策摘要 <span
+        <button class="nav-item" data-tab="t18" onclick="switchTab('t18')">?? 憭僑摨行?頛?YoY嚗?<span
             class="badge-new">V4</span></button>
       </div>
     </div>
     <div class="nav-group">
-      <button class="nav-group-btn">📁 資料管理 <span class="arrow">▶</span></button>
+      <button class="nav-group-btn">??憸券???<span class="arrow">??/span></button>
       <div class="nav-group-items">
-        <button class="nav-item" data-tab="t13" onclick="switchTab('t13')">📁 資料管理中心</button>
+        <button class="nav-item" data-tab="t12" onclick="switchTab('t12')">??憸券?銵冽</button>
+        <button class="nav-item" data-tab="t19" onclick="switchTab('t19')">?? AI 瘙箇??? <span
+            class="badge-new">V4</span></button>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-group-btn">?? 鞈?蝞∠? <span class="arrow">??/span></button>
+      <div class="nav-group-items">
+        <button class="nav-item" data-tab="t13" onclick="switchTab('t13')">?? 鞈?蝞∠?銝剖?</button>
       </div>
     </div>
   </nav>
 
-  <!-- ═════════════════════════════════════════════
-     主內容區
-═════════════════════════════════════════════ -->
+  <!-- ??????????????????????????????????????????????     銝餃摰孵?
+??????????????????????????????????????????????-->
   <main id="main-content">
 
-    <!-- ════ T1 — 執行長總覽 ════ -->
+    <!-- ???? T1 ???瑁??瑞蜇閬????? -->
     <div id="t1" class="tab-content active">
       <div class="kpi-grid-4 mb-4" id="kpi-grid"></div>
       <div class="col-2 mb-4">
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">📊 收入結構 vs 邊際貢獻</div>
+          <div class="sec-hd">?? ?嗅蝯? vs ??鞎Ｙ</div>
           <div class="chart-wrap h220"><canvas id="ch-overview"></canvas></div>
         </div>
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">🎯 產品組合貢獻</div>
+          <div class="sec-hd">? ?Ｗ?蝯?鞎Ｙ</div>
           <div class="chart-wrap h220"><canvas id="ch-donut"></canvas></div>
         </div>
       </div>
       <div class="glass" style="padding:20px">
-        <div class="sec-hd">🔔 即時警示中心</div>
+        <div class="sec-hd">?? ?單?霅衣內銝剖?</div>
         <div id="alert-center"></div>
       </div>
     </div>
 
-    <!-- ════ T2 — 管理損益表 ════ -->
+    <!-- ???? T2 ??蝞∠???銵????? -->
     <div id="t2" class="tab-content">
       <div class="glass mb-4" style="padding:22px">
-        <div class="sec-hd">💰 管理損益表（邊際貢獻法）</div>
+        <div class="sec-hd">? 蝞∠???銵剁???鞎Ｙ瘜?</div>
         <div style="overflow-x:auto">
           <table class="data-table" id="pl-table"></table>
         </div>
       </div>
       <div class="col-2">
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">📊 損益結構瀑布圖</div>
+          <div class="sec-hd">?? ??蝯?????/div>
           <div class="chart-wrap h240"><canvas id="ch-waterfall"></canvas></div>
         </div>
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">🍩 成本結構分析</div>
+          <div class="sec-hd">? ?蝯???</div>
           <div class="chart-wrap h240"><canvas id="ch-cost-struct"></canvas></div>
         </div>
       </div>
     </div>
 
-    <!-- ════ T3 — CVP 靜態分析 ════ -->
+    <!-- ???? T3 ??CVP ???? ???? -->
     <div id="t3" class="tab-content">
       <div class="kpi-grid-3 mb-4">
         <div class="kpi-card">
-          <div class="kpi-label">損益平衡點（金額）</div>
-          <div class="kpi-val" id="bep-rev">—</div>
-          <div class="kpi-sub">萬元</div>
+          <div class="kpi-label">??撟唾﹛暺???嚗?/div>
+          <div class="kpi-val" id="bep-rev">??/div>
+          <div class="kpi-sub">?砍?</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">安全邊際率</div>
-          <div class="kpi-val" id="safety-m">—</div>
+          <div class="kpi-label">摰????/div>
+          <div class="kpi-val" id="safety-m">??/div>
           <div class="kpi-sub">%</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">邊際貢獻總額</div>
-          <div class="kpi-val" id="total-cm">—</div>
-          <div class="kpi-sub">萬元</div>
+          <div class="kpi-label">??鞎Ｙ蝮賡?</div>
+          <div class="kpi-val" id="total-cm">??/div>
+          <div class="kpi-sub">?砍?</div>
         </div>
       </div>
       <div class="glass mb-4" style="padding:20px">
-        <div class="sec-hd">📈 CVP 損益平衡圖（0% ~ 180% 銷量）</div>
+        <div class="sec-hd">?? CVP ??撟唾﹛??0% ~ 180% ?琿?嚗?/div>
         <div class="chart-wrap h280"><canvas id="ch-cvp"></canvas></div>
       </div>
       <div class="glass" style="padding:20px">
-        <div class="sec-hd">🏷 產品貢獻明細</div>
+        <div class="sec-hd">? ?Ｗ?鞎Ｙ?敦</div>
         <div style="overflow-x:auto">
           <table class="data-table" id="product-table"></table>
         </div>
       </div>
     </div>
 
-    <!-- ════ T4 — 動態情境模擬器 ════ -->
+    <!-- ???? T4 ??????璅⊥?????? -->
     <div id="t4" class="tab-content">
       <div class="col-1-3">
         <div class="stack">
           <div class="glass" style="padding:20px">
-            <div class="sec-hd">🎛 參數操控塔</div>
+            <div class="sec-hd">?? ??憛?/div>
             <div style="margin-bottom:14px">
               <div
                 style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:4px">
-                <span>售價調整 (Price)</span><span id="price-lbl"
+                <span>?桀隤踵 (Price)</span><span id="price-lbl"
                   style="color:var(--sky-lt);font-family:monospace">0%</span>
               </div>
               <input type="range" id="price-slider" min="-30" max="50" value="0" oninput="simUpdate()">
@@ -1382,7 +1378,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
             <div style="margin-bottom:14px">
               <div
                 style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:4px">
-                <span>銷量調整 (Volume)</span><span id="vol-lbl"
+                <span>?琿?隤踵 (Volume)</span><span id="vol-lbl"
                   style="color:var(--emerald);font-family:monospace">0%</span>
               </div>
               <input type="range" id="vol-slider" min="-50" max="100" value="0" oninput="simUpdate()">
@@ -1390,57 +1386,57 @@ input[type="range"]:hover::-webkit-slider-thumb {
             <div style="margin-bottom:14px">
               <div
                 style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:4px">
-                <span>單變成本調整 (VC)</span><span id="vc-lbl" style="color:var(--amber);font-family:monospace">0%</span>
+                <span>?株??隤踵 (VC)</span><span id="vc-lbl" style="color:var(--amber);font-family:monospace">0%</span>
               </div>
               <input type="range" id="vc-slider" min="-20" max="30" value="0" oninput="simUpdate()">
             </div>
             <div style="margin-bottom:16px">
               <div
                 style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:4px">
-                <span>固定成本調整 (FC)</span><span id="fc-lbl" style="color:var(--red);font-family:monospace">0%</span>
+                <span>?箏??隤踵 (FC)</span><span id="fc-lbl" style="color:var(--red);font-family:monospace">0%</span>
               </div>
               <input type="range" id="fc-slider" min="-20" max="30" value="0" oninput="simUpdate()">
             </div>
             <div style="display:flex;gap:8px">
-              <button class="btn-secondary" onclick="simReset()" style="flex:1">🔄 重置</button>
-              <button class="btn-success" onclick="addScenario()" style="flex:1">💾 儲存情境</button>
+              <button class="btn-secondary" onclick="simReset()" style="flex:1">?? ?蔭</button>
+              <button class="btn-success" onclick="addScenario()" style="flex:1">? ?脣???</button>
             </div>
           </div>
           <div class="glass" style="padding:20px">
-            <div class="sec-hd">⚡ 敏感係數分析</div>
-            <div style="font-size:10px;color:var(--text-muted);margin-bottom:10px">數值越大，對利潤的槓桿效應越強</div>
+            <div class="sec-hd">????靽??</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:10px">?詨潸?憭改?撠瞏斤?瑽▼??頞撥</div>
             <div id="sensitivity-factors"></div>
           </div>
         </div>
         <div class="stack">
           <div class="kpi-grid-4" id="sim-kpis"></div>
           <div class="glass" style="padding:20px;flex:1">
-            <div class="sec-hd">📈 模擬 vs 基準比較</div>
+            <div class="sec-hd">?? 璅⊥ vs ?箸?瘥?</div>
             <div class="chart-wrap h360"><canvas id="ch-sim"></canvas></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ════ T5 — 多情境平行比較 ════ -->
+    <!-- ???? T5 ??憭?憓像銵?頛????? -->
     <div id="t5" class="tab-content">
       <div class="kpi-card mb-4" id="expected-profit" style="max-width:320px"></div>
       <div class="glass mb-4" style="padding:20px">
-        <div class="sec-hd">🔀 多情境平行比較（含機率加權）</div>
+        <div class="sec-hd">?? 憭?憓像銵?頛??急???甈?</div>
         <div style="overflow-x:auto">
           <table class="data-table" id="scenario-table">
             <thead>
               <tr>
-                <th>情境</th>
-                <th>機率</th>
-                <th>銷量%</th>
-                <th>單價%</th>
-                <th>總收入(萬)</th>
-                <th>邊際貢獻(萬)</th>
-                <th>CM率</th>
-                <th>利潤(萬)</th>
-                <th>利潤變動</th>
-                <th>操作</th>
+                <th>??</th>
+                <th>璈?</th>
+                <th>?琿?%</th>
+                <th>?桀%</th>
+                <th>蝮賣????</th>
+                <th>??鞎Ｙ(??</th>
+                <th>CM??/th>
+                <th>?拇膜(??</th>
+                <th>?拇膜霈?</th>
+                <th>??</th>
               </tr>
             </thead>
             <tbody id="scenario-tbody"></tbody>
@@ -1449,109 +1445,108 @@ input[type="range"]:hover::-webkit-slider-thumb {
       </div>
       <div class="col-2">
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">📊 情境利潤對比</div>
+          <div class="sec-hd">?? ???拇膜撠?</div>
           <div class="chart-wrap h260"><canvas id="ch-scenario"></canvas></div>
         </div>
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">🕸 核心指標雷達圖</div>
+          <div class="sec-hd">? ?詨????琿???/div>
           <div class="chart-wrap h260"><canvas id="ch-scenario-radar"></canvas></div>
         </div>
       </div>
     </div>
 
-    <!-- ════ T6 — 投資 ROI ════ -->
+    <!-- ???? T6 ???? ROI ???? -->
     <div id="t6" class="tab-content">
       <div class="kpi-grid-4 mb-4" id="inv-kpis"></div>
       <div class="col-2 mb-4">
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">📊 現金流量瀑布圖</div>
+          <div class="sec-hd">?? ?暸?瘚?????/div>
           <div class="chart-wrap h260"><canvas id="ch-cf"></canvas></div>
         </div>
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">📈 累計現金流（回收期）</div>
+          <div class="sec-hd">?? 蝝航??暸?瘚????</div>
           <div class="chart-wrap h260"><canvas id="ch-payback"></canvas></div>
         </div>
       </div>
       <div class="glass" style="padding:20px">
-        <div class="sec-hd">📉 NPV 對 WACC 敏感度分析</div>
+        <div class="sec-hd">?? NPV 撠?WACC ??摨血???/div>
         <div class="chart-wrap h240"><canvas id="ch-npv-sens"></canvas></div>
       </div>
     </div>
 
-    <!-- ════ T7 — AI 目標搜尋 ════ -->
+    <!-- ???? T7 ??AI ?格??? ???? -->
     <div id="t7" class="tab-content">
       <div class="glass mb-4" style="padding:24px">
-        <div class="sec-hd">🎯 AI 目標搜尋引擎（二分法 120 次迭代）</div>
+        <div class="sec-hd">? AI ?格???撘?嚗??? 120 甈∟翮隞??</div>
         <div class="col-3" style="margin-bottom:14px">
           <div>
-            <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">目標類型</label>
+            <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">?格?憿?</label>
             <select id="gs-target-type" class="form-select">
-              <option value="profit">目標利潤（萬元）</option>
-              <option value="margin">目標邊際貢獻率（%）</option>
-              <option value="safety">目標安全邊際率（%）</option>
+              <option value="profit">?格??拇膜嚗??</option>
+              <option value="margin">?格???鞎Ｙ??%嚗?/option>
+              <option value="safety">?格?摰????%嚗?/option>
             </select>
           </div>
           <div>
-            <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">目標值</label>
-            <input type="number" id="gs-target-val" placeholder="例：2000" class="form-input">
+            <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">?格???/label>
+            <input type="number" id="gs-target-val" placeholder="靘?2000" class="form-input">
           </div>
           <div>
-            <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">調整變數</label>
+            <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">隤踵霈</label>
             <select id="gs-var" class="form-select">
-              <option value="vol">銷量變動 %</option>
-              <option value="price">單價變動 %</option>
-              <option value="vc">變動成本變動 %</option>
-              <option value="fc">固定成本變動 %</option>
+              <option value="vol">?琿?霈? %</option>
+              <option value="price">?桀霈? %</option>
+              <option value="vc">霈??霈? %</option>
+              <option value="fc">?箏??霈? %</option>
             </select>
           </div>
         </div>
-        <button class="btn-primary" onclick="runGoalSeekUI()">🤖 執行 AI 搜尋</button>
+        <button class="btn-primary" onclick="runGoalSeekUI()">?? ?瑁? AI ??</button>
       </div>
       <div class="glass" style="padding:20px" id="gs-result">
-        <div style="color:var(--text-muted);font-size:13px">🤖 點擊「執行 AI 搜尋」查看建議方案</div>
+        <div style="color:var(--text-muted);font-size:13px">?? 暺??銵?AI ????遣霅唳獢?/div>
       </div>
     </div>
 
-    <!-- ════ T8 — 經營槓桿度 ════ -->
+    <!-- ???? T8 ??蝬?瑽▼摨????? -->
     <div id="t8" class="tab-content">
       <div class="kpi-grid-3 mb-4">
         <div class="kpi-card">
-          <div class="kpi-label">經營槓桿度（DOL）</div>
-          <div class="kpi-val" id="dol-val">—</div>
-          <div class="kpi-sub">銷量↑1% → 利潤↑ <span id="dol-impact">—</span>%</div>
+          <div class="kpi-label">蝬?瑽▼摨佗?DOL嚗?/div>
+          <div class="kpi-val" id="dol-val">??/div>
+          <div class="kpi-sub">?琿???% ???拇膜??<span id="dol-impact">??/span>%</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">邊際貢獻總額</div>
-          <div class="kpi-val success" id="dol-cm">—</div>
-          <div class="kpi-sub">萬元</div>
+          <div class="kpi-label">??鞎Ｙ蝮賡?</div>
+          <div class="kpi-val success" id="dol-cm">??/div>
+          <div class="kpi-sub">?砍?</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">營業利潤</div>
-          <div class="kpi-val" id="dol-profit">—</div>
-          <div class="kpi-sub">萬元</div>
+          <div class="kpi-label">?平?拇膜</div>
+          <div class="kpi-val" id="dol-profit">??/div>
+          <div class="kpi-sub">?砍?</div>
         </div>
       </div>
       <div class="glass mb-4" style="padding:20px">
-        <div class="sec-hd">⚡ DOL 動態分析 — 銷量 vs 利潤放大效果</div>
+        <div class="sec-hd">??DOL ???? ???琿? vs ?拇膜?曉之??</div>
         <div style="margin-bottom:12px">
-          <label style="font-size:12px;color:var(--text-secondary)">銷量情境範圍：
-            <input type="range" id="dol-range" min="10" max="80" value="30" style="width:140px;vertical-align:middle"
+          <label style="font-size:12px;color:var(--text-secondary)">?琿???蝭?嚗?            <input type="range" id="dol-range" min="10" max="80" value="30" style="width:140px;vertical-align:middle"
               oninput="document.getElementById('dol-range-lbl').textContent=this.value+'%';renderDOL()">
             <span id="dol-range-lbl" style="color:var(--sky-lt)">30%</span></label>
         </div>
         <div class="chart-wrap h260"><canvas id="ch-dol"></canvas></div>
       </div>
       <div class="glass" style="padding:20px">
-        <div class="sec-hd">📋 各產品槓桿貢獻分析</div>
+        <div class="sec-hd">?? ???獢輯甜?餃???/div>
         <div style="overflow-x:auto">
           <table class="data-table">
             <thead>
               <tr>
-                <th>產品</th>
-                <th>邊際貢獻(萬)</th>
-                <th>CM率</th>
-                <th>對總CM貢獻%</th>
-                <th>槓桿敏感度</th>
+                <th>?Ｗ?</th>
+                <th>??鞎Ｙ(??</th>
+                <th>CM??/th>
+                <th>撠蜇CM鞎Ｙ%</th>
+                <th>瑽▼??摨?/th>
               </tr>
             </thead>
             <tbody id="dol-table-body"></tbody>
@@ -1560,31 +1555,31 @@ input[type="range"]:hover::-webkit-slider-thumb {
       </div>
     </div>
 
-    <!-- ════ T9 — 產品組合優化器 ════ -->
+    <!-- ???? T9 ???Ｗ?蝯??芸??????? -->
     <div id="t9" class="tab-content">
       <div class="glass mb-4" style="padding:20px">
-        <div class="sec-hd">🧩 產品組合優化（啟發式 + 產能約束）</div>
-        <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">以邊際貢獻最大化為目標，在產能與最低銷量限制下求最佳銷售組合。</div>
-        <button class="btn-success" onclick="runOptimizerUI()">⚙ 執行優化計算</button>
+        <div class="sec-hd">?妝 ?Ｗ?蝯??芸?嚗??澆? + ?Ｚ蝝?嚗?/div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">隞仿??甜?餅?憭批??箇璅??函?質??雿???嗡?瘙?雿喲?桃???/div>
+        <button class="btn-success" onclick="runOptimizerUI()">???瑁??芸?閮?</button>
         <div class="kpi-grid-4 mb-4" id="opt-kpis" style="margin-top:16px"></div>
       </div>
       <div class="col-2">
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">📊 最佳 vs 現行組合比較</div>
+          <div class="sec-hd">?? ?雿?vs ?曇?蝯?瘥?</div>
           <div class="chart-wrap h280"><canvas id="ch-opt"></canvas></div>
         </div>
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">📋 優化方案明細</div>
+          <div class="sec-hd">?? ?芸??寞??敦</div>
           <div style="overflow-x:auto">
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>產品</th>
-                  <th>現行銷量</th>
-                  <th>最佳銷量</th>
-                  <th>差異</th>
-                  <th>CM/件(萬)</th>
-                  <th>貢獻增益(萬)</th>
+                  <th>?Ｗ?</th>
+                  <th>?曇??琿?</th>
+                  <th>?雿喲??/th>
+                  <th>撌桃</th>
+                  <th>CM/隞???</th>
+                  <th>鞎Ｙ憓?(??</th>
                 </tr>
               </thead>
               <tbody id="opt-table-body"></tbody>
@@ -1594,49 +1589,49 @@ input[type="range"]:hover::-webkit-slider-thumb {
       </div>
     </div>
 
-    <!-- ════ T10 — 資金效率（杜邦分析）════ -->
+    <!-- ???? T10 ??鞈???嚗??血??????? -->
     <div id="t10" class="tab-content">
       <div class="kpi-grid-4 mb-4" id="cap-kpis"></div>
       <div class="glass mb-4" style="padding:24px">
-        <div class="sec-hd">🏦 杜邦分析樹（ROE = 利潤率 × 資產周轉 × 財務槓桿）</div>
+        <div class="sec-hd">? ???璅對?ROE = ?拇膜??? 鞈?刻? ? 鞎∪?瑽▼嚗?/div>
         <div id="dupont-tree" style="overflow-x:auto"></div>
       </div>
       <div class="col-2">
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">📊 資金效率 vs 行業基準（雷達圖）</div>
+          <div class="sec-hd">?? 鞈??? vs 銵平?箸?嚗??嚗?/div>
           <div class="chart-wrap h280"><canvas id="ch-cap-radar"></canvas></div>
         </div>
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">📈 月度年化 ROE 趨勢</div>
+          <div class="sec-hd">?? ?漲撟游? ROE 頞典</div>
           <div class="chart-wrap h280"><canvas id="ch-roe-decomp"></canvas></div>
         </div>
       </div>
     </div>
 
-    <!-- ════ T11 — 月度趨勢 ════ -->
+    <!-- ???? T11 ???漲頞典 ???? -->
     <div id="t11" class="tab-content">
       <div class="kpi-grid-4 mb-4" id="trend-kpis"></div>
       <div class="glass mb-4" style="padding:20px">
-        <div class="sec-hd">📅 月度收入 / 邊際貢獻 / 利潤趨勢</div>
+        <div class="sec-hd">?? ?漲?嗅 / ??鞎Ｙ / ?拇膜頞典</div>
         <div class="chart-wrap h260"><canvas id="ch-trend-main"></canvas></div>
       </div>
       <div class="col-2">
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">📊 月度 CM 率（含評等色彩）</div>
+          <div class="sec-hd">?? ?漲 CM ???怨?蝑敶抬?</div>
           <div class="chart-wrap h240"><canvas id="ch-trend-cm"></canvas></div>
         </div>
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">📋 月度績效摘要</div>
+          <div class="sec-hd">?? ?漲蝮暹???</div>
           <div style="overflow-x:auto">
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>月份</th>
-                  <th>收入(萬)</th>
-                  <th>邊際貢獻(萬)</th>
-                  <th>CM率</th>
-                  <th>利潤(萬)</th>
-                  <th>月增率</th>
+                  <th>?遢</th>
+                  <th>?嗅(??</th>
+                  <th>??鞎Ｙ(??</th>
+                  <th>CM??/th>
+                  <th>?拇膜(??</th>
+                  <th>????/th>
                 </tr>
               </thead>
               <tbody id="trend-table-body"></tbody>
@@ -1646,25 +1641,25 @@ input[type="range"]:hover::-webkit-slider-thumb {
       </div>
     </div>
 
-    <!-- ════ T12 — 風險儀表板 ════ -->
+    <!-- ???? T12 ??憸券?銵冽 ???? -->
     <div id="t12" class="tab-content">
       <div class="col-2 mb-4">
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">🎯 風險矩陣（衝擊 × 機率）</div>
+          <div class="sec-hd">? 憸券?拚嚗???? 璈?嚗?/div>
           <div id="risk-matrix-container"></div>
         </div>
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">📋 風險事件清單（含應對措施）</div>
+          <div class="sec-hd">?? 憸券鈭辣皜嚗???芣嚗?/div>
           <div style="overflow-x:auto">
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>風險事件</th>
-                  <th>機率</th>
-                  <th>衝擊</th>
-                  <th>等級</th>
-                  <th>分類</th>
-                  <th>應對措施</th>
+                  <th>憸券鈭辣</th>
+                  <th>璈?</th>
+                  <th>銵?</th>
+                  <th>蝑?</th>
+                  <th>??</th>
+                  <th>???芣</th>
                 </tr>
               </thead>
               <tbody id="risk-table-body"></tbody>
@@ -1673,328 +1668,343 @@ input[type="range"]:hover::-webkit-slider-thumb {
         </div>
       </div>
       <div class="glass" style="padding:20px">
-        <div class="sec-hd">🎲 蒙地卡羅利潤模擬（常態分佈 n=10,000）</div>
+        <div class="sec-hd">? ??∠??拇膜璅⊥嚗虜??雿?n=10,000嚗?/div>
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;flex-wrap:wrap">
-          <label style="font-size:12px;color:var(--text-secondary)">收入不確定性：±<input type="range" id="mc-rev-std" min="5"
+          <label style="font-size:12px;color:var(--text-secondary)">?嗅銝Ⅱ摰改?簣<input type="range" id="mc-rev-std" min="5"
               max="35" value="15" style="width:120px;vertical-align:middle"
               oninput="document.getElementById('mc-rev-lbl').textContent=this.value+'%'">
             <span id="mc-rev-lbl" style="color:var(--sky-lt)">15%</span></label>
-          <label style="font-size:12px;color:var(--text-secondary)">成本不確定性：±<input type="range" id="mc-cost-std" min="5"
+          <label style="font-size:12px;color:var(--text-secondary)">?銝Ⅱ摰改?簣<input type="range" id="mc-cost-std" min="5"
               max="25" value="10" style="width:120px;vertical-align:middle"
               oninput="document.getElementById('mc-cost-lbl').textContent=this.value+'%'">
             <span id="mc-cost-lbl" style="color:var(--amber)">10%</span></label>
-          <button class="btn-primary" onclick="runMonteCarloUI()">▶ 執行模擬</button>
+          <button class="btn-primary" onclick="runMonteCarloUI()">???瑁?璅⊥</button>
         </div>
         <div class="kpi-grid-3 mb-4" id="mc-kpis"></div>
-        <div class="sec-hd" style="font-size:13px">利潤分布直方圖（紅色=虧損，紫色=盈利）</div>
+        <div class="sec-hd" style="font-size:13px">?拇膜???湔??蝝=?扳?嚗換???嚗?/div>
         <div class="chart-wrap h240"><canvas id="ch-mc-hist"></canvas></div>
       </div>
     </div>
 
-    <!-- ════ T13 — 資料管理 ════ -->
+    <!-- ???? T13 ??鞈?蝞∠? ???? -->
     <div id="t13" class="tab-content">
       <div class="col-2 mb-4">
         <div class="glass" style="padding:24px">
-          <div class="sec-hd">📁 Excel 資料匯入</div>
+          <div class="sec-hd">?? Excel 鞈??臬</div>
           <div class="upload-zone" id="drop-zone" ondragover="event.preventDefault();this.classList.add('drag')"
             ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
-            <div style="font-size:36px;margin-bottom:8px">📥</div>
-            <div style="font-size:14px;font-weight:700;color:var(--sky-lt);margin-bottom:6px">拖曳 Excel 至此，或用右側按鈕匯入</div>
-            <div style="font-size:11px;color:var(--text-muted)">支援格式：.xlsx / .xls</div>
+            <div style="font-size:36px;margin-bottom:8px">?</div>
+            <div style="font-size:14px;font-weight:700;color:var(--sky-lt);margin-bottom:6px">? Excel ?單迨嚗??典?湔????/div>
+            <div style="font-size:11px;color:var(--text-muted)">?舀?澆?嚗?xlsx / .xls</div>
           </div>
           <div
             style="margin-top:14px;padding:14px;background:rgba(0,0,0,0.25);border-radius:10px;font-size:11px;color:var(--text-muted);line-height:2">
-            <b style="color:var(--sky-lt)">Product_Mix</b> · <b style="color:var(--sky-lt)">Parameters</b> · <b
-              style="color:var(--sky-lt)">Investment</b> · <b style="color:var(--sky-lt)">Capital_Efficiency</b> ·
-            <b style="color:var(--sky-lt)">Monthly_Trend</b> · <b style="color:var(--sky-lt)">Risk_Parameters</b> ·
-            <b style="color:var(--emerald)">Budget_Data</b> · <b style="color:var(--emerald)">CashFlow_Params</b> · <b
-              style="color:var(--emerald)">YoY_Comparison</b> · <b style="color:var(--emerald)">Scenario_Weights</b>
-            <span style="color:var(--emerald)">（綠色為 V4 新增，其餘為 V3 相容）</span>
+            <b style="color:var(--sky-lt)">Product_Mix</b> 繚 <b style="color:var(--sky-lt)">Parameters</b> 繚 <b
+              style="color:var(--sky-lt)">Investment</b> 繚 <b style="color:var(--sky-lt)">Capital_Efficiency</b> 繚
+            <b style="color:var(--sky-lt)">Monthly_Trend</b> 繚 <b style="color:var(--sky-lt)">Risk_Parameters</b> 繚
+            <b style="color:var(--emerald)">Budget_Data</b> 繚 <b style="color:var(--emerald)">CashFlow_Params</b> 繚 <b
+              style="color:var(--emerald)">YoY_Comparison</b> 繚 <b style="color:var(--emerald)">Scenario_Weights</b>
+            <span style="color:var(--emerald)">嚗??脩 V4 ?啣?嚗擗 V3 ?詨捆嚗?/span>
           </div>
         </div>
         <div class="glass" style="padding:24px">
-          <div class="sec-hd">💾 匯出與系統操作</div>
+          <div class="sec-hd">? ?臬?頂蝯望?雿?/div>
           <div class="stack">
-            <button class="btn-secondary" onclick="exportStateJSON()" style="padding:12px;font-size:13px">📤
-              匯出完整狀態（JSON）</button>
-            <button class="btn-secondary" onclick="exportExcelSnapshot()" style="padding:12px;font-size:13px">📊
-              匯出分析快照（Excel）</button>
-            <button class="btn-secondary" onclick="resetState();fullRender();showToast('✅ 已還原預設資料','ok')"
-              style="padding:12px;font-size:13px">🔄 還原內建範例資料</button>
-            <button class="btn-secondary" onclick="window.print()" style="padding:12px;font-size:13px">🖨 列印為
-              PDF</button>
+            <button class="btn-secondary" onclick="exportStateJSON()" style="padding:12px;font-size:13px">?
+              ?臬摰???JSON嚗?/button>
+            <button class="btn-secondary" onclick="exportExcelSnapshot()" style="padding:12px;font-size:13px">??
+              ?臬??敹怎嚗xcel嚗?/button>
+            <button class="btn-secondary" onclick="resetState();fullRender();showToast('??撌脤???閮剛???,'ok')"
+              style="padding:12px;font-size:13px">?? ???批遣蝭?鞈?</button>
+            <button class="btn-secondary" onclick="window.print()" style="padding:12px;font-size:13px">? ???              PDF</button>
           </div>
           <div style="margin-top:20px">
-            <div style="font-size:12px;font-weight:700;color:var(--violet-lt);margin-bottom:8px">📊 當前資料狀態</div>
+            <div style="font-size:12px;font-weight:700;color:var(--violet-lt);margin-bottom:8px">?? ?嗅?鞈????/div>
             <div id="data-status" style="font-size:12px;color:var(--text-muted);line-height:2"></div>
           </div>
         </div>
       </div>
       <div class="glass" style="padding:20px">
-        <div class="sec-hd">📜 操作日誌</div>
+        <div class="sec-hd">?? ???亥?</div>
         <div id="change-log"
           style="max-height:200px;overflow-y:auto;font-size:11px;color:var(--text-muted);line-height:2"></div>
       </div>
     </div>
 
-    <!-- ════ T14 — 預算差異分析（V4 新增）════ -->
+    <!-- ???? T14 ????撌桃??嚗4 ?啣?嚗?????-->
     <div id="t14" class="tab-content">
       <div class="kpi-grid-4 mb-4" id="bv-kpis"></div>
       <div class="glass mb-4" style="padding:20px">
-        <div class="sec-hd">📊 差異瀑布圖（預算 vs 實際）</div>
+        <div class="sec-hd">?? 撌桃?????? vs 撖阡?嚗?/div>
         <div class="chart-wrap h260"><canvas id="ch-bv-waterfall"></canvas></div>
       </div>
       <div class="glass" style="padding:20px">
-        <div class="sec-hd">📋 產品別差異明細</div>
+        <div class="sec-hd">?? ?Ｗ??亙榆?唳?蝝?/div>
         <div style="overflow-x:auto">
           <table class="data-table" id="bv-table"></table>
         </div>
       </div>
     </div>
 
-    <!-- ════ T15 — 現金流預測（V4 新增）════ -->
+    <!-- ???? T15 ???暸?瘚?皜穿?V4 ?啣?嚗?????-->
     <div id="t15" class="tab-content">
       <div class="kpi-grid-4 mb-4" id="cf-kpis"></div>
       <div class="glass mb-4" style="padding:20px" id="cf-alerts"></div>
       <div class="glass" style="padding:20px">
-        <div class="sec-hd">💧 12 個月滾動現金流預測</div>
+        <div class="sec-hd">? 12 ??皛曉??暸?瘚?皜?/div>
         <div class="chart-wrap h300"><canvas id="ch-cf-forecast"></canvas></div>
       </div>
     </div>
 
-    <!-- ════ T16 — 龍捲風敏感性圖（V4 新增）════ -->
+    <!-- ???? T16 ??樴憸冽??批?嚗4 ?啣?嚗?????-->
     <div id="t16" class="tab-content">
       <div class="glass mb-4" style="padding:20px">
-        <div class="sec-hd">🌀 龍捲風圖 — 各變數對利潤敏感性</div>
+        <div class="sec-hd">?? 樴憸典? ?????詨??拇膜????/div>
         <div style="margin-bottom:12px">
-          <label style="font-size:12px;color:var(--text-secondary)">測試幅度：±<input type="number" id="tornado-delta"
+          <label style="font-size:12px;color:var(--text-secondary)">皜祈岫撟漲嚗?input type="number" id="tornado-delta"
               value="10" min="5" max="30"
               style="width:60px;padding:4px;background:rgba(0,0,0,0.3);border:1px solid var(--glass-border);border-radius:4px;color:var(--text-primary)">%
-            <button class="btn-secondary" style="margin-left:8px" onclick="renderT16()">更新</button>
+            <button class="btn-secondary" style="margin-left:8px" onclick="renderT16()">?湔</button>
           </label>
         </div>
         <div id="tornado-chart"></div>
         <div id="tornado-insight" style="margin-top:16px"></div>
       </div>
       <div class="glass" style="padding:20px">
-        <div class="sec-hd">📊 敏感性排行（長條圖）</div>
+        <div class="sec-hd">?? ???扳?銵??瑟???</div>
         <div class="chart-wrap h280"><canvas id="ch-tornado"></canvas></div>
       </div>
     </div>
 
-    <!-- ════ T17 — CM 矩陣（BCG）（V4 新增）════ -->
+    <!-- ???? T17 ??CM ?拚嚗CG嚗?V4 ?啣?嚗?????-->
     <div id="t17" class="tab-content">
       <div class="glass mb-4" style="padding:20px">
-        <div class="sec-hd">🗺 邊際貢獻矩陣（BCG 四象限）</div>
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">X 軸 = 邊際貢獻率（%）｜Y 軸 = 收入佔比（%）｜氣泡大小 = 銷量
+        <div class="sec-hd">? ??鞎Ｙ?拚嚗CG ?情??</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">X 頠?= ??鞎Ｙ??%嚗?Y 頠?= ?嗅雿?嚗?嚗?瘞?部憭批? = ?琿?
         </div>
         <div class="chart-wrap h360"><canvas id="ch-bcg"></canvas></div>
         <div id="bcg-legend"></div>
       </div>
       <div class="glass" style="padding:20px">
-        <div class="sec-hd">📋 產品分類說明與建議</div>
+        <div class="sec-hd">?? ?Ｗ???隤芣??遣霅?/div>
         <div style="overflow-x:auto">
           <table class="data-table" id="bcg-table"></table>
         </div>
       </div>
     </div>
 
-    <!-- ════ T18 — 多年度比較 YoY（V4 新增）════ -->
+    <!-- ???? T18 ??憭僑摨行?頛?YoY嚗4 ?啣?嚗?????-->
     <div id="t18" class="tab-content">
       <div id="yoy-nodata" class="glass" style="padding:40px;text-align:center">
-        <div style="font-size:40px;margin-bottom:12px">📆</div>
-        <div style="font-size:16px;font-weight:700;color:var(--sky-lt);margin-bottom:8px">尚未匯入多年度資料</div>
-        <div style="font-size:13px;color:var(--text-muted)">請在 Excel 中新增 <b>YoY_Comparison</b>
-          工作表，欄位：年度、月份、總收入（元）、邊際貢獻（元）、營業利潤（元）</div>
+        <div style="font-size:40px;margin-bottom:12px">??</div>
+        <div style="font-size:16px;font-weight:700;color:var(--sky-lt);margin-bottom:8px">撠?臬憭僑摨西???/div>
+        <div style="font-size:13px;color:var(--text-muted)">隢 Excel 銝剜憓?<b>YoY_Comparison</b>
+          撌乩?銵剁?甈?嚗僑摨艾?隞賬蜇?嗅嚗?嚗??甜?鳴?????璆剖瞏歹???</div>
       </div>
       <div id="yoy-charts" style="display:none">
         <div class="kpi-grid-4 mb-4" id="yoy-kpis"></div>
         <div class="glass" style="padding:20px">
-          <div class="sec-hd">📆 多年度收入 / 邊際貢獻 / 利潤比較</div>
+          <div class="sec-hd">?? 憭僑摨行??/ ??鞎Ｙ / ?拇膜瘥?</div>
           <div class="chart-wrap h300"><canvas id="ch-yoy"></canvas></div>
         </div>
       </div>
     </div>
 
-    <!-- ════ T19 — AI 決策摘要（V4 新增）════ -->
+    <!-- ???? T19 ??AI 瘙箇???嚗4 ?啣?嚗?????-->
     <div id="t19" class="tab-content">
       <div id="ai-report"></div>
     </div>
 
   </main><!-- end main-content -->
 
-  <!-- ═══ AI 展開按鈕 ═══ -->
-  <button id="ai-panel-toggle" onclick="toggleAIPanel()" title="開啟 AI 分析面板">🤖</button>
+  <!-- ????AI 撅??? ????-->
+  <button id="ai-panel-toggle" onclick="toggleAIPanel()" title="?? AI ???Ｘ">??</button>
 
-  <!-- ═══ AI 側邊面板 ═══ -->
-  <div id="ai-panel" class="ai-panel" role="complementary" aria-label="AI 分析助理">
+  <!-- ????AI ?湧??Ｘ ????-->
+  <div id="ai-panel" class="ai-panel" role="complementary" aria-label="AI ???拍?">
 
-    <!-- 頭部 -->
+    <!-- ?剝 -->
     <div class="ai-panel-header">
       <div>
-        <div class="ai-panel-title">🤖 CVP AI 分析助理</div>
+        <div class="ai-panel-title">?? CVP AI ???拍?</div>
         <div style="margin-top:4px">
-          <span id="ai-status-badge" class="ai-status-badge idle">⚪ 待機中</span>
+          <span id="ai-status-badge" class="ai-status-badge idle">??敺?銝?/span>
         </div>
       </div>
-      <button class="ai-close-btn" onclick="toggleAIPanel()" title="關閉">✕</button>
+      <button class="ai-close-btn" onclick="toggleAIPanel()" title="??">??/button>
     </div>
 
-    <!-- 功能6：折疊切換列 -->
+    <!-- ?6嚗????? -->
     <div class="ai-config-toggle-bar" id="ai-config-toggle-bar" onclick="toggleAIConfig()">
-      <span class="cfg-label">⚙ 模型設定</span>
-      <span class="cfg-arrow" id="ai-cfg-arrow">▾</span>
-      <span class="cfg-summary" id="ai-cfg-summary">載入中…</span>
+      <span class="cfg-label">??璅∪?閮剖?</span>
+      <span class="cfg-arrow" id="ai-cfg-arrow">??/span>
+      <span class="cfg-summary" id="ai-cfg-summary">頛銝凌?/span>
     </div>
 
-    <!-- 功能6：折疊容器（預設收合） -->
+    <!-- ?6嚗??捆?剁??身?嗅?嚗?-->
     <div class="ai-config-body" id="ai-config-body" style="max-height:0">
-      <!-- 設定區 -->
+      <!-- 閮剖?? -->
       <div class="ai-config-section">
         <div class="ai-config-row">
-          <label>供應商</label>
+          <label>靘???/label>
           <select id="ai-provider" onchange="onProviderChange()">
             <option value="openai">OpenAI</option>
             <option value="anthropic">Anthropic</option>
             <option value="deepseek">DeepSeek</option>
-            <option value="siliconflow">硅基流動</option>
+            <option value="siliconflow">蝖瘚?</option>
             <option value="minimax">MiniMax</option>
             <option value="openrouter">OpenRouter</option>
-            <option value="ollama">Ollama（本地）</option>
-            <option value="custom">自訂端點</option>
+            <option value="ollama">Ollama嚗?堆?</option>
+            <option value="custom">?芾?蝡舫?</option>
           </select>
         </div>
         <div class="ai-config-row">
-          <label>模型</label>
+          <label>璅∪?</label>
           <select id="ai-model" onchange="saveAISettings()"></select>
         </div>
         <div class="ai-config-row">
           <label>API Key</label>
           <div class="ai-key-wrap">
-            <input type="password" id="ai-api-key" placeholder="貼上 API Key…" oninput="saveAISettings()">
-            <button class="ai-key-eye" onclick="toggleKeyVisibility()" title="顯示/隱藏">👁</button>
+            <input type="password" id="ai-api-key" placeholder="鞎潔? API Key?? oninput="saveAISettings()">
+            <button class="ai-key-eye" onclick="toggleKeyVisibility()" title="憿舐內/?梯?">??</button>
           </div>
         </div>
         <div id="ai-custom-url-row" class="ai-config-row">
-          <label>端點網址</label>
+          <label>蝡舫?蝬脣?</label>
           <input type="text" id="ai-custom-url" placeholder="https://api.openai.com/v1" oninput="saveAISettings()">
         </div>
         <div class="ai-config-row" id="ai-api-format-row" style="display:none">
-          <label>API 格式</label>
+          <label>API ?澆?</label>
           <select id="ai-api-format" onchange="saveAISettings()">
-            <option value="openai">OpenAI 相容</option>
+            <option value="openai">OpenAI ?詨捆</option>
             <option value="anthropic">Anthropic</option>
           </select>
         </div>
         <div class="ai-config-row">
-          <label>CORS 代理</label>
+          <label>CORS 隞??</label>
           <select id="ai-cors-proxy" onchange="onProxyModeChange()">
-            <option value="off">關閉（直連）</option>
-            <option value="local">本機代理（:8080）</option>
-            <option value="custom">自訂代理 URL</option>
+            <option value="off">??嚗???</option>
+            <option value="local">?祆?隞??嚗?8080嚗?/option>
+            <option value="custom">?芾?隞?? URL</option>
           </select>
         </div>
         <div class="ai-config-row" id="ai-proxy-url-row" style="display:none">
-          <label>代理 URL</label>
+          <label>隞?? URL</label>
           <input type="text" id="ai-proxy-url" placeholder="https://your-app.vercel.app/api/proxy">
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px">
-          <span class="ai-advanced" onclick="toggleAdvanced()">▸ 進階設定</span>
+          <span class="ai-advanced" onclick="toggleAdvanced()">???脤?閮剖?</span>
           <div style="display:flex;gap:8px">
-            <button class="ai-act-btn" onclick="clearAIChat()">🗑 清空</button>
-            <button class="ai-act-btn" onclick="copyAllChat()">📋 複製全部</button>
-            <button class="ai-act-btn" onclick="exportAIChatMD()">⬇ 匯出 MD</button>
+            <button class="ai-act-btn" onclick="clearAIChat()">?? 皜征</button>
+            <button class="ai-act-btn" onclick="copyAllChat()">?? 銴ˊ?券</button>
+            <button class="ai-act-btn" onclick="exportAIChatMD()">漎??臬 MD</button>
           </div>
         </div>
-        <!-- 儲存設定按鈕 -->
+        <!-- ?脣?閮剖??? -->
         <div style="margin-top:8px">
           <button onclick="saveAISettingsWithFeedback(event)"
             style="width:100%;padding:6px;border-radius:6px;border:1px solid rgba(99,102,241,0.4);background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(79,70,229,0.2));color:#a78bfa;font-size:12px;font-weight:700;cursor:pointer;transition:background 0.15s"
             onmouseover="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.35),rgba(79,70,229,0.35))'"
             onmouseout="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.2),rgba(79,70,229,0.2))'">
-            💾 儲存所有設定
-          </button>
+            ? ?脣???身摰?          </button>
         </div>
         <div class="ai-advanced-body" id="ai-advanced-body">
           <div class="ai-config-row" style="margin-top:8px">
-            <label>溫度</label>
+            <label>皞怠漲</label>
             <input type="number" id="ai-temperature" value="0.3" min="0" max="2" step="0.1" style="width:70px;flex:none"
               oninput="saveAISettings()">
-            <label style="margin-left:8px">最大 Token</label>
+            <label style="margin-left:8px">?憭?Token</label>
             <input type="number" id="ai-max-tokens" value="4096" min="256" max="32000" step="256"
               oninput="saveAISettings()">
           </div>
           <div class="ai-config-row">
-            <label>串流</label>
+            <label>銝脫?</label>
             <select id="ai-stream" onchange="saveAISettings()">
-              <option value="1">開啟（推薦）</option>
-              <option value="0">關閉</option>
+              <option value="1">??嚗?佗?</option>
+              <option value="0">??</option>
             </select>
           </div>
         </div>
       </div>
     </div><!-- end ai-config-body -->
 
-    <!-- 快速分析按鈕列（可折疊）-->
+    <!-- ??甇日???+ 敹恍?蝐文? -->
+    <div style="padding:8px 10px 4px;border-bottom:1px solid rgba(255,255,255,.06)">
+      <button id="ai-analyze-page-btn" onclick="triggerCurrentTab()"
+        style="width:100%;padding:7px 12px;border-radius:8px;border:none;
+               background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;
+               font-size:12px;font-weight:700;cursor:pointer;display:flex;
+               align-items:center;justify-content:center;gap:6px;transition:opacity .15s"
+        onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+        <span style="animation:pulse 2s infinite;display:inline-block">??/span>
+        ??甇日???      </button>
+      <div style="font-size:10px;color:#475569;text-align:center;margin-top:4px" id="ai-ctx-page-label">?嗅??嚗?/div>
+    </div>
+
+    <!-- 敹恍?????嚗??嚗?->
     <div class="ai-tab-bar">
       <div onclick="toggleQuickAnalysis()"
         style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none">
-        <span style="font-size:10px;color:#64748b">快速分析當前頁籤</span>
-        <span id="quick-analysis-arrow" style="font-size:10px;color:#64748b;transition:transform 0.2s">▲</span>
+        <span style="font-size:10px;color:#64748b">敹恍????蝐?/span>
+        <span id="quick-analysis-arrow" style="font-size:10px;color:#64748b;transition:transform 0.2s">??/span>
       </div>
       <div id="ai-tab-btns-wrap" style="overflow:hidden;max-height:0;transition:max-height 0.3s ease">
         <div class="ai-tab-btns" id="ai-tab-btns" style="margin-top:6px"></div>
       </div>
     </div>
 
-    <!-- 訊息區 -->
+    <!-- 閮? -->
     <div class="ai-messages" id="ai-messages">
       <div class="ai-msg assistant">
-        👋 您好！我是 CVP 本量利 AI 分析助理。<br><br>
-        請設定 API Key 後，點擊上方快速分析按鈕，或在下方輸入您的分析問題。<br><br>
-        我擅長：<strong>損益平衡分析、敏感性評估、情境模擬解讀、投資決策建議</strong>。
-      </div>
+        ?? ?典末嚗???CVP ?祇???AI ???拍???br><br>
+        隢身摰?API Key 敺?暺?銝敹恍??????銝頛詨?函???????br><br>
+        ???瘀?<strong>??撟唾﹛?????扯?隡啜?憓芋?祈圾霈??鞈捱蝑遣霅?/strong>??      </div>
     </div>
 
-    <!-- 輸入區 -->
+    <!-- 頛詨? -->
     <div class="ai-input-section">
+      <div style="padding:4px 8px 2px;font-size:11px;color:#64748b">
+        <label style="cursor:pointer;display:flex;align-items:center;gap:5px">
+          <input type="checkbox" id="ai-attach-screenshot" style="width:auto;flex:none">
+          ? ???嗅???芸?嚗? Vision 璅∪?嚗?        </label>
+      </div>
       <div class="ai-input-row">
-        <textarea id="ai-user-input" placeholder="輸入問題，Ctrl+Enter 送出…" onkeydown="handleAIInputKey(event)"></textarea>
-        <button class="ai-send-btn" id="ai-send-btn" onclick="sendAIMessage()" title="送出">➤</button>
+        <textarea id="ai-user-input" placeholder="頛詨??嚗trl+Enter ??? onkeydown="handleAIInputKey(event)"></textarea>
+        <button class="ai-send-btn" id="ai-send-btn" onclick="sendAIMessage()" title="?">??/button>
       </div>
       <div class="ai-actions">
-        <button class="ai-act-btn" onclick="stopAIStream()">⏹ 停止</button>
-        <button class="ai-act-btn" onclick="restoreAIChat()" title="從本機快取恢復上次對話">↩ 恢復</button>
-        <button class="ai-act-btn" onclick="exportAIChatJSON()" title="匯出對話為 JSON 備份">📤 匯出</button>
-        <label class="ai-act-btn" style="cursor:pointer" title="從 JSON 檔案匯入對話">
-          📥 匯入
+        <button class="ai-act-btn" onclick="stopAIStream()">???迫</button>
+        <button class="ai-act-btn" onclick="restoreAIChat()" title="敺璈翰?敺拐?甈∪?閰?>???Ｗ儔</button>
+        <button class="ai-act-btn" onclick="exportAIChatJSON()" title="?臬撠店??JSON ?遢">? ?臬</button>
+        <label class="ai-act-btn" style="cursor:pointer" title="敺?JSON 瑼??臬撠店">
+          ? ?臬
           <input type="file" id="ai-import-file" accept=".json" style="display:none" onchange="importAIChatJSON(event)">
         </label>
-        <span style="font-size:10px;color:#475569;margin-left:auto">Ctrl+Enter 送出</span>
+        <span style="font-size:10px;color:#475569;margin-left:auto">Ctrl+Enter ?</span>
       </div>
     </div>
-    <!-- 功能5：儲存時間戳 -->
+    <!-- ?5嚗摮?? -->
     <div class="ai-save-ts" id="ai-save-ts"></div>
   </div>
 
-  <!-- Toast 通知 -->
+  <!-- Toast ? -->
   <div id="toast" role="alert" aria-live="polite"></div>
 
-  <!-- ─── Assets JS（順序不可顛倒）─── -->
+  <!-- ??? Assets JS嚗?摨??舫?????? -->
   <script src="assets/state.js"></script>
   <script src="assets/engine.js"></script>
   <script src="assets/utils.js"></script>
   <script src="assets/charts.js"></script>
   <script src="assets/import-export.js"></script>
 
-  <!-- ─── Tab JS ─── -->
+  <!-- ??? Tab JS ??? -->
   <script src="tabs/t1-overview.js"></script>
   <script src="tabs/t2-t4.js"></script>
   <script src="tabs/t5-t8.js"></script>
   <script src="tabs/t9-t13.js"></script>
   <script src="tabs/t14-t19-new.js"></script>
 
-  <!-- ─── 啟動 ─── -->
+  <!-- ??? ?? ??? -->
   <script>
     function renderTab(id) {
       switch (id) {
@@ -2029,83 +2039,90 @@ input[type="range"]:hover::-webkit-slider-thumb {
       loadState();
       document.documentElement.setAttribute('data-theme', AppState.theme);
       const themeBtn = document.getElementById('theme-btn');
-      if (themeBtn) themeBtn.textContent = AppState.theme === 'dark' ? '☀ 亮色' : '🌙 暗色';
+      if (themeBtn) themeBtn.textContent = AppState.theme === 'dark' ? '? 鈭株' : '?? ?';
       initNav();
       _checkMobile();
       updateHeader();
-      logChange('CVP V4.0 + AI 系統初始化完成');
+      logChange('CVP V4.0 + AI 蝟餌絞??????);
       renderT1();
-      // AI 模組初始化（在所有 JS 載入後執行）
+      // AI 璅∠??????冽???JS 頛敺銵?
       setTimeout(_initAIModule, 300);
     });
   </script>
 
-  <!-- ═══════════════════════════════════════════════════════
-     CVP AI 分析模組 — 完整實作
-     框架參考：庫存分析 V4 Inventory_Strategic_OS_V4.html
-════════════════════════════════════════════════════════ -->
+  <!-- ????????????????????????????????????????????????????????     CVP AI ??璅∠? ??摰撖虫?
+     獢??摨怠??? V4 Inventory_Strategic_OS_V4.html
+???????????????????????????????????????????????????????? -->
   <script>
-    /* ═══ 供應商設定 ═══ */
+    /* ????靘??身摰?????*/
     const AI_PROVIDERS = {
       openai: {
         name: 'OpenAI',
         baseUrl: 'https://api.openai.com/v1',
         models: ['gpt-4o', 'gpt-4o-mini', 'o1', 'o3-mini'],
         defaultModel: 'gpt-4o',
-        format: 'openai'
+        format: 'openai',
+        visionModels: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo']
       },
       anthropic: {
         name: 'Anthropic',
         baseUrl: 'https://api.anthropic.com',
         models: ['claude-opus-4-7', 'claude-sonnet-4-6', 'claude-haiku-4-5-20251001', 'claude-3-7-sonnet-20250219', 'claude-3-5-haiku-20241022'],
         defaultModel: 'claude-sonnet-4-6',
-        format: 'anthropic'
+        format: 'anthropic',
+        visionModels: ['claude-opus-4-7', 'claude-sonnet-4-6', 'claude-haiku-4-5-20251001', 'claude-3-7-sonnet-20250219', 'claude-3-5-haiku-20241022']
       },
       deepseek: {
         name: 'DeepSeek',
         baseUrl: 'https://api.deepseek.com/v1',
         models: ['deepseek-chat', 'deepseek-reasoner'],
         defaultModel: 'deepseek-chat',
-        format: 'openai'
+        format: 'openai',
+        visionModels: []
       },
       siliconflow: {
-        name: '硅基流動',
+        name: '蝖瘚?',
         baseUrl: 'https://api.siliconflow.cn/v1',
         models: ['deepseek-ai/DeepSeek-V3', 'deepseek-ai/DeepSeek-R1', 'Qwen/Qwen2.5-72B-Instruct'],
         defaultModel: 'deepseek-ai/DeepSeek-V3',
-        format: 'openai'
+        format: 'openai',
+        visionModels: []
       },
       minimax: {
         name: 'MiniMax',
         baseUrl: 'https://api.minimaxi.com/v1',
         models: ['MiniMax-M2.7', 'MiniMax-M2.5', 'MiniMax-M2.1', 'MiniMax-M2'],
         defaultModel: 'MiniMax-M2.7',
-        format: 'openai'
+        format: 'openai',
+        visionModels: []
       },
       openrouter: {
         name: 'OpenRouter',
         baseUrl: 'https://openrouter.ai/api/v1',
         models: ['google/gemini-2.0-flash-001', 'deepseek/deepseek-chat', 'openai/gpt-4o-2024-11-20'],
         defaultModel: 'google/gemini-2.0-flash-001',
-        format: 'openai'
+        format: 'openai',
+        visionModels: ['openai/gpt-4o-2024-11-20', 'google/gemini-2.0-flash-001']
       },
       ollama: {
-        name: 'Ollama（本地）',
+        name: 'Ollama嚗?堆?',
         baseUrl: 'http://localhost:11434/v1',
         models: ['llama3.3', 'qwen2.5:72b', 'deepseek-r1:70b', 'gemma3:27b', 'mistral'],
         defaultModel: 'llama3.3',
-        format: 'openai'
+        format: 'openai',
+        visionModels: []
       },
       custom: {
-        name: '自訂端點',
+        name: '?芾?蝡舫?',
         baseUrl: '',
         models: [],
         defaultModel: '',
-        format: 'openai'
+        format: 'openai',
+        visionModels: []
       }
     };
 
-    /* ═══ 狀態 ═══ */
+    /* ???????????*/
     let aiState = {
       provider: 'openai',
       model: 'gpt-4o',
@@ -2125,62 +2142,52 @@ input[type="range"]:hover::-webkit-slider-thumb {
       corsProxyUrl: ''
     };
 
-    /* ═══ 標籤對照 ═══ */
+    /* ????璅惜撠 ????*/
     const CVP_TAB_LABELS = {
-      t1: '🏠 執行長總覽', t2: '💰 管理損益表', t3: '📈 CVP 靜態分析',
-      t4: '🎛 動態情境模擬器', t5: '🔀 多情境平行比較', t6: '💼 投資ROI分析',
-      t7: '🎯 AI目標搜尋', t8: '⚡ 經營槓桿度', t9: '🧩 產品組合優化器',
-      t10: '🏦 資金效率(杜邦)', t11: '📅 月度趨勢追蹤', t12: '⚠ 風險儀表板',
-      t14: '📐 預算差異分析', t16: '🌀 龍捲風敏感性圖', t17: '🗺 CM矩陣(BCG)',
-      t18: '📆 多年度比較(YoY)'
+      t1: '?? ?瑁??瑞蜇閬?, t2: '? 蝞∠???銵?, t3: '?? CVP ????',
+      t4: '?? ????璅⊥??, t5: '?? 憭?憓像銵?頛?, t6: '? ??ROI??',
+      t7: '? AI?格???', t8: '??蝬?瑽▼摨?, t9: '?妝 ?Ｗ?蝯??芸???,
+      t10: '? 鞈???(?)', t11: '?? ?漲頞典餈質馱', t12: '??憸券?銵冽',
+      t14: '?? ??撌桃??', t16: '?? 樴憸冽??批?', t17: '? CM?拚(BCG)',
+      t18: '?? 憭僑摨行?頛?YoY)'
     };
 
-    /* ═══ 各頁籤觸發語 ═══ */
+    /* ??????蝐方孛?潸? ????*/
     const CVP_TAB_TRIGGER_MSG = {
-      t1: '請分析【執行長總覽】頁籤的整體財務健康狀況，給出 3 項關鍵洞察與行動建議。',
-      t2: '請解讀【管理損益表】的邊際貢獻結構，分析成本控制與利潤品質，並指出改善重點。',
-      t3: '請解析【CVP 靜態分析】的損益平衡點、安全邊際率與產品貢獻，判斷經營風險與優化空間。',
-      t4: '請根據【動態情境模擬器】的四因子敏感係數，說明哪個變數對利潤影響最大，並給出具體建議。',
-      t5: '請比較【多情境平行比較】各情境的機率加權期望利潤，分析風險與報酬的最佳平衡點。',
-      t6: '請評估【投資ROI分析】的NPV、IRR 與回收期，判斷投資可行性並給出決策建議。',
-      t7: '請解讀【AI目標搜尋】的結果，說明達成目標所需的條件是否現實可行。',
-      t8: '請分析【經營槓桿度(DOL)】，說明當前槓桿水平的風險含義，以及哪些產品是槓桿驅動主力。',
-      t9: '請評估【產品組合優化器】的優化建議，分析最佳組合的可行性與預期效益。',
-      t10: '請解析【杜邦分析】的 ROE 分解結果，找出資金效率的瓶頸並提出改善建議。',
-      t11: '請分析【月度趨勢追蹤】的收入、CM 與利潤走勢，識別季節性模式與異常月份。',
-      t12: '請評估【風險儀表板】的風險矩陣與蒙地卡羅模擬結果，制定優先風險應對策略。',
-      t14: '請解讀【預算差異分析】的量差與價差，找出超支或欠收的根本原因。',
-      t16: '請根據【龍捲風敏感性圖】，找出影響利潤最關鍵的變數，制定風險管控優先順序。',
-      t17: '請分析【CM矩陣(BCG四象限)】各產品定位，給出產品策略調整建議（加碼/維持/退場）。',
-      t18: '請比較【多年度YoY】的成長趨勢，分析收入、CM 與利潤的年複合增長率，預測下年度表現。'
+      t1: '隢??銵蝮質汗??蝐斤??湧?鞎∪??亙熒?瘜?蝯血 3 ???菜?撖?銵?撱箄降??,
+      t2: '隢圾霈?恣???”????鞎Ｙ蝯?嚗????祆?嗉??拇膜?釭嚗蒂??孵?????,
+      t3: '隢圾?VP ????????撟唾﹛暺??券?????甜?鳴??斗蝬?憸券??征??,
+      t4: '隢????憓芋?砍????摮????賂?隤芣??芸??詨??拇膜敶梢?憭改?銝衣策?箏擃遣霅啜?,
+      t5: '隢?頛???撟唾?瘥?????????甈??瞏歹???憸券??祉??雿喳像銵⊿???,
+      t6: '隢?隡啜?鞈OI????NPV?RR ???嗆?嚗?瑟?鞈銵找蒂蝯血瘙箇?撱箄降??,
+      t7: '隢圾霈?I?格?????蝯?嚗牧???璅????隞嗆?衣撖血銵?,
+      t8: '隢?????獢踹漲(DOL)??隤芣??嗅?瑽▼瘞游像?◢?芸蝢抬?隞亙??芯??Ｗ??舀?獢輸??蜓??,
+      t9: '隢?隡啜???????芸?撱箄降嚗???雿喟????航??扯???????,
+      t10: '隢圾???血??? ROE ?圾蝯?嚗?箄??????園銝行??箸?遣霅啜?,
+      t11: '隢???摨西隅?Ｚ蕭頩扎??嗅?M ?瞏方粥?ｇ?霅摮???扳芋撘??啣虜?遢??,
+      t12: '隢?隡啜◢?芸?銵冽??憸券?拚???啣蝢芋?祉????嗅??芸?憸券??蝑??,
+      t14: '隢圾霈??蝞榆?啣????榆?撌殷??曉頞???嗥??寞????,
+      t16: '隢???脤◢???批????曉敶梢?拇膜?????賂??嗅?憸券蝞⊥?芸?????,
+      t17: '隢??M?拚(BCG?情?????Ｗ?摰?嚗策?箇???亥矽?游遣霅堆??Ⅳ/蝬剜?/??湛???,
+      t18: '隢?頛?撟游漲YoY???頞典嚗???乓M ?瞏斤?撟渲????瑞?嚗?皜砌?撟游漲銵函??
     };
 
-    /* ═══ CVP 系統提示詞 ═══ */
-    const AI_SYSTEM_PROMPT = `你是一位頂尖的台灣企業財務顧問與本量利（CVP）分析專家。
+    /* ????CVP 蝟餌絞?內閰?????*/
+    const AI_SYSTEM_PROMPT = `雿銝雿?撠??啁隡平鞎∪?憿批???嚗VP嚗???摰嗚?
+?敹??- CVP ?箇?嚗??甜?鳴?CM嚗M???像銵⊿?嚗EP嚗??/??瘜????券????Ｗ???CM??- ??璅⊥嚗??????批???????霈??/?箏??嚗??脤◢?圾霈????璈???
+- 瑽▼鞈嚗???獢踹漲嚗OL嚗??吐OE銝挾?圾?PV/IRR/???隡?- 憸券蝞⊥嚗??啣蝢芋?祈圾霈??撌??孵榆/??撌桀????皛曉??葫
 
-【核心能力】
-- CVP 基礎：邊際貢獻（CM）、CM率、損益平衡點（BEP：銷量法/金額法）、安全邊際、多產品加權CM率
-- 動態模擬：四因子敏感性分析（價/量/變動成本/固定成本）、龍捲風圖解讀、多情境機率加權
-- 槓桿資本：經營槓桿度（DOL）、杜邦ROE三段分解、NPV/IRR/回收期評估
-- 風險管控：蒙地卡羅模擬解讀、量差/價差/效率差分析、現金流滾動預測
+?平?皞?靘?頛???- CM??> 30%嚗憟踝?> 50%嚗??- 摰????> 20%嚗摨瘀?< 10%嚗郎??- DOL < 3嚗帘摰?> 5嚗?憸券
+- NPV > 0 銝?IRR > WACC嚗??
 
-【業界基準（供比較）】
-- CM率 > 30%：良好；> 50%：優異
-- 安全邊際率 > 20%：健康；< 10%：警戒
-- DOL < 3：穩定；> 5：高風險
-- NPV > 0 且 IRR > WACC：可投資
+??閬???1. 雿輻蝜?銝剜?嚗???閰??望?撠嚗?嚗??甜??Contribution Margin嚗?2. 蝯?嚗?撖行?閬???瘛勗漲?? ???刻??斗 ???琿?撱箄降
+3. ?芸?摨?蝷綽?? 蝺伐?1?勗嚗? ? 餈?嚗???嚗? ? ?瑟?嚗迤摨佗?
+4. ?銵冽?憭雁摨行?頛?5. ?詨??琿?嚗?征瘜餈躬;
 
-【回覆原則】
-1. 使用繁體中文，專有名詞附英文對照（如：邊際貢獻 Contribution Margin）
-2. 結構：事實摘要 → 深度分析 → 推論判斷 → 具體建議
-3. 優先序標示：🔴 緊急（1週內）/ 🟡 近期（1個月）/ 🟢 長期（季度）
-4. 善用表格呈現多維度比較
-5. 數字具體，避免空泛陳述`;
-
-    /* ═══ DOM 輔助函式 ═══ */
+    /* ????DOM 頛?賢? ????*/
     function _txt(id) {
       const el = document.getElementById(id);
-      return el ? el.textContent.trim() : '—';
+      return el ? el.textContent.trim() : '??;
     }
     function _getState() {
       try { if (typeof AppState !== 'undefined') return AppState; } catch (e) { }
@@ -2191,18 +2198,18 @@ input[type="range"]:hover::-webkit-slider-thumb {
       return null;
     }
     function _fmtW(v) {
-      return (v != null && !isNaN(v)) ? (v / 10000).toFixed(2) + '萬' : '—';
+      return (v != null && !isNaN(v)) ? (v / 10000).toFixed(2) + '?? : '??;
     }
     function _fmtP(v) {
-      return (v != null && !isNaN(v)) ? (v * 100).toFixed(1) + '%' : '—';
+      return (v != null && !isNaN(v)) ? (v * 100).toFixed(1) + '%' : '??;
     }
     function _fmtN(v, d) {
-      return (v != null && !isNaN(v)) ? Number(v).toFixed(d || 2) : '—';
+      return (v != null && !isNaN(v)) ? Number(v).toFixed(d || 2) : '??;
     }
     function _tableText(id, maxRows) {
       maxRows = maxRows || 8;
       const el = document.getElementById(id);
-      if (!el) return '—';
+      if (!el) return '??;
       const rows = el.querySelectorAll('tr');
       let out = [];
       rows.forEach((r, i) => {
@@ -2213,23 +2220,23 @@ input[type="range"]:hover::-webkit-slider-thumb {
       return out.join('\n');
     }
 
-    /* ═══ 各頁籤資料萃取器 ═══ */
+    /* ??????蝐方???? ????*/
     function extractT1Data() {
       const e = _getEngine(), s = _getState();
       return {
-        tabName: '執行長總覽',
+        tabName: '?瑁??瑞蜇閬?,
         kpi: {
-          revenue: e ? _fmtW(e.revenue) : '讀取中',
-          cm: e ? _fmtW(e.cm) : '讀取中',
-          cmRatio: e ? _fmtP(e.cmRatio) : '讀取中',
-          profit: e ? _fmtW(e.profit) : '讀取中',
-          bep: e ? _fmtW(e.bep) : (_txt('bep-rev') + '萬'),
+          revenue: e ? _fmtW(e.revenue) : '霈?葉',
+          cm: e ? _fmtW(e.cm) : '霈?葉',
+          cmRatio: e ? _fmtP(e.cmRatio) : '霈?葉',
+          profit: e ? _fmtW(e.profit) : '霈?葉',
+          bep: e ? _fmtW(e.bep) : (_txt('bep-rev') + '??),
           safetyMarginRate: e ? _fmtP(e.safetyMarginRate) : (_txt('safety-m') + '%')
         },
-        productCount: (s?.products || []).length || '—',
+        productCount: (s?.products || []).length || '??,
         alerts: (() => {
           const el = document.getElementById('alert-center');
-          return el ? el.textContent.slice(0, 400) : '—';
+          return el ? el.textContent.slice(0, 400) : '??;
         })()
       };
     }
@@ -2237,7 +2244,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
     function extractT2Data() {
       const e = _getEngine();
       return {
-        tabName: '管理損益表',
+        tabName: '蝞∠???銵?,
         plTable: _tableText('pl-table', 12),
         summary: e ? {
           revenue: _fmtW(e.revenue),
@@ -2246,8 +2253,8 @@ input[type="range"]:hover::-webkit-slider-thumb {
           cmRatio: _fmtP(e.cmRatio),
           fc: _fmtW(e.fc),
           profit: _fmtW(e.profit),
-          profitRatio: e.revenue ? _fmtP(e.profit / e.revenue) : '—'
-        } : { note: '引擎資料讀取中' }
+          profitRatio: e.revenue ? _fmtP(e.profit / e.revenue) : '??
+        } : { note: '撘?鞈?霈?葉' }
       };
     }
 
@@ -2257,11 +2264,11 @@ input[type="range"]:hover::-webkit-slider-thumb {
         name: p.name,
         price: p.price, vc: p.vc,
         cm: (p.price - p.vc),
-        cmRatio: p.price ? _fmtP((p.price - p.vc) / p.price) : '—',
+        cmRatio: p.price ? _fmtP((p.price - p.vc) / p.price) : '??,
         volume: p.volume
       }));
       return {
-        tabName: 'CVP靜態分析',
+        tabName: 'CVP????',
         bepRev: _txt('bep-rev'),
         safetyMargin: _txt('safety-m'),
         totalCM: _txt('total-cm'),
@@ -2272,7 +2279,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
 
     function extractT4Data() {
       return {
-        tabName: '動態情境模擬器',
+        tabName: '????璅⊥??,
         sliders: {
           price: _txt('price-lbl'),
           volume: _txt('vol-lbl'),
@@ -2281,21 +2288,21 @@ input[type="range"]:hover::-webkit-slider-thumb {
         },
         sensitivityFactors: (() => {
           const el = document.getElementById('sensitivity-factors');
-          return el ? el.textContent.slice(0, 300) : '—';
+          return el ? el.textContent.slice(0, 300) : '??;
         })(),
         simKpis: (() => {
           const el = document.getElementById('sim-kpis');
-          return el ? el.textContent.slice(0, 300) : '—';
+          return el ? el.textContent.slice(0, 300) : '??;
         })()
       };
     }
 
     function extractT5Data() {
       return {
-        tabName: '多情境平行比較',
+        tabName: '憭?憓像銵?頛?,
         expectedProfit: (() => {
           const el = document.getElementById('expected-profit');
-          return el ? el.textContent.slice(0, 200) : '—';
+          return el ? el.textContent.slice(0, 200) : '??;
         })(),
         scenarioTable: _tableText('scenario-tbody', 8)
       };
@@ -2305,23 +2312,23 @@ input[type="range"]:hover::-webkit-slider-thumb {
       const e = _getEngine(), s = _getState();
       const inv = s?.investment || {};
       return {
-        tabName: '投資ROI分析',
+        tabName: '??ROI??',
         investment: {
           initialCost: _fmtW(inv.initialCost),
           annualCashflow: _fmtW(inv.annualCashflow),
-          wacc: inv.wacc ? _fmtP(inv.wacc / 100) : '—',
-          years: inv.years || '—'
+          wacc: inv.wacc ? _fmtP(inv.wacc / 100) : '??,
+          years: inv.years || '??
         },
         kpis: (() => {
           const el = document.getElementById('inv-kpis');
-          return el ? el.textContent.slice(0, 300) : '—';
+          return el ? el.textContent.slice(0, 300) : '??;
         })()
       };
     }
 
     function extractT8Data() {
       return {
-        tabName: '經營槓桿度(DOL)',
+        tabName: '蝬?瑽▼摨?DOL)',
         dol: _txt('dol-val'),
         dolImpact: _txt('dol-impact'),
         cm: _txt('dol-cm'),
@@ -2332,10 +2339,10 @@ input[type="range"]:hover::-webkit-slider-thumb {
 
     function extractT9Data() {
       return {
-        tabName: '產品組合優化器',
+        tabName: '?Ｗ?蝯??芸???,
         optKpis: (() => {
           const el = document.getElementById('opt-kpis');
-          return el ? el.textContent.slice(0, 300) : '—';
+          return el ? el.textContent.slice(0, 300) : '??;
         })(),
         optTable: _tableText('opt-table-body', 8)
       };
@@ -2345,19 +2352,19 @@ input[type="range"]:hover::-webkit-slider-thumb {
       const e = _getEngine(), s = _getState();
       const cap = s?.capitalEfficiency || {};
       return {
-        tabName: '資金效率(杜邦)',
+        tabName: '鞈???(?)',
         dupont: {
           totalAssets: _fmtW(cap.totalAssets),
           equity: _fmtW(cap.equity),
-          financialLeverage: cap.financialLeverage || '—'
+          financialLeverage: cap.financialLeverage || '??
         },
         kpis: (() => {
           const el = document.getElementById('cap-kpis');
-          return el ? el.textContent.slice(0, 300) : '—';
+          return el ? el.textContent.slice(0, 300) : '??;
         })(),
         dupointTree: (() => {
           const el = document.getElementById('dupont-tree');
-          return el ? el.textContent.slice(0, 400) : '—';
+          return el ? el.textContent.slice(0, 400) : '??;
         })()
       };
     }
@@ -2369,7 +2376,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
         cm: _fmtW(m.cm), profit: _fmtW(m.profit)
       }));
       return {
-        tabName: '月度趨勢追蹤',
+        tabName: '?漲頞典餈質馱',
         months,
         trendTable: _tableText('trend-table-body', 12)
       };
@@ -2382,21 +2389,21 @@ input[type="range"]:hover::-webkit-slider-thumb {
         impact: r.impact, level: (r.probability * r.impact).toFixed(2)
       }));
       return {
-        tabName: '風險儀表板',
+        tabName: '憸券?銵冽',
         risks,
         mcKpis: (() => {
           const el = document.getElementById('mc-kpis');
-          return el ? el.textContent.slice(0, 300) : '尚未執行模擬';
+          return el ? el.textContent.slice(0, 300) : '撠?瑁?璅⊥';
         })()
       };
     }
 
     function extractT14Data() {
       return {
-        tabName: '預算差異分析',
+        tabName: '??撌桃??',
         kpis: (() => {
           const el = document.getElementById('bv-kpis');
-          return el ? el.textContent.slice(0, 300) : '—';
+          return el ? el.textContent.slice(0, 300) : '??;
         })(),
         bvTable: _tableText('bv-table', 10)
       };
@@ -2404,21 +2411,21 @@ input[type="range"]:hover::-webkit-slider-thumb {
 
     function extractT16Data() {
       return {
-        tabName: '龍捲風敏感性圖',
+        tabName: '樴憸冽??批?',
         delta: _txt('tornado-delta') || '10',
         insight: (() => {
           const el = document.getElementById('tornado-insight');
-          return el ? el.textContent.slice(0, 400) : '—';
+          return el ? el.textContent.slice(0, 400) : '??;
         })()
       };
     }
 
     function extractT17Data() {
       return {
-        tabName: 'CM矩陣(BCG)',
+        tabName: 'CM?拚(BCG)',
         legend: (() => {
           const el = document.getElementById('bcg-legend');
-          return el ? el.textContent.slice(0, 300) : '—';
+          return el ? el.textContent.slice(0, 300) : '??;
         })(),
         bcgTable: _tableText('bcg-table', 10)
       };
@@ -2426,15 +2433,15 @@ input[type="range"]:hover::-webkit-slider-thumb {
 
     function extractT18Data() {
       return {
-        tabName: '多年度比較(YoY)',
+        tabName: '憭僑摨行?頛?YoY)',
         kpis: (() => {
           const el = document.getElementById('yoy-kpis');
-          return el ? el.textContent.slice(0, 300) : '尚未匯入多年度資料';
+          return el ? el.textContent.slice(0, 300) : '撠?臬憭僑摨西???;
         })()
       };
     }
 
-    /* ═══ 彙整當前頁籤資料 ═══ */
+    /* ????敶?嗅??惜鞈? ????*/
     function extractTabData(tabId) {
       const map = {
         t1: extractT1Data, t2: extractT2Data, t3: extractT3Data,
@@ -2444,18 +2451,18 @@ input[type="range"]:hover::-webkit-slider-thumb {
         t16: extractT16Data, t17: extractT17Data, t18: extractT18Data
       };
       const fn = map[tabId];
-      return fn ? fn() : { tabName: tabId, note: '此頁籤無自動資料萃取' };
+      return fn ? fn() : { tabName: tabId, note: '甇日?蝐斤?芸?鞈???' };
     }
 
     function formatContextForPrompt(data) {
-      return '【當前頁籤資料】\n' + JSON.stringify(data, null, 2);
+      return '???蝐方??n' + JSON.stringify(data, null, 2);
     }
 
-    /* ═══ Markdown 渲染 ═══ */
+    /* ????Markdown 皜脫? ????*/
     function renderMarkdownAI(text) {
-      // 處理思考鏈 (Thought Process)
+      // ???? (Thought Process)
       let html = text.replace(/<thought>([\s\S]*?)<\/thought>/g, (_, content) => {
-        return `<div class="ai-thought"><div class="ai-thought-hd">💭 思考過程</div><div class="ai-thought-bd">${content.trim()}</div></div>`;
+        return `<div class="ai-thought"><div class="ai-thought-hd">? ??蝔?/div><div class="ai-thought-bd">${content.trim()}</div></div>`;
       });
 
       return html
@@ -2490,13 +2497,13 @@ input[type="range"]:hover::-webkit-slider-thumb {
         .replace(/<\/ul>\s*<ul>/g, '');
     }
 
-    /* ═══ UI 狀態控制 ═══ */
+    /* ????UI ????????*/
     function setAIStatus(status, text) {
       const badge = document.getElementById('ai-status-badge');
       if (!badge) return;
       badge.className = 'ai-status-badge ' + status;
-      const icons = { idle: '⚪', ready: '🟢', stream: '🔵', error: '🔴' };
-      badge.textContent = (icons[status] || '⚪') + ' ' + text;
+      const icons = { idle: '??, ready: '?', stream: '?', error: '?' };
+      badge.textContent = (icons[status] || '??) + ' ' + text;
     }
 
     function toggleAIPanel() {
@@ -2506,7 +2513,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
       if (!panel) return;
       const isOpen = panel.classList.toggle('open');
       main && main.classList.toggle('ai-open', isOpen);
-      btn.textContent = isOpen ? '✕' : '🤖';
+      btn.textContent = isOpen ? '?? : '??';
       if (isOpen) restoreAIChat();
     }
 
@@ -2515,7 +2522,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
       const link = document.querySelector('.ai-advanced');
       if (!body) return;
       body.classList.toggle('open');
-      link.textContent = body.classList.contains('open') ? '▾ 進階設定' : '▸ 進階設定';
+      link.textContent = body.classList.contains('open') ? '???脤?閮剖?' : '???脤?閮剖?';
     }
 
     function toggleKeyVisibility() {
@@ -2524,7 +2531,38 @@ input[type="range"]:hover::-webkit-slider-thumb {
       inp.type = inp.type === 'password' ? 'text' : 'password';
     }
 
-    /* ═══ CORS 代理輔助 ═══ */
+    /* ?????芸?? ????*/
+    async function captureCurrentTab() {
+      if (typeof html2canvas === 'undefined') {
+        showToast && showToast('html2canvas ?芾???, 'err');
+        return null;
+      }
+      const tabId = aiState.currentTabId || document.querySelector('.nav-item.active')?.dataset?.tab || 't1';
+      const panel = document.getElementById(tabId) || document.querySelector('.tab-content.active');
+      if (!panel) return null;
+      try {
+        const canvas = await html2canvas(panel, {
+          scale: 0.8,
+          backgroundColor: '#0f172a',
+          useCORS: true,
+          logging: false
+        });
+        return canvas.toDataURL('image/png');
+      } catch(e) {
+        console.error(e);
+        showToast && showToast('?芸?憭望?嚗? + e.message, 'err');
+        return null;
+      }
+    }
+
+    /* ?菜葫?嗅? Tab 銝血葆?亥??孛?澆???*/
+    function triggerCurrentTab() {
+      const activeNav = document.querySelector('.nav-item.active');
+      const tabId = activeNav?.dataset?.tab || aiState.currentTabId || 't1';
+      triggerTabAI(tabId);
+    }
+
+    /* ????CORS 隞??頛 ????*/
     function onProxyModeChange() {
       const sel = document.getElementById('ai-cors-proxy');
       const row = document.getElementById('ai-proxy-url-row');
@@ -2533,7 +2571,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
       saveAISettings();
     }
 
-    /* 統一回傳「最終要 fetch 的 URL」：依代理模式包裝原始端點 */
+    /* 蝯曹????蝯? fetch ??URL??靘誨?芋撘?鋆?憪垢暺?*/
     function wrapWithProxy(originalUrl) {
       if (aiState.corsProxyMode === 'local') {
         return `http://localhost:8080/proxy?url=${encodeURIComponent(originalUrl)}`;
@@ -2545,7 +2583,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
       return originalUrl;
     }
 
-    /* ═══ 供應商切換 ═══ */
+    /* ????靘?????????*/
     function onProviderChange() {
       const sel = document.getElementById('ai-provider').value;
       const prov = AI_PROVIDERS[sel];
@@ -2555,10 +2593,10 @@ input[type="range"]:hover::-webkit-slider-thumb {
 
       aiState.provider = sel;
 
-      // 自訂端點（models 為空）→ 文字輸入框；其他供應商 → 下拉選單
+      // ?芾?蝡舫?嚗odels ?箇征嚗? ??頛詨獢??嗡?靘?????銝??詨
       if (prov.models.length === 0) {
         if (mdSel.tagName !== 'INPUT') {
-          mdSel.outerHTML = `<input type="text" id="ai-model" placeholder="請輸入模型名稱（如 gpt-4o）" oninput="saveAISettings()" style="flex:1;min-width:0">`;
+          mdSel.outerHTML = `<input type="text" id="ai-model" placeholder="隢撓?交芋??蝔梧?憒?gpt-4o嚗? oninput="saveAISettings()" style="flex:1;min-width:0">`;
         }
         const inp = document.getElementById('ai-model');
         if (inp) inp.value = aiState.model || '';
@@ -2571,7 +2609,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
         if (prov.defaultModel) newMd.value = prov.defaultModel;
       }
 
-      // 載入該供應商儲存的 Key 與 URL
+      // 頛閰脖????脣???Key ??URL
       const savedKey = aiState.savedKeys[sel] || '';
       document.getElementById('ai-api-key').value = savedKey;
       aiState.apiKey = savedKey;
@@ -2581,7 +2619,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
       urlInp.value = savedUrl;
       aiState.customBaseUrl = savedUrl;
 
-      // 顯示邏輯
+      // 憿舐內?摩
       fmtRow.style.display = sel === 'custom' ? 'flex' : 'none';
       if (sel === 'custom') {
         const fmtSel = document.getElementById('ai-api-format');
@@ -2591,11 +2629,11 @@ input[type="range"]:hover::-webkit-slider-thumb {
       }
 
       saveAISettings();
-      // 功能6：更新折疊列摘要
+      // ?6嚗?唳?????
       if (typeof updateAIConfigSummary === 'function') updateAIConfigSummary();
     }
 
-    /* ═══ 設定持久化 ═══ */
+    /* ????閮剖?????????*/
     const AI_SETTINGS_KEY = 'cvpV4AiSettings';
     const AI_CACHE_KEY = 'cvpV4AiChatCache';
 
@@ -2608,7 +2646,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
       aiState.corsProxyUrl = document.getElementById('ai-proxy-url')?.value?.trim() || '';
       aiState.apiFormat = document.getElementById('ai-api-format')?.value || aiState.apiFormat;
 
-      // 針對該供應商儲存
+      // ??閰脖????脣?
       aiState.savedKeys[aiState.provider] = aiState.apiKey;
       aiState.savedBaseUrls[aiState.provider] = aiState.customBaseUrl;
 
@@ -2630,25 +2668,25 @@ input[type="range"]:hover::-webkit-slider-thumb {
           useStream: aiState.useStream
         }));
       } catch (e) { }
-      setAIStatus(aiState.apiKey ? 'ready' : 'idle', aiState.apiKey ? '已設定 Key' : '待機中');
+      setAIStatus(aiState.apiKey ? 'ready' : 'idle', aiState.apiKey ? '撌脰身摰?Key' : '敺?銝?);
     }
 
-    /* 帶視覺回饋的儲存函式 */
+    /* 撣嗉?閬箏?擖??脣??賢? */
     function saveAISettingsWithFeedback(e) {
       saveAISettings();
       if (typeof showToast === 'function') {
-        showToast('✅ AI 設定已儲存', 'ok');
+        showToast('??AI 閮剖?撌脣摮?, 'ok');
       }
       const btn = e?.currentTarget || e?.target;
       if (btn) {
         const orig = btn.textContent;
-        btn.textContent = '✔ 已儲存！';
+        btn.textContent = '??撌脣摮?';
         btn.style.color = '#34d399';
         setTimeout(() => { btn.textContent = orig; btn.style.color = '#a78bfa'; }, 1500);
       }
     }
 
-    /* 快速分析按鈕列折疊切換 */
+    /* 敹恍????????? */
     let _quickAnalysisOpen = false;
     function toggleQuickAnalysis() {
       const wrap = document.getElementById('ai-tab-btns-wrap');
@@ -2668,7 +2706,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
         if (saved.savedKeys) aiState.savedKeys = saved.savedKeys;
         if (saved.savedBaseUrls) aiState.savedBaseUrls = saved.savedBaseUrls;
         if (saved.apiFormat) aiState.apiFormat = saved.apiFormat;
-        // 向後相容：舊版 boolean useCorsProxy → 新版 string mode
+        // ???詨捆嚗???boolean useCorsProxy ???啁? string mode
         if (saved.corsProxyMode) aiState.corsProxyMode = saved.corsProxyMode;
         else if (saved.useCorsProxy === true) aiState.corsProxyMode = 'local';
         if (saved.corsProxyUrl) aiState.corsProxyUrl = saved.corsProxyUrl;
@@ -2699,7 +2737,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
       if (streamEl) streamEl.value = aiState.useStream ? '1' : '0';
     }
 
-    /* ═══ 聊天快取 ═══ */
+    /* ?????予敹怠? ????*/
     function saveAIChatCache() {
       try {
         const payload = { history: aiState.chatHistory.slice(-60), savedAt: Date.now() };
@@ -2712,16 +2750,16 @@ input[type="range"]:hover::-webkit-slider-thumb {
       const el = document.getElementById('ai-save-ts');
       if (!el || !ts) return;
       const diff = Math.round((Date.now() - ts) / 60000);
-      el.textContent = diff < 1 ? '💾 剛剛已儲存' : `💾 上次儲存：${diff} 分鐘前`;
+      el.textContent = diff < 1 ? '? ??撌脣摮? : `? 銝活?脣?嚗?{diff} ???;
     }
 
     function restoreAIChat() {
       try {
         const raw = localStorage.getItem(AI_CACHE_KEY);
-        if (!raw) { showToast && showToast('⚠ 尚無快取對話', 'warn'); return; }
+        if (!raw) { showToast && showToast('??撠敹怠?撠店', 'warn'); return; }
         const stored = JSON.parse(raw);
         const cache = Array.isArray(stored) ? stored : (stored.history || []);
-        if (cache.length === 0) { showToast && showToast('⚠ 快取對話為空', 'warn'); return; }
+        if (cache.length === 0) { showToast && showToast('??敹怠?撠店?箇征', 'warn'); return; }
         const msgs = document.getElementById('ai-messages');
         if (!msgs) return;
         msgs.innerHTML = '';
@@ -2730,56 +2768,56 @@ input[type="range"]:hover::-webkit-slider-thumb {
           appendAIMessage(m.role === 'user' ? 'user' : 'assistant', m.content);
         });
         aiState.chatHistory = cache;
-        showToast && showToast(`✅ 已恢復 ${cache.filter(m => m.role !== 'system').length} 則對話`, 'ok');
+        showToast && showToast(`??撌脫敺?${cache.filter(m => m.role !== 'system').length} ??閰常, 'ok');
         if (stored.savedAt) _updateSaveTimestamp(stored.savedAt);
       } catch (e) {
-        showToast && showToast('❌ 恢復失敗：' + e.message, 'err');
+        showToast && showToast('???Ｗ儔憭望?嚗? + e.message, 'err');
       }
     }
 
     function clearAIChat() {
-      if (!confirm('確定要清除所有對話記錄？此動作無法復原。')) return;
+      if (!confirm('蝣箏?閬??斗???閰梯???甇文?雿瘜儔??)) return;
       aiState.chatHistory = [];
       try { localStorage.removeItem(AI_CACHE_KEY); } catch (e) { }
       const msgs = document.getElementById('ai-messages');
       if (msgs) {
-        msgs.innerHTML = '<div class="ai-msg assistant">💬 對話已清空，請重新開始。</div>';
+        msgs.innerHTML = '<div class="ai-msg assistant">? 撠店撌脫?蝛綽?隢??圈?憪?/div>';
       }
       const tsEl = document.getElementById('ai-save-ts');
       if (tsEl) tsEl.textContent = '';
-      showToast && showToast('🗑 對話已清空', 'ok');
+      showToast && showToast('?? 撠店撌脫?蝛?, 'ok');
     }
 
     function exportAIChatMD() {
       const msgs = aiState.chatHistory.filter(m => m.role !== 'system');
-      if (msgs.length === 0) { showToast && showToast('⚠ 尚無對話內容可匯出', 'warn'); return; }
+      if (msgs.length === 0) { showToast && showToast('??撠撠店?批捆?臬??, 'warn'); return; }
       const providerName = document.getElementById('ai-provider')?.value || aiState.provider;
       const modelName = document.getElementById('ai-model')?.value || aiState.model;
       const dateStr = new Date().toLocaleString('zh-TW', { hour12: false });
-      let md = `# CVP AI 對話記錄\n\n`;
-      md += `> **匯出時間**：${dateStr}  \n`;
-      md += `> **模型**：${providerName} / ${modelName}  \n`;
-      md += `> **訊息數**：${msgs.length} 則\n\n---\n\n`;
+      let md = `# CVP AI 撠店閮?\n\n`;
+      md += `> **?臬??**嚗?{dateStr}  \n`;
+      md += `> **璅∪?**嚗?{providerName} / ${modelName}  \n`;
+      md += `> **閮??*嚗?{msgs.length} ?n\n---\n\n`;
       msgs.forEach((m, i) => {
         if (m.role === 'user') {
-          md += `## 🙋 使用者（第 ${Math.ceil((i + 1) / 2)} 輪）\n\n${m.content}\n\n`;
+          md += `## ?? 雿輻??蝚?${Math.ceil((i + 1) / 2)} 頛迎?\n\n${m.content}\n\n`;
         } else {
-          md += `## 🤖 AI 助理\n\n${m.content}\n\n---\n\n`;
+          md += `## ?? AI ?拍?\n\n${m.content}\n\n---\n\n`;
         }
       });
       const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `CVP_AI對話_${new Date().toISOString().slice(0, 10)}.md`;
+      a.download = `CVP_AI撠店_${new Date().toISOString().slice(0, 10)}.md`;
       a.click();
       URL.revokeObjectURL(url);
-      showToast && showToast('✅ 已匯出 .md 檔', 'ok');
+      showToast && showToast('??撌脣??.md 瑼?, 'ok');
     }
 
     function exportAIChatJSON() {
       const msgs = aiState.chatHistory.filter(m => m.role !== 'system');
-      if (msgs.length === 0) { showToast && showToast('⚠ 尚無對話內容', 'warn'); return; }
+      if (msgs.length === 0) { showToast && showToast('??撠撠店?批捆', 'warn'); return; }
       const payload = {
         exportedAt: new Date().toISOString(),
         provider: document.getElementById('ai-provider')?.value || aiState.provider,
@@ -2790,10 +2828,10 @@ input[type="range"]:hover::-webkit-slider-thumb {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `CVP_AI對話_${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `CVP_AI撠店_${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      showToast && showToast('✅ 已匯出 .json 備份', 'ok');
+      showToast && showToast('??撌脣??.json ?遢', 'ok');
     }
 
     function importAIChatJSON(event) {
@@ -2809,9 +2847,9 @@ input[type="range"]:hover::-webkit-slider-thumb {
           } else if (data.history && Array.isArray(data.history)) {
             history = data.history;
           } else {
-            throw new Error('不支援的 JSON 格式');
+            throw new Error('銝?渡? JSON ?澆?');
           }
-          if (history.length === 0) throw new Error('JSON 中沒有對話記錄');
+          if (history.length === 0) throw new Error('JSON 銝剜???閰梯???);
           const msgs = document.getElementById('ai-messages');
           if (msgs) msgs.innerHTML = '';
           history.forEach(m => {
@@ -2820,9 +2858,9 @@ input[type="range"]:hover::-webkit-slider-thumb {
           });
           aiState.chatHistory = history;
           saveAIChatCache();
-          showToast && showToast(`✅ 已匯入 ${history.filter(m => m.role !== 'system').length} 則對話`, 'ok');
+          showToast && showToast(`??撌脣??${history.filter(m => m.role !== 'system').length} ??閰常, 'ok');
         } catch (err) {
-          showToast && showToast('❌ 匯入失敗：' + err.message, 'err');
+          showToast && showToast('???臬憭望?嚗? + err.message, 'err');
         } finally {
           event.target.value = '';
         }
@@ -2835,14 +2873,14 @@ input[type="range"]:hover::-webkit-slider-thumb {
     function copyAllChat() {
       const text = aiState.chatHistory
         .filter(m => m.role !== 'system')
-        .map(m => `[${m.role === 'user' ? '我' : 'AI'}] ${m.content}`)
+        .map(m => `[${m.role === 'user' ? '?? : 'AI'}] ${m.content}`)
         .join('\n\n');
       navigator.clipboard.writeText(text).then(() => {
-        showToast && showToast('✅ 已複製對話', 'ok');
+        showToast && showToast('??撌脰?鋆賢?閰?, 'ok');
       });
     }
 
-    /* ═══ 訊息渲染 ═══ */
+    /* ????閮皜脫? ????*/
     function appendAIMessage(role, content) {
       const msgs = document.getElementById('ai-messages');
       if (!msgs) return null;
@@ -2853,15 +2891,15 @@ input[type="range"]:hover::-webkit-slider-thumb {
         const rawContent = content;
         const copyBtn = document.createElement('button');
         copyBtn.className = 'msg-copy-btn';
-        copyBtn.title = '複製此回覆';
-        copyBtn.textContent = '📋 複製';
+        copyBtn.title = '銴ˊ甇文?閬?;
+        copyBtn.textContent = '?? 銴ˊ';
         copyBtn.onclick = (e) => {
           e.stopPropagation();
           navigator.clipboard.writeText(rawContent).then(() => {
-            copyBtn.textContent = '✔ 已複製';
+            copyBtn.textContent = '??撌脰?鋆?;
             copyBtn.style.color = '#34d399';
             setTimeout(() => {
-              copyBtn.textContent = '📋 複製';
+              copyBtn.textContent = '?? 銴ˊ';
               copyBtn.style.color = '';
             }, 1500);
           }).catch(() => {
@@ -2881,34 +2919,60 @@ input[type="range"]:hover::-webkit-slider-thumb {
       return div;
     }
 
-    /* ═══ 輸入區快捷鍵 ═══ */
+    /* ????頛詨?敹急??????*/
     function handleAIInputKey(e) {
       if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); sendAIMessage(); }
     }
 
-    /* ═══ 發送訊息 ═══ */
-    function sendAIMessage() {
+    /* ?????潮???????*/
+    async function sendAIMessage() {
       const inp = document.getElementById('ai-user-input');
       if (!inp) return;
       const text = inp.value.trim();
       if (!text || aiState.isStreaming) return;
       inp.value = '';
-      _dispatchAI(text);
+      // ?芸?嚗?賂?
+      let imgB64 = null;
+      const attachShot = document.getElementById('ai-attach-screenshot');
+      if (attachShot?.checked) {
+        const prov = AI_PROVIDERS[aiState.provider];
+        const model = document.getElementById('ai-model')?.value || aiState.model;
+        if (prov?.visionModels?.length && prov.visionModels.includes(model)) {
+          imgB64 = await captureCurrentTab();
+        }
+      }
+      _dispatchAI(text, null, imgB64);
     }
 
-    /* ═══ 頁籤 AI 觸發 ═══ */
-    function triggerTabAI(tabId) {
+    /* ?????惜 AI 閫貊 ????*/
+    async function triggerTabAI(tabId) {
       const msg = CVP_TAB_TRIGGER_MSG[tabId];
       if (!msg) return;
       aiState.currentTabId = tabId;
+      // ?湔?璅惜憿舐內
+      const tabLabel = CVP_TAB_LABELS[tabId] || tabId;
+      const ctxEl = document.getElementById('ai-ctx-page-label');
+      if (ctxEl) ctxEl.textContent = '?嗅??嚗? + tabLabel;
       const data = extractTabData(tabId);
       const ctx = formatContextForPrompt(data);
-      _dispatchAI(msg, ctx);
+      // ?芸?嚗?賂?? Vision 璅∪?嚗?      let imgB64 = null;
+      const attachShot = document.getElementById('ai-attach-screenshot');
+      if (attachShot?.checked) {
+        const prov = AI_PROVIDERS[aiState.provider];
+        const model = document.getElementById('ai-model')?.value || aiState.model;
+        if (!prov?.visionModels?.length || !prov.visionModels.includes(model)) {
+          showToast && showToast('?? ?嗅?璅∪?銝??Vision嚗?歇敹賜', 'warn');
+        } else {
+          showToast && showToast('? ?芸?銝凌?, 'ok');
+          imgB64 = await captureCurrentTab();
+        }
+      }
+      _dispatchAI(msg, ctx, imgB64);
     }
 
-    function _dispatchAI(userMsg, ctxOverride) {
+    async function _dispatchAI(userMsg, ctxOverride, imageBase64) {
       if (!aiState.apiKey && aiState.provider !== 'custom') {
-        appendAIMessage('assistant', '⚠️ 請先設定 API Key 才能使用 AI 分析功能。');
+        appendAIMessage('assistant', '?? 隢?閮剖? API Key ?雿輻 AI ?????);
         return;
       }
       appendAIMessage('user', userMsg);
@@ -2918,27 +2982,27 @@ input[type="range"]:hover::-webkit-slider-thumb {
         { role: 'system', content: sysMsg },
         ...aiState.chatHistory.slice(-20)
       ];
-      callAI(messages);
+      callAI(messages, imageBase64);
     }
 
-    /* ═══ 停止串流 ═══ */
+    /* ?????迫銝脫? ????*/
     function stopAIStream() {
       if (aiState.abortController) {
         aiState.abortController.abort();
         aiState.isStreaming = false;
-        setAIStatus('ready', '已停止');
+        setAIStatus('ready', '撌脣?甇?);
         const btn = document.getElementById('ai-send-btn');
         if (btn) btn.disabled = false;
       }
     }
 
-    /* ═══ 主呼叫函式 ═══ */
-    async function callAI(messages) {
+    /* ????銝餃?怠撘?????*/
+    async function callAI(messages, imageBase64) {
       aiState.isStreaming = true;
       aiState.abortController = new AbortController();
       const btn = document.getElementById('ai-send-btn');
       if (btn) btn.disabled = true;
-      setAIStatus('stream', '分析中…');
+      setAIStatus('stream', '??銝凌?);
 
       const msgEl = appendAIMessage('assistant', '');
       const cfg = {
@@ -2951,9 +3015,9 @@ input[type="range"]:hover::-webkit-slider-thumb {
 
       try {
         if (aiState.provider === 'anthropic') {
-          await _callAnthropic(messages, cfg, msgEl);
+          await _callAnthropic(messages, cfg, msgEl, imageBase64);
         } else {
-          await _callOpenAI(messages, cfg, msgEl);
+          await _callOpenAI(messages, cfg, msgEl, imageBase64);
         }
         if (msgEl) {
           const text = msgEl.textContent;
@@ -2962,27 +3026,44 @@ input[type="range"]:hover::-webkit-slider-thumb {
         }
       } catch (e) {
         if (e.name !== 'AbortError') {
-          const errMsg = '❌ 呼叫失敗：' + (e.message || String(e));
+          const errMsg = '???澆憭望?嚗? + (e.message || String(e));
           if (msgEl) msgEl.innerHTML = renderMarkdownAI(errMsg);
-          setAIStatus('error', '錯誤');
+          setAIStatus('error', '?航炊');
         }
       } finally {
         aiState.isStreaming = false;
         if (btn) btn.disabled = false;
-        if (!aiState.isStreaming) setAIStatus('ready', '已完成');
+        if (!aiState.isStreaming) setAIStatus('ready', '撌脣???);
       }
     }
 
-    /* ═══ OpenAI / DeepSeek / SiliconFlow / MiniMax / Custom 呼叫 ═══ */
-    async function _callOpenAI(messages, cfg, msgEl) {
+    /* ????OpenAI / DeepSeek / SiliconFlow / MiniMax / Custom ?澆 ????*/
+    async function _callOpenAI(messages, cfg, msgEl, imageBase64) {
       let baseUrl = aiState.customBaseUrl || 'https://api.openai.com/v1';
       let fetchUrl = `${baseUrl}/chat/completions`;
 
       fetchUrl = wrapWithProxy(fetchUrl);
 
+      // Vision嚗??敺?璇?user 閮?寧 multimodal content
+      let msgs = messages;
+      if (imageBase64) {
+        msgs = messages.map((m, i) => {
+          if (i === messages.length - 1 && m.role === 'user') {
+            return {
+              role: 'user',
+              content: [
+                { type: 'text', text: m.content },
+                { type: 'image_url', image_url: { url: imageBase64 } }
+              ]
+            };
+          }
+          return m;
+        });
+      }
+
       const bodyObj = {
         model: cfg.model,
-        messages: messages,
+        messages: msgs,
         temperature: cfg.temp,
         max_tokens: cfg.maxTok,
         stream: cfg.stream
@@ -3056,10 +3137,26 @@ input[type="range"]:hover::-webkit-slider-thumb {
       }
     }
 
-    /* ═══ Anthropic 呼叫 ═══ */
-    async function _callAnthropic(messages, cfg, msgEl) {
+    /* ????Anthropic ?澆 ????*/
+    async function _callAnthropic(messages, cfg, msgEl, imageBase64) {
       const systemContent = messages.filter(m => m.role === 'system').map(m => m.content).join('\n\n');
-      const convMsgs = messages.filter(m => m.role !== 'system');
+      let convMsgs = messages.filter(m => m.role !== 'system');
+
+      // Vision嚗??敺?璇?user 閮?寧 multimodal content
+      if (imageBase64) {
+        convMsgs = convMsgs.map((m, i) => {
+          if (i === convMsgs.length - 1 && m.role === 'user') {
+            return {
+              role: 'user',
+              content: [
+                { type: 'text', text: m.content },
+                { type: 'image', source: { type: 'base64', media_type: 'image/png', data: imageBase64.replace(/^data:image\/\w+;base64,/, '') } }
+              ]
+            };
+          }
+          return m;
+        });
+      }
 
       const anthropicUrl = wrapWithProxy(`${AI_PROVIDERS.anthropic.baseUrl}/v1/messages`);
       const resp = await fetch(anthropicUrl, {
@@ -3117,46 +3214,45 @@ input[type="range"]:hover::-webkit-slider-thumb {
       }
     }
 
-    /* ═══ T19 AI 決策摘要 Hub ═══ */
+    /* ????T19 AI 瘙箇??? Hub ????*/
     function renderT19() {
       const container = document.getElementById('ai-report');
       if (!container) return;
 
       container.innerHTML = `
     <div class="ai-hub-banner glass">
-      <div style="font-size:28px;margin-bottom:12px">🤖</div>
+      <div style="font-size:28px;margin-bottom:12px">??</div>
       <div style="font-size:20px;font-weight:900;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px">
-        CVP AI 決策摘要中心
+        CVP AI 瘙箇???銝剖?
       </div>
       <div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;max-width:480px;margin-left:auto;margin-right:auto">
-        整合 19 個分析模組的智能洞察，由 AI 生成跨模組決策建議報告
-      </div>
+        ?游? 19 ???芋蝯??箄瘣?嚗 AI ??頝冽芋蝯捱蝑遣霅啣??      </div>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button class="btn-primary" onclick="generateFullAIReport()" style="padding:10px 22px;font-size:14px">
-          📊 生成完整 AI 決策報告
+          ?? ??摰 AI 瘙箇??勗?
         </button>
         <button class="btn-secondary" onclick="toggleAIPanel()" style="padding:10px 22px;font-size:14px">
-          💬 開啟 AI 對話面板
+          ? ?? AI 撠店?Ｘ
         </button>
       </div>
     </div>
 
     <div style="margin-bottom:16px">
-      <div style="font-size:13px;font-weight:700;color:var(--text-secondary);margin-bottom:12px">🚀 快速分析各模組：</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text-secondary);margin-bottom:12px">?? 敹恍???璅∠?嚗?/div>
       <div class="ai-hub-cards">
         ${[
-          { id: 't3', icon: '📈', name: 'CVP靜態分析', desc: '損益平衡點 / 安全邊際' },
-          { id: 't4', icon: '🎛', name: '情境模擬', desc: '四因子敏感性分析' },
-          { id: 't12', icon: '⚠', name: '風險儀表板', desc: '蒙地卡羅 / 風險矩陣' },
-          { id: 't16', icon: '🌀', name: '龍捲風圖', desc: '利潤敏感性排序' },
-          { id: 't5', icon: '🔀', name: '多情境比較', desc: '機率加權期望利潤' },
-          { id: 't17', icon: '🗺', name: 'CM矩陣BCG', desc: '產品策略四象限' },
-          { id: 't6', icon: '💼', name: '投資ROI', desc: 'NPV / IRR / 回收期' },
-          { id: 't10', icon: '🏦', name: '杜邦分析', desc: 'ROE分解 / 資金效率' },
-          { id: 't8', icon: '⚡', name: '經營槓桿', desc: 'DOL 風險評估' },
-          { id: 't11', icon: '📅', name: '月度趨勢', desc: '收入 CM 利潤走勢' },
-          { id: 't14', icon: '📐', name: '預算差異', desc: '量差 / 價差分析' },
-          { id: 't18', icon: '📆', name: 'YoY比較', desc: '多年度成長分析' }
+          { id: 't3', icon: '??', name: 'CVP????', desc: '??撟唾﹛暺?/ 摰??' },
+          { id: 't4', icon: '??', name: '??璅⊥', desc: '??摮??批??? },
+          { id: 't12', icon: '??, name: '憸券?銵冽', desc: '??∠? / 憸券?拚' },
+          { id: 't16', icon: '??', name: '樴憸典?', desc: '?拇膜???扳?摨? },
+          { id: 't5', icon: '??', name: '憭?憓?頛?, desc: '璈??????拇膜' },
+          { id: 't17', icon: '?', name: 'CM?拚BCG', desc: '?Ｗ?蝑?情?? },
+          { id: 't6', icon: '?', name: '??ROI', desc: 'NPV / IRR / ??? },
+          { id: 't10', icon: '?', name: '???', desc: 'ROE?圾 / 鞈???' },
+          { id: 't8', icon: '??, name: '蝬?瑽▼', desc: 'DOL 憸券閰摯' },
+          { id: 't11', icon: '??', name: '?漲頞典', desc: '?嗅 CM ?拇膜韏啣' },
+          { id: 't14', icon: '??', name: '??撌桃', desc: '?榆 / ?孵榆??' },
+          { id: 't18', icon: '??', name: 'YoY瘥?', desc: '憭僑摨行??瑕??? }
         ].map(c => `
           <div class="ai-hub-card" onclick="switchTab('${c.id}');setTimeout(()=>{toggleAIPanel();triggerTabAI('${c.id}')},400)">
             <div style="font-size:22px;margin-bottom:8px">${c.icon}</div>
@@ -3168,37 +3264,36 @@ input[type="range"]:hover::-webkit-slider-thumb {
     </div>
 
     <div id="ai-full-report-output" class="glass" style="padding:20px;display:none">
-      <div style="font-size:14px;font-weight:700;color:var(--violet-lt);margin-bottom:12px">📄 AI 全局決策摘要</div>
+      <div style="font-size:14px;font-weight:700;color:var(--violet-lt);margin-bottom:12px">?? AI ?典?瘙箇???</div>
       <div id="ai-full-report-content" style="font-size:13px;line-height:1.8;color:var(--text-primary)"></div>
     </div>
 
     <div class="glass" style="padding:20px;margin-top:0">
-      <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:10px">💡 使用說明</div>
+      <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:10px">? 雿輻隤芣?</div>
       <div style="font-size:12px;color:var(--text-muted);line-height:2">
-        1. 點擊右側 🤖 按鈕，開啟 AI 對話面板並設定 API Key<br>
-        2. 點擊各分析模組中的「🤖 AI 分析」按鈕，自動提取當前數據送 AI 分析<br>
-        3. 在對話面板中直接輸入問題，AI 會參考當前系統數據回答<br>
-        4. 支援 OpenAI / Anthropic Claude / DeepSeek / 硅基流動 等多個 AI 供應商<br>
-        5. 對話記錄自動保存，可匯出為文字檔供後續使用
-      </div>
+        1. 暺??喳 ?? ??嚗???AI 撠店?Ｘ銝西身摰?API Key<br>
+        2. 暺????芋蝯葉??AI ???????芸????嗅??豢???AI ??<br>
+        3. ?典?閰梢?蹂葉?湔頛詨??嚗I ????頂蝯望??蝑?br>
+        4. ?舀 OpenAI / Anthropic Claude / DeepSeek / 蝖瘚? 蝑???AI 靘???br>
+        5. 撠店閮??芸?靽?嚗?臬?箸?摮?靘?蝥蝙??      </div>
     </div>
   `;
     }
 
-    /* ═══ 生成全局 AI 報告 ═══ */
+    /* ???????典? AI ?勗? ????*/
     async function generateFullAIReport() {
       const outWrap = document.getElementById('ai-full-report-output');
       const outEl = document.getElementById('ai-full-report-content');
       if (!outWrap || !outEl) return;
 
       if (!aiState.apiKey && aiState.provider !== 'custom') {
-        outEl.innerHTML = '⚠️ 請先在 AI 面板中設定 API Key。';
+        outEl.innerHTML = '?? 隢???AI ?Ｘ銝剛身摰?API Key??;
         outWrap.style.display = 'block';
         return;
       }
 
       outWrap.style.display = 'block';
-      outEl.innerHTML = '⏳ AI 正在分析全系統資料，請稍候（約 15-30 秒）…';
+      outEl.innerHTML = '??AI 甇????函頂蝯梯???隢???蝝?15-30 蝘???;
 
       const globalData = {
         overview: extractT1Data(),
@@ -3208,18 +3303,12 @@ input[type="range"]:hover::-webkit-slider-thumb {
         investment: extractT6Data()
       };
 
-      const prompt = `請對以下 CVP 量利投分析系統的全局資料進行綜合評估，生成一份完整的執行決策報告：
-
+      const prompt = `隢?隞乩? CVP ????頂蝯梁??典?鞈??脰?蝬?閰摯嚗???隞賢??渡??瑁?瘙箇??勗?嚗?
 ${JSON.stringify(globalData, null, 2)}
 
-報告結構：
-1. 執行摘要（3 行以內的關鍵結論）
-2. 財務健康診斷（CM率、安全邊際、DOL 評估）
-3. 三大風險預警（🔴 排序）
-4. 五項優先行動建議（🔴🟡🟢 分類）
-5. 決策建議總結
+?勗?蝯?嚗?1. ?瑁???嚗? 銵誑?抒??蝯?嚗?2. 鞎∪??亙熒閮箸嚗M???券??OL 閰摯嚗?3. 銝之憸券?郎嚗????嚗?4. 鈭??芸?銵?撱箄降嚗?湘?♀????嚗?5. 瘙箇?撱箄降蝮賜?
 
-請用繁體中文，數字具體，表格輔助說明。`;
+隢蝜?銝剜?嚗摮擃?銵冽頛隤芣??;
 
       const messages = [
         { role: 'system', content: AI_SYSTEM_PROMPT },
@@ -3250,13 +3339,13 @@ ${JSON.stringify(globalData, null, 2)}
           }, fakeEl);
         }
       } catch (e) {
-        outEl.innerHTML = '❌ 生成失敗：' + (e.message || String(e));
+        outEl.innerHTML = '????憭望?嚗? + (e.message || String(e));
       } finally {
         aiState.isStreaming = false;
       }
     }
 
-    /* ═══ AI 設定面板折疊控制 ═══ */
+    /* ????AI 閮剖??Ｘ???批 ????*/
     let _aiConfigOpen = false;
 
     function toggleAIConfig(forceOpen) {
@@ -3280,11 +3369,11 @@ ${JSON.stringify(globalData, null, 2)}
       const provider = document.getElementById('ai-provider')?.value || aiState.provider;
       const model = document.getElementById('ai-model')?.value || aiState.model;
       const providerName = AI_PROVIDERS[provider]?.name || provider;
-      const shortModel = model.length > 15 ? model.slice(0, 13) + '…' : model;
+      const shortModel = model.length > 15 ? model.slice(0, 13) + '?? : model;
       el.textContent = `${providerName} / ${shortModel}`;
     }
 
-    /* ═══ 初始化 AI 模組 ═══ */
+    /* ????????AI 璅∠? ????*/
     function _initAIModule() {
       onProviderChange();
       loadAISettings();
@@ -3313,6 +3402,8 @@ ${JSON.stringify(globalData, null, 2)}
       if (typeof _origSwitchTab === 'function') {
         window.switchTab = function (id) {
           aiState.currentTabId = id;
+          const ctxEl = document.getElementById('ai-ctx-page-label');
+          if (ctxEl) ctxEl.textContent = '?嗅??嚗? + (CVP_TAB_LABELS[id] || id);
           return _origSwitchTab(id);
         };
       }
@@ -3343,7 +3434,7 @@ ${JSON.stringify(globalData, null, 2)}
         wrapper.appendChild(firstHd);
         const aiBtn = document.createElement('button');
         aiBtn.className = 'btn-inline-ai';
-        aiBtn.textContent = '🤖 AI 分析';
+        aiBtn.textContent = '?? AI ??';
         aiBtn.onclick = () => {
           const panel = document.getElementById('ai-panel');
           if (!panel.classList.contains('open')) toggleAIPanel();
