@@ -2554,13 +2554,22 @@ input[type="range"]:hover::-webkit-slider-thumb {
       const fmtRow = document.getElementById('ai-api-format-row');
 
       aiState.provider = sel;
-      mdSel.innerHTML = '';
-      prov.models.forEach(m => {
-        const o = document.createElement('option');
-        o.value = m; o.textContent = m;
-        mdSel.appendChild(o);
-      });
-      if (prov.defaultModel) mdSel.value = prov.defaultModel;
+
+      // 自訂端點（models 為空）→ 文字輸入框；其他供應商 → 下拉選單
+      if (prov.models.length === 0) {
+        if (mdSel.tagName !== 'INPUT') {
+          mdSel.outerHTML = `<input type="text" id="ai-model" placeholder="請輸入模型名稱（如 gpt-4o）" oninput="saveAISettings()" style="flex:1;min-width:0">`;
+        }
+        const inp = document.getElementById('ai-model');
+        if (inp) inp.value = aiState.model || '';
+      } else {
+        if (mdSel.tagName === 'INPUT') {
+          mdSel.outerHTML = `<select id="ai-model" onchange="saveAISettings()" style="flex:1"></select>`;
+        }
+        const newMd = document.getElementById('ai-model');
+        newMd.innerHTML = prov.models.map(m => `<option value="${m}">${m}</option>`).join('');
+        if (prov.defaultModel) newMd.value = prov.defaultModel;
+      }
 
       // 載入該供應商儲存的 Key 與 URL
       const savedKey = aiState.savedKeys[sel] || '';
