@@ -2722,23 +2722,19 @@ input[type="range"]:hover::-webkit-slider-thumb {
     const LOCAL_PROXY = 'http://localhost:8765/cvp-proxy';
     function wrapWithProxy(originalUrl) {
       if (aiState.corsProxyMode === 'local') {
-        return LOCAL_PROXY;   // header 帶 target URL，不再放 query string
+        return LOCAL_PROXY;   // header 帶 target URL
       }
       if (aiState.corsProxyMode === 'custom' && aiState.corsProxyUrl) {
         const base = aiState.corsProxyUrl.replace(/\/$/, '');
-        return base;          // header 帶 target URL
+        return `${base}?url=${encodeURIComponent(originalUrl)}`;  // query string 方式
       }
       return originalUrl;
     }
-    /* 回傳 target URL（供 caller 在 fetch 時附加 X-Proxy-Target header） */
     function getProxyTarget(originalUrl) {
       if (aiState.corsProxyMode === 'local') {
-        return originalUrl;   // 目標 URL 放 header，fetch 打到 local proxy
-      }
-      if (aiState.corsProxyMode === 'custom' && aiState.corsProxyUrl) {
         return originalUrl;
       }
-      return null;            // 不需要代理，fetch 打到原 URL（瀏覽器 CORS 會擋）
+      return null;   // custom 用 query string，不需 header
     }
 
     /* ═══ 供應商切換 ═══ */

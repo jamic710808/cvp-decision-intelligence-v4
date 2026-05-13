@@ -23,6 +23,7 @@ const CORS_HEADERS = {
     'api-key',
     'X-Goog-Api-Key',
     'X-MiniMax-Group-Id',
+    'X-Proxy-Target',
   ].join(', '),
   'Access-Control-Max-Age': '86400',
 };
