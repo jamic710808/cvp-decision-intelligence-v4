@@ -948,6 +948,25 @@ input[type="range"]:hover::-webkit-slider-thumb {
   color: var(--violet-lt);
 }
 
+/* ── AI Suggestion Chips ── */
+.chip-btn {
+  padding: 4px 9px;
+  background: rgba(124,58,237,0.10);
+  border: 1px solid rgba(167,139,250,0.25);
+  border-radius: 14px;
+  color: var(--violet-lt);
+  font-size: 11px;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.chip-btn:hover {
+  background: rgba(124,58,237,0.20);
+  border-color: rgba(167,139,250,0.5);
+  color: #c4b5fd;
+}
+
 /* ─ AI Inline Button (in sec-hd-row) ─ */
 .btn-inline-ai {
   padding: 4px 10px;
@@ -1983,6 +2002,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
         <textarea id="ai-user-input" placeholder="輸入問題，Ctrl+Enter 送出…" onkeydown="handleAIInputKey(event)"></textarea>
         <button class="ai-send-btn" id="ai-send-btn" onclick="sendAIMessage()" title="送出">➤</button>
       </div>
+      <div id="ai-suggestion-chips" style="display:flex;flex-wrap:wrap;gap:5px;padding:6px 4px 4px;"></div>
       <div class="ai-actions">
         <button class="ai-act-btn" onclick="stopAIStream()">⏹ 停止</button>
         <button class="ai-act-btn" onclick="clearAIChat()" title="清除所有對話記錄" style="color:#f87171">🗑 清除</button>
@@ -2003,18 +2023,18 @@ input[type="range"]:hover::-webkit-slider-thumb {
   <div id="toast" role="alert" aria-live="polite"></div>
 
   <!-- ─── Assets JS（順序不可顛倒）─── -->
-  <script src="assets/state.js"></script>
-  <script src="assets/engine.js"></script>
-  <script src="assets/utils.js"></script>
-  <script src="assets/charts.js"></script>
-  <script src="assets/import-export.js"></script>
+  <script src="v4/assets/state.js"></script>
+  <script src="v4/assets/engine.js"></script>
+  <script src="v4/assets/utils.js"></script>
+  <script src="v4/assets/charts.js"></script>
+  <script src="v4/assets/import-export.js"></script>
 
   <!-- ─── Tab JS ─── -->
-  <script src="tabs/t1-overview.js"></script>
-  <script src="tabs/t2-t4.js"></script>
-  <script src="tabs/t5-t8.js"></script>
-  <script src="tabs/t9-t13.js"></script>
-  <script src="tabs/t14-t19-new.js"></script>
+  <script src="v4/tabs/t1-overview.js"></script>
+  <script src="v4/tabs/t2-t4.js"></script>
+  <script src="v4/tabs/t5-t8.js"></script>
+  <script src="v4/tabs/t9-t13.js"></script>
+  <script src="v4/tabs/t14-t19-new.js"></script>
 
   <!-- ─── 啟動 ─── -->
   <script>
@@ -2183,6 +2203,90 @@ input[type="range"]:hover::-webkit-slider-thumb {
       t16: '請根據【龍捲風敏感性圖】，找出影響利潤最關鍵的變數，制定風險管控優先順序。',
       t17: '請分析【CM矩陣(BCG四象限)】各產品定位，給出產品策略調整建議（加碼/維持/退場）。',
       t18: '請比較【多年度YoY】的成長趨勢，分析收入、CM 與利潤的年複合增長率，預測下年度表現。'
+    };
+
+    /* ═══ 各頁籤引導式建議 ═══ */
+    const CVP_TAB_SUGGESTIONS = {
+      t1: [
+        '🔴 哪些指標已經觸發警戒？優先處理順序？',
+        '🟡 這季的營收趨勢是成長還是下滑？',
+        '🟢 針對這個頁面，給我一個決策建議'
+      ],
+      t2: [
+        '🔴 哪個成本項目超幅最大？如何控制？',
+        '🟡 CM 結構是否健康？改善空間？',
+        '🟢 給我前 3 名最高 CM 貢獻產品'
+      ],
+      t3: [
+        '🔴 目前的 BEP 安全邊際夠嗎？',
+        '🟡 哪個產品的 CM 貢獻最大？',
+        '🟢 如何進一步壓低成本提升利潤？'
+      ],
+      t4: [
+        '🔴 哪個因子對利潤影響最大？',
+        '🟡 如果售價提高 5%，新的 BEP 是多少？',
+        '🟢 最保守情境下，利潤還剩多少？'
+      ],
+      t5: [
+        '🔴 哪個情境期望利潤最高？',
+        '🟡 各情境的風險調整後報酬？',
+        '🟢 建議採用哪個情境？'
+      ],
+      t6: [
+        '🔴 NPV 是正值嗎？IRR 超過 WACC 多少？',
+        '🟡 回收期幾年？符合預期嗎？',
+        '🟢 敏感性分析：哪個變數影響最大？'
+      ],
+      t7: [
+        '🔴 目標銷量合理嗎？产能撐得住？',
+        '🟡 需要什麼售價或成本假設才能達成？',
+        '🟢 有哪些風險可能阻礙目標？'
+      ],
+      t8: [
+        '🔴 DOL > 5 的部門是哪個？風險高嗎？',
+        '🟡 營收下滑 10% 時，利潤損失多少？',
+        '🟢 建議用哪些產品對沖槓桿風險？'
+      ],
+      t9: [
+        '🔴 目前組合優化空間多大？',
+        '🟡 哪些產品應該加碼？哪些應該退場？',
+        '🟢 優化後 CM 提升多少？'
+      ],
+      t10: [
+        '🔴 ROE 低於業界平均的原因？',
+        '🟡 週轉率瓶頸在哪個環節？',
+        '🟢 建議從哪個杜邦因子優先改善？'
+      ],
+      t11: [
+        '🔴 有哪些異常月份需要關注？',
+        '🟡 季節性模式明顯嗎？',
+        '🟢 下個月的營收預測是多少？'
+      ],
+      t12: [
+        '🔴 最高風險項目是什麼？',
+        '🟡 VaR 估計多少？在可接受範圍？',
+        '🟢 應該建立什麼風險對沖機制？'
+      ],
+      t14: [
+        '🔴 哪個項目超支最嚴重？',
+        '🟡 量差和價差哪個影響更大？',
+        '🟢 根本原因是什麼？'
+      ],
+      t16: [
+        '🔴 龍捲風圖：最關鍵變數是哪個？',
+        '🟡 前 3 敏感變數的控制策略？',
+        '🟢 應該建立什麼監控預警？'
+      ],
+      t17: [
+        '🔴 哪些產品落在問題兒童（BCG）？',
+        '🟡 金牛產品如何維持現金？',
+        '🟢 明星產品需要多少資源才能成長？'
+      ],
+      t18: [
+        '🔴 營收年複合成長率多少？',
+        '🟡 CM 趨勢和營收趨勢一致嗎？',
+        '🟢 預測下年度表現？'
+      ]
     };
 
     /* ═══ CVP 系統提示詞 ═══ */
@@ -2537,7 +2641,27 @@ input[type="range"]:hover::-webkit-slider-thumb {
       const isOpen = panel.classList.toggle('open');
       main && main.classList.toggle('ai-open', isOpen);
       btn.textContent = isOpen ? '✕' : '🤖';
-      if (isOpen) restoreAIChat();
+      if (isOpen) {
+        restoreAIChat();
+        renderSuggestionChips(aiState.currentTabId || 't1');
+      }
+    }
+
+    function renderSuggestionChips(tabId) {
+      const container = document.getElementById('ai-suggestion-chips');
+      if (!container) return;
+      const suggestions = CVP_TAB_SUGGESTIONS[tabId] || CVP_TAB_SUGGESTIONS['t1'] || [];
+      container.innerHTML = suggestions.map(s =>
+        `<button class="chip-btn" onclick="useSuggestion(this,'${s.replace(/'/g, "\\'")}')">${s}</button>`
+      ).join('');
+    }
+
+    function useSuggestion(btn, text) {
+      const inp = document.getElementById('ai-user-input');
+      if (inp) inp.value = text;
+      sendAIMessage();
+      // Visual feedback
+      btn && btn.blur();
     }
 
     function toggleAdvanced() {
@@ -2594,16 +2718,27 @@ input[type="range"]:hover::-webkit-slider-thumb {
       saveAISettings();
     }
 
-    /* 統一回傳「最終要 fetch 的 URL」：依代理模式包裝原始端點 */
+    /* 統一回傳「最終要 fetch 的 URL」：依代理模式包裝原始端點（X-Proxy-Target header 方式） */
+    const LOCAL_PROXY = 'http://localhost:8765/cvp-proxy';
     function wrapWithProxy(originalUrl) {
       if (aiState.corsProxyMode === 'local') {
-        return `http://localhost:8080/proxy?url=${encodeURIComponent(originalUrl)}`;
+        return LOCAL_PROXY;   // header 帶 target URL，不再放 query string
       }
       if (aiState.corsProxyMode === 'custom' && aiState.corsProxyUrl) {
         const base = aiState.corsProxyUrl.replace(/\/$/, '');
-        return `${base}?url=${encodeURIComponent(originalUrl)}`;
+        return base;          // header 帶 target URL
       }
       return originalUrl;
+    }
+    /* 回傳 target URL（供 caller 在 fetch 時附加 X-Proxy-Target header） */
+    function getProxyTarget(originalUrl) {
+      if (aiState.corsProxyMode === 'local') {
+        return originalUrl;   // 目標 URL 放 header，fetch 打到 local proxy
+      }
+      if (aiState.corsProxyMode === 'custom' && aiState.corsProxyUrl) {
+        return originalUrl;
+      }
+      return null;            // 不需要代理，fetch 打到原 URL（瀏覽器 CORS 會擋）
     }
 
     /* ═══ 供應商切換 ═══ */
@@ -2954,6 +3089,12 @@ input[type="range"]:hover::-webkit-slider-thumb {
       const text = inp.value.trim();
       if (!text || aiState.isStreaming) return;
       inp.value = '';
+      // 自動萃取當前頁面資料作為上下文
+      const activeNav = document.querySelector('.nav-item.active');
+      const tabId = activeNav?.dataset?.tab || 't1';
+      const tabLabel = CVP_TAB_LABELS[tabId] || tabId;
+      const data = extractTabData(tabId);
+      const ctx = '【目前頁面：' + tabLabel + '】\n' + formatContextForPrompt(data);
       // 截圖（可選）
       let imgB64 = null;
       const attachShot = document.getElementById('ai-attach-screenshot');
@@ -2964,7 +3105,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
           imgB64 = await captureCurrentTab();
         }
       }
-      _dispatchAI(text, null, imgB64);
+      _dispatchAI(text, ctx, imgB64);
     }
 
     /* ═══ 頁籤 AI 觸發 ═══ */
@@ -3097,12 +3238,19 @@ input[type="range"]:hover::-webkit-slider-thumb {
         bodyObj.reasoning_split = true;
       }
 
+      const targetUrl = getProxyTarget(baseUrl + '/chat/completions');
+      const reqHeaders = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${cfg.key}`
+      };
+      if (targetUrl) {
+        reqHeaders['X-Proxy-Target'] = targetUrl;
+        fetchUrl = wrapWithProxy(baseUrl + '/chat/completions');
+      }
+
       const resp = await fetch(fetchUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${cfg.key}`
-        },
+        headers: reqHeaders,
         body: JSON.stringify(bodyObj),
         signal: aiState.abortController.signal
       });
@@ -3183,14 +3331,17 @@ input[type="range"]:hover::-webkit-slider-thumb {
       }
 
       const anthropicUrl = wrapWithProxy(`${AI_PROVIDERS.anthropic.baseUrl}/v1/messages`);
+      const targetUrl = getProxyTarget(AI_PROVIDERS.anthropic.baseUrl + '/v1/messages');
+      const reqHeaders = {
+        'Content-Type': 'application/json',
+        'x-api-key': cfg.key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      };
+      if (targetUrl) reqHeaders['X-Proxy-Target'] = targetUrl;
       const resp = await fetch(anthropicUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': cfg.key,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
+        headers: reqHeaders,
         body: JSON.stringify({
           model: cfg.model,
           messages: convMsgs,
@@ -3436,6 +3587,7 @@ ${JSON.stringify(globalData, null, 2)}
           aiState.currentTabId = id;
           const ctxEl = document.getElementById('ai-ctx-page-label');
           if (ctxEl) ctxEl.textContent = '當前頁面：' + (CVP_TAB_LABELS[id] || id);
+          renderSuggestionChips(id);
           return _origSwitchTab(id);
         };
       }
