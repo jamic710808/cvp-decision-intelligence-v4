@@ -8,7 +8,7 @@
     }
   },
   "rewrites": [
-    { "source": "/", "destination": "/index.html" }
+    { "source": "/", "destination": "/CVP_Dashboard_V4_AI_Redesigned.html" }
   ],
   "headers": [
     {
