@@ -74,12 +74,13 @@ export default async function handler(req, res) {
   // Node.js runtime 的 req.url 只有路徑，需補 host 才能用 URL API 解析
   const baseUrl = `https://${req.headers.host}`;
   const parsedUrl = new URL(req.url, baseUrl);
-  const target = parsedUrl.searchParams.get('url');
+  // 支援兩種傳 target 方式：?url= query param 或 X-Proxy-Target header
+  const target = parsedUrl.searchParams.get('url') || req.headers['x-proxy-target'];
 
   if (!target) {
     sendJson(res, 400, {
-      error: '缺少 ?url= 參數，無法轉發',
-      hint: '正確用法：/api/proxy?url=https%3A%2F%2Fapi.openai.com%2Fv1%2Fchat%2Fcompletions',
+      error: '缺少目標 URL：請用 ?url= 參數或 X-Proxy-Target header 指定',
+      hint: '用法 A（query）：/api/proxy?url=https%3A%2F%2Fapi.openai.com%2Fv1%2Fchat%2Fcompletions\n用法 B（header）：X-Proxy-Target: https://api.openai.com/v1/chat/completions',
     });
     return;
   }

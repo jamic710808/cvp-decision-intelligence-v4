@@ -2092,6 +2092,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
           <label>CORS 代理</label>
           <select id="ai-cors-proxy" onchange="onProxyModeChange()">
             <option value="off">關閉（直連）</option>
+            <option value="vercel" selected>Vercel 代理（本站 /api/proxy）</option>
             <option value="local">本機代理（:8080）</option>
             <option value="custom">自訂代理 URL</option>
           </select>
@@ -2352,7 +2353,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
       savedKeys: {}, // { provider: key }
       savedBaseUrls: {},
       apiFormat: 'openai',
-      corsProxyMode: 'off',  // off | local | custom
+      corsProxyMode: 'vercel',  // off | vercel | local | custom
       corsProxyUrl: ''
     };
 
@@ -2928,6 +2929,9 @@ input[type="range"]:hover::-webkit-slider-thumb {
     /* 統一回傳「最終要 fetch 的 URL」：依代理模式包裝原始端點（X-Proxy-Target header 方式） */
     const LOCAL_PROXY = 'http://localhost:8765/cvp-proxy';
     function wrapWithProxy(originalUrl) {
+      if (aiState.corsProxyMode === 'vercel') {
+        return '/api/proxy';  // 本站 Vercel function，X-Proxy-Target 帶 target
+      }
       if (aiState.corsProxyMode === 'local') {
         return LOCAL_PROXY;   // header 帶 target URL，不再放 query string
       }
@@ -2939,6 +2943,9 @@ input[type="range"]:hover::-webkit-slider-thumb {
     }
     /* 回傳 target URL（供 caller 在 fetch 時附加 X-Proxy-Target header） */
     function getProxyTarget(originalUrl) {
+      if (aiState.corsProxyMode === 'vercel') {
+        return originalUrl;   // 目標 URL 放 X-Proxy-Target，fetch 打到 /api/proxy
+      }
       if (aiState.corsProxyMode === 'local') {
         return originalUrl;   // 目標 URL 放 header，fetch 打到 local proxy
       }
